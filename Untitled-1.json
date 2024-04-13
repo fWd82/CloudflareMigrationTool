@@ -1,0 +1,491 @@
+{
+ "template_group_list": [
+  {
+   "group_id": "0ebfa3dbb9e141d58c9d6ebb100fd4a7",
+   "name": "non_transcoding_template_group",
+   "status": "0",
+   "type": "non_transcoding_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "UNKNOW",
+      "width": 0,
+      "height": 0,
+      "bitrate": 0,
+      "frame_rate": 0
+     },
+     "format": "UNKNOW"
+    }
+   ],
+   "common": {
+    "video_codec": "UNKNOW",
+    "audio_codec": "AAC",
+    "hls_interval": 0
+   }
+  },
+  {
+   "group_id": "7528fd2ecbc844be98436243ad4eac37",
+   "name": "system_template_group",
+   "status": "0",
+   "type": "system_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "SD",
+      "width": 0,
+      "height": 0,
+      "bitrate": 0,
+      "frame_rate": 0
+     },
+     "format": "HLS"
+    }
+   ],
+   "description": "",
+   "common": {
+    "pvc": "0",
+    "video_codec": "H264",
+    "audio_codec": "AAC",
+    "hls_interval": 0
+   }
+  },
+  {
+   "group_id": "cb799ea6499e471184aa0f090d52e35b",
+   "name": "original_template_group",
+   "status": "0",
+   "type": "system_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "format": "HLS"
+    }
+   ],
+   "common": {
+    "audio_codec": "AAC",
+    "hls_interval": 0
+   }
+  },
+  {
+   "group_id": "1ee83c9cf1bf4373b0974594c8f25c69",
+   "name": "adaptive_template_group",
+   "status": "0",
+   "type": "adaptive_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "AD",
+      "width": 0,
+      "height": 0,
+      "bitrate": 0,
+      "frame_rate": 0
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 192,
+      "channels": 1
+     },
+     "format": "MP4"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H264",
+    "audio_codec": "AAC",
+    "hls_interval": 0
+   }
+  },
+  {
+   "group_id": "b6bba8c5f80d4cd5a193bee2335f7551",
+   "name": "HLS_H265_4K",
+   "status": "0",
+   "type": "custom_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "4K",
+      "width": 3840,
+      "height": 2160,
+      "bitrate": 5600,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "2K",
+      "width": 2560,
+      "height": 1440,
+      "bitrate": 4900,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "FULL_HD",
+      "width": 1920,
+      "height": 1080,
+      "bitrate": 2100,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "HD",
+      "width": 1280,
+      "height": 720,
+      "bitrate": 700,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "SD",
+      "width": 854,
+      "height": 480,
+      "bitrate": 500,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "FLUENT",
+      "width": 480,
+      "height": 270,
+      "bitrate": 200,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H265",
+    "audio_codec": "AAC",
+    "hls_interval": 3
+   }
+  },
+  {
+   "group_id": "5b5b43ee6ef8463886b7e28c1f1ca4bc",
+   "name": "MP4_H265",
+   "status": "0",
+   "type": "custom_template_group",
+   "auto_encrypt": 1,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "HD",
+      "width": 1280,
+      "height": 720,
+      "bitrate": 700,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    },
+    {
+     "video": {
+      "quality": "SD",
+      "width": 854,
+      "height": 480,
+      "bitrate": 500,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    },
+    {
+     "video": {
+      "quality": "FLUENT",
+      "width": 480,
+      "height": 270,
+      "bitrate": 200,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H265",
+    "audio_codec": "AAC",
+    "hls_interval": 5
+   }
+  },
+  {
+   "group_id": "ddb2de99b1e3433c8e03aefaa002a9a5",
+   "name": "MP4_H264",
+   "status": "0",
+   "type": "custom_template_group",
+   "auto_encrypt": 1,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "HD",
+      "width": 1280,
+      "height": 720,
+      "bitrate": 1000,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    },
+    {
+     "video": {
+      "quality": "SD",
+      "width": 854,
+      "height": 480,
+      "bitrate": 600,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    },
+    {
+     "video": {
+      "quality": "FLUENT",
+      "width": 480,
+      "height": 270,
+      "bitrate": 300,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "MP4"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H264",
+    "audio_codec": "AAC",
+    "hls_interval": 5
+   }
+  },
+  {
+   "group_id": "22383dd234dc4b4d806042b74095a4c2",
+   "name": "HLS_H265",
+   "status": "1",
+   "type": "custom_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "4K",
+      "width": 3840,
+      "height": 2160,
+      "bitrate": 5600,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "2K",
+      "width": 2560,
+      "height": 1440,
+      "bitrate": 4900,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "FULL_HD",
+      "width": 1920,
+      "height": 1080,
+      "bitrate": 2100,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "HD",
+      "width": 1280,
+      "height": 720,
+      "bitrate": 700,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "SD",
+      "width": 854,
+      "height": 480,
+      "bitrate": 500,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "FLUENT",
+      "width": 480,
+      "height": 270,
+      "bitrate": 200,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H265",
+    "audio_codec": "AAC",
+    "hls_interval": 3
+   }
+  },
+  {
+   "group_id": "25514a9f4b5246ce8bb4a29f96f8f71b",
+   "name": "HLS_H264",
+   "status": "0",
+   "type": "custom_template_group",
+   "auto_encrypt": 0,
+   "quality_info_list": [
+    {
+     "video": {
+      "quality": "HD",
+      "width": 1280,
+      "height": 720,
+      "bitrate": 1000,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "SD",
+      "width": 854,
+      "height": 480,
+      "bitrate": 600,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    },
+    {
+     "video": {
+      "quality": "FLUENT",
+      "width": 480,
+      "height": 270,
+      "bitrate": 300,
+      "frame_rate": 1
+     },
+     "audio": {
+      "sample_rate": 1,
+      "bitrate": 0,
+      "channels": 2
+     },
+     "format": "HLS"
+    }
+   ],
+   "common": {
+    "pvc": "0",
+    "video_codec": "H264",
+    "audio_codec": "AAC",
+    "hls_interval": 5
+   }
+  }
+ ],
+ "total": 9
+}

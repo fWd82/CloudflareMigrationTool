@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress - Migration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            padding-top: 2px;
+            padding-bottom: 30px;
+        }
+
+        .update-message {
+            word-wrap: break-word;
+        }
+
+        .error {
+            color: #dc3545;
+            /* Bootstrap danger color */
+        }
+
+        .success {
+            color: #28a745;
+            /* Bootstrap success color */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <h3 class="mt-5 font-weight-light" style="color:#6f6e6e;">MIGRATION PROCESS</h3>
+        </div>
+
+
+        <div class="class">
+
+            <!-- Requirements Step -->
+            <div class="card" style="width: rem; background-color: #ebeceb;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Requirements Step<span class="text-danger">*</span></h5>
+                    <h6 class="card-text text-primary">Gathering Credentials for Cloudflare</h6>
+                    <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
+                        <div class="form-group">
+                            <label for="X-Auth-Email">X Auth Email</label>
+                            <input type="email" class="form-control form-control-sm" id="X-Auth-Email" aria-describedby="emailHelp"
+                                placeholder="fwd82@live.com" name="X-Auth-Email" value="fwd82@live.com">
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your X Auth Email with
+                                anyone
+                                else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="X-Auth-Key">X Auth Key</label>
+                            <input type="text" class="form-control form-control-sm" id="X-Auth-Key"
+                                placeholder="1eab14593a06d3722782f30526a779378a5ee" name="X-Auth-Key"
+                                value="1eab14593a06d3722782f30526a779378a58e">
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your Auth Key with
+                                anyone else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="account_id">Account ID</label>
+                            <input type="text" class="form-control form-control-sm" id="account_id"
+                                placeholder="2590b14a48271988be21c06479697cee" name="account_id"
+                                value="2590b14a48271988be21c06479697c88">
+                            <small id="account_id" class="form-text text-muted">We'll never share your Account ID with
+                                anyone else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer_subdomain">Customer subdomain</label>
+                            <input type="text" class="form-control form-control-sm" id="customer_subdomain"
+                                placeholder="customer-0rjknk9n0a2sedbn.cloudflarestream.com" name="customer_subdomain"
+                                value="customer-0rjknk9n0a2sedbn.cloudflarestream.com">
+                            <small id="account_id" class="form-text text-muted">We'll never share your Customer
+                                subdomain with
+                                anyone else.</small>
+                        </div>
+                        <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> -->
+                    </form>
+                </div>
+            </div>
+            <!-- eof Requirements Step -->
+            <br />
+            <!-- First Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">First Step</h5>
+                    <h6 class="card-text text-primary">Gathering Cloudflare Videos Links</h6>
+                    <p class="card-text">Please paste all your links in Excel Sheet: <code>2-videolinks.xlsx</code> or
+                        click below:
+                    </p>
+
+                    <!-- <form action="1-list-cloudflare-videos.php" method="GET"> -->
+                    <form> 
+
+                        <button type="button" class="btn btn-primary" id="fetchCloudflareVideoLinks">Generate Links
+                            Button Click</button>
+
+                        <div class="spinner-border text-primary" id="spinner1" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                    </form>
+
+
+                    <br />
+                    <div id="videoLinks"></div>
+                    <!-- <a class="btn btn-primary btn-sm" href="1-list-cloudflare-videos.php" target="_blank" role="button">Get all Cloudflare Links</a> -->
+                </div>
+            </div>
+            <!-- eof First Step -->
+            <br>
+            <!-- Second Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Second Step</h5>
+                    <h6 class="card-text text-primary">Preparing Cloudflare files to Migrate </h6>
+                    <p class="card-text"></p>
+
+                    <p class="card-text">Go to <code>index.js</code> and add your information <code>X-Auth-Email</code>
+                        and <code>X-Auth-Key</code>, once done, save the file, install <code>NodeJS</code> and run these
+                        commands <br /><code>npm i</code><br /> and<br /> <code>node index.js</code><br /> it will
+                        create one Excel Sheet <code>Output_.....xlsx</code>. This file has different
+                        <code>Video UID</code>, <code>Link Status</code>, <code>Is Link Enabled</code>,
+                        <code>Default Link</code> and <code>Link With File Name</code>
+
+                    </p>
+                    <textarea name="txtarea_cloudflare_links" id="cloudflareLinks" rows="10"
+                        style='min-width: 100%; font-size: 10pt'></textarea>
+                    <br />
+                    <!-- <a class="btn btn-primary btn-sm" href="2-index-node.php" target="_blank" role="button">Prepare the
+                        environment - Enable MP4 Download Links</a> -->
+                    <button class="btn btn-primary btn-sm" id="enableMp4DownloadLinks">Enable MP4 Download
+                        Links</button>
+                    <div class="spinner-border text-primary" id="spinner2" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <!-- here to print the results -->
+                    <div id="failedLinks"></div>
+                    <div id="successfulLinks"></div>
+
+                </div>
+            </div>
+            <!-- eof Second Step -->
+            <br>
+
+            <!-- Third Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Third Step </h5>
+                    <h6 class="card-text text-primary">Uploading (Importing) videos from Cloudstream to Huawei Cloud VOD </h6>
+                    <p class="card-text">Now, open <code>Output_....xlsx</code> and copy all the links from
+                        <code>Link With File Name</code> and paste it into
+                        <code>Huawei Cloud VOD > Upload Videos & Audio > Upload from URL</code>, to import videos to
+                        Huawei Cloud. Currently Huawei Cloud VOD only supports 100 links at a time.
+                    </p>
+                    <p class="card-text">
+                        Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
+                        <code>Cloudflare Cloudstream</code>. But in the database the links are still pointing to
+                        Cloudflare instead of Huawei Cloud VOD. Make sure to take backup out of your database before
+                        proceeding to next step.
+                    </p>
+                    <a class="btn btn-primary btn-sm"
+                        href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/audioVideoUrlPull"
+                        target="_blank" title="OpenPull from URLs and paste all links" role="button">Open Huawei Cloud
+                        VOD</a>
+                </div>
+            </div>
+            <!-- eof Third Step -->
+            <br />
+            <!-- https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=ShowAssetMeta -->
+            <!-- Fourth Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Fourth Step </h5>
+                    <h6 class="card-text text-primary">Getting new links from Huawei Cloud VOD </h6>
+                    <p class="card-text">
+                        Now, to update the links of recently migrated videos we have to follow these steps. We can go to
+                        Huawei Cloud VOD, select videos and click on <code>Export</code> button, the records will be
+                        download in Excel Sheet. <br /> The only problem with the exported excel sheet is we cannot
+                        process it as it is in .xls format. So we have to open the excel sheet, go to File > click on
+                        Convert to Compatibility Mode and save it.
+                    </p>
+                    <p class="card-text">
+                        In the next step we have to open <code>process_excel.php</code> and paste the correct name of
+                        the excel sheet downloaded, probably it will be: <code>Video Details.xlsx</code>. Save the file
+                        and click on below <strong>Clean the data</strong> button. It will generate another file with
+                        name probably like: <code>cleaned_data-20240401000000.xlsx</code>
+                    </p>
+                    <p class="card-text">Open Huawei Cloud VOD <a
+                            href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
+                    </p>
+                    <a class="btn btn-primary btn-sm" href="4-process_excel.php" target="_blank" role="button">Clean the
+                        data</a>
+                </div>
+            </div>
+            <!-- eof Fourth Step -->
+            <br />
+
+            <!-- Fifth Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Fifth Step</h5>
+                    <h6 class="card-text text-primary">Updating database from Cloudstream links to Huawei Cloud VOD
+                        links </h6>
+                    <p class="card-text">
+                        Now open <code>5-script_db.php</code> and change the configuration for <code>$host</code>,
+                        <code>$dbname</code>, <code>$username</code> and <code>$password</code>. That's it, just click
+                        on below <code>Update the links</code> and you database will be updated with new links
+                    </p>
+                    </p>
+                    <p class="card-text">
+                        Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
+                        <code>Cloudflare Cloudstream</code>.
+                    </p>
+                    <a class="btn btn-primary btn-sm" href="5-script_db.php" target="_blank" role="button">Update the
+                        links</a>
+                </div>
+            </div>
+            <!-- eof Fifth Step -->
+            <br>
+
+            <!-- Sixth Step -->
+            <div class="card" style="width: rem;">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">Sixth Step</h5>
+                    <h6 class="card-text text-primary">Renaming VOD Files </h6>
+                    <p class="card-text">
+                        Video name has something like <code>default.mp4?filename=123456789</code> which looks so bad, so
+                        in this stage, we are looping through all video <code>$titles</code>, and removing the resedue
+                        <code>default.mp4?filename=</code>, while leaving the number<code> 123456789 </code> behind from
+                        all the videos.
+                    </p>
+                    </p>
+                    <p class="card-text">
+                        After this stage our videos fully migrated to <code>Huawei Cloud VOD</code> from
+                        <code>Cloudflare Cloudstream</code>.
+                    </p>
+                    <a class="btn btn-primary btn-sm" href="6-script_rename_vod.php" target="_blank" role="button">Fix
+                        the titles | names</a>
+                </div>
+            </div>
+            <!-- eof Sixth Step -->
+            <br>
+
+
+
+        </div>
+
+        <div class="text-center mb-4">
+            <h3 class="mt-5" style="color:#fc5e03;"> </h3>
+        </div>
+
+        <br>
+
+    </div> <!-- /.container -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

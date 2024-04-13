@@ -1,0 +1,260 @@
+
+
+
+https://support.huaweicloud.com/api-iam/iam_17_0002.html
+https://support.huaweicloud.com/iam_faq/iam_01_034.html
+https://console.huaweicloud.com/apiexplorer/#/openapi/IAM/doc?api=KeystoneCreateUserTokenByPassword
+https://console-intl.huaweicloud.com/apiexplorer/#/openapi/IAM/debug?api=KeystoneCreateUserTokenByPassword
+https://support.huaweicloud.com/api-iam/iam_30_0001.html#section4
+https://support.huaweicloud.com/intl/en-us/api-vod/vod_04_0197.html
+https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/sdk?api=UploadMetaDataByUrl
+
+
+
+
+
+
+
+
+
+
+I have one excel sheet named: "cleaned_data-2024-04-01-09-52-02.xlsx"
+The excel sheet has two columns, "video_id" and "videos_links"
+
+I want you to read the file with PHP by importing below library: 
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+Once you get the records from the excel sheet, I want you to search title of videos from below API. 
+
+The API response is like this: 
+{
+  "total": 1,
+  "assets": [
+   {
+    "asset_id": "7d1282d9b62e6b07c057b351d10c640e",
+    "title": "default.mp4?filename=23412342",
+    "duration": 9,
+    "size": 4527498,
+    "original_url": "https://vod.fawadiqbal.me/asset/7d1282d9b62e6b07c057b351d10c640e/404ef653853dc038cc37f90644a90cea.mp4",
+    "category": "Other",
+    "covers": [
+     {
+      "cover_url": "https://vod.fawadiqbal.me/asset/7d1282d9b62e6b07c057b351d10c640e/cover/Cover0.jpg"
+     }
+    ],
+    "create_time": "20240405081625",
+    "asset_status": "PUBLISHED",
+    "transcode_status": "TRANSCODE_SUCCEED",
+    "thumbnail_status": "UN_THUMBNAIL",
+    "review_status": "REVIEW_PASSED",
+    "exec_desc": "asset_exec_desc:Asset meta is published;transcode_exec_desc:Transcode success;",
+    "media_type": "MP4",
+    "subtitle_repackage_status": "UN_REPACKAGE"
+   }
+  ]
+ }
+
+ Here is the API: 
+ <?php
+namespace HuaweiCloud\SDK\Vod\V1\Model;
+require_once "vendor/autoload.php";
+use HuaweiCloud\SDK\Core\Auth\BasicCredentials;
+use HuaweiCloud\SDK\Core\Http\HttpConfig;
+use HuaweiCloud\SDK\Core\Exceptions\ConnectionException;
+use HuaweiCloud\SDK\Core\Exceptions\RequestTimeoutException;
+use HuaweiCloud\SDK\Core\Exceptions\ServiceResponseException;
+use HuaweiCloud\SDK\Vod\V1\VodClient; 
+
+$ak = getenv('CLOUD_SDK_AK');
+$sk = getenv('CLOUD_SDK_SK');
+$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+$credentials = new BasicCredentials($ak,$sk,$projectId);
+$config = HttpConfig::getDefaultConfig();
+$config->setIgnoreSslVerification(true);
+
+$client = VodClient::newBuilder(new VodClient)
+  ->withHttpConfig($config)
+  ->withEndpoint($endpoint)
+  ->withCredentials($credentials)
+  ->build();
+$request = new ListAssetListRequest();
+$listRequestAssetId = array();
+array_push($listRequestAssetId,"7d1282d9b62e6b07c057b351d10c640e");
+$request->setAssetId($listRequestAssetId);
+
+try {
+  $response = $client->ListAssetList($request);
+  echo "\n";
+  echo $response;
+} catch (ConnectionException $e) {
+  $msg = $e->getMessage();
+  echo "\n". $msg ."\n";
+} catch (RequestTimeoutException $e) {
+  $msg = $e->getMessage();
+  echo "\n". $msg ."\n";
+} catch (ServiceResponseException $e) {
+  echo "\n";
+  echo $e->getHttpStatusCode(). "\n";
+  echo $e->getRequestId(). "\n";
+  echo $e->getErrorCode() . "\n";
+  echo $e->getErrorMsg() . "\n";
+}
+
+
+So just loop through all the records from Excel Sheet, search against video_id and display all the titles.
+
+
+
+
+
+
+/////////////////////////////////
+I have two API's. 
+One is for search and then other is to rename the file. I want to loop through all the video titles, and see if it has name something like: "default.mp4?filename=99e2a588443399b4a184c815709065c6", so I want to rename it and remove the "default.mp4?filename=" while leaving "99e2a588443399b4a184c815709065c6".
+
+For searching: I have one excel sheet named: "cleaned_data-2024-04-01-09-52-02.xlsx"
+The excel sheet has two columns, "video_id" and "videos_links"
+
+I want you to read the file with PHP by importing below library: 
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+Once you get the records from the excel sheet, I want you to search "video_id" with below API. if the name  of the file is something like: "default.mp4?filename=99e2a588443399b4a184c815709065c6", so just remove the "default.mp4?filename=" and leave the id as the video name. 
+We can use something like this: 
+// $string = "default.mp4?filename=99e2a588443399b4a184c815709065c6";
+// $parts = explode("?filename=", $string);
+
+I am pasting two API's below: 
+Just merge them with above scenario:
+
+
+<?php
+namespace HuaweiCloud\SDK\Vod\V1\Model;
+ 
+require_once "vendor/autoload.php";
+use HuaweiCloud\SDK\Core\Auth\BasicCredentials;
+use HuaweiCloud\SDK\Core\Http\HttpConfig;
+use HuaweiCloud\SDK\Core\Exceptions\ConnectionException;
+use HuaweiCloud\SDK\Core\Exceptions\RequestTimeoutException;
+use HuaweiCloud\SDK\Core\Exceptions\ServiceResponseException;
+use HuaweiCloud\SDK\Vod\V1\VodClient;
+
+$env = parse_ini_file('.env'); 
+$ak = $env["CLOUD_SDK_AK"];
+$sk = $env["CLOUD_SDK_SK"]; 
+
+print("AK is: " . $ak . "<br />");  
+print("SK is:  " . $sk . "<br />");  
+print("<br />");
+
+ 
+$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+$credentials = new BasicCredentials($ak,$sk,$projectId);
+$config = HttpConfig::getDefaultConfig();
+$config->setIgnoreSslVerification(true);
+ 
+$client = VodClient::newBuilder(new VodClient)
+  ->withHttpConfig($config)
+  ->withEndpoint($endpoint)
+  ->withCredentials($credentials)
+  ->build();
+
+Once you get "video_id" then search for the name if it has that "default.mp4?filename=" portion. 
+The API to search for specific video is as below: 
+
+
+$request = new ListAssetListRequest();
+$listRequestAssetId = array();
+array_push($listRequestAssetId,"7d1282d9b62e6b07c057b351d10c640e");
+$request->setAssetId($listRequestAssetId);
+
+
+Below is the reponse from ListAssetList:
+
+
+{
+  "total": 1,
+  "assets": [
+   {
+    "asset_id": "7d1282d9b62e6b07c057b351d10c640e",
+    "title": "default.mp4?filename=23412342",
+    "duration": 9,
+    "size": 4527498,
+    "original_url": "https://vod.fawadiqbal.me/asset/7d1282d9b62e6b07c057b351d10c640e/404ef653853dc038cc37f90644a90cea.mp4",
+    "category": "Other",
+    "covers": [
+     {
+      "cover_url": "https://vod.fawadiqbal.me/asset/7d1282d9b62e6b07c057b351d10c640e/cover/Cover0.jpg"
+     }
+    ],
+    "create_time": "20240405081625",
+    "asset_status": "PUBLISHED",
+    "transcode_status": "TRANSCODE_SUCCEED",
+    "thumbnail_status": "UN_THUMBNAIL",
+    "review_status": "REVIEW_PASSED",
+    "exec_desc": "asset_exec_desc:Asset meta is published;transcode_exec_desc:Transcode success;",
+    "media_type": "MP4",
+    "subtitle_repackage_status": "UN_REPACKAGE"
+   }
+  ]
+ }
+
+
+
+So we will search for "title" if title has something like "default.mp4?filename=" then we will remove it with the help of below API:
+
+Now below is the code, for renaming the video, incorporate above scenario in below code: 
+
+
+  <?php
+  namespace HuaweiCloud\SDK\Vod\V1\Model;
+  require_once "vendor/autoload.php";
+  use HuaweiCloud\SDK\Core\Auth\BasicCredentials;
+  use HuaweiCloud\SDK\Core\Http\HttpConfig;
+  use HuaweiCloud\SDK\Core\Exceptions\ConnectionException;
+  use HuaweiCloud\SDK\Core\Exceptions\RequestTimeoutException;
+  use HuaweiCloud\SDK\Core\Exceptions\ServiceResponseException;
+  use HuaweiCloud\SDK\Vod\V1\VodClient;
+
+  $ak = getenv('CLOUD_SDK_AK');
+  $sk = getenv('CLOUD_SDK_SK');
+  $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+  $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+  $credentials = new BasicCredentials($ak,$sk,$projectId);
+  $config = HttpConfig::getDefaultConfig();
+  $config->setIgnoreSslVerification(true);
+  
+  $client = VodClient::newBuilder(new VodClient)
+    ->withHttpConfig($config)
+    ->withEndpoint($endpoint)
+    ->withCredentials($credentials)
+    ->build();
+  $request = new UpdateAssetMetaRequest();
+  
+  $body = new UpdateAssetMetaReq();
+  $request->setBody($body);
+  try {
+    $response = $client->UpdateAssetMeta($request);
+    echo "\n";
+    echo $response;
+  } catch (ConnectionException $e) {
+    $msg = $e->getMessage();
+    echo "\n". $msg ."\n";
+  } catch (RequestTimeoutException $e) {
+    $msg = $e->getMessage();
+    echo "\n". $msg ."\n";
+  } catch (ServiceResponseException $e) {
+    echo "\n";
+    echo $e->getHttpStatusCode(). "\n";
+    echo $e->getRequestId(). "\n";
+    echo $e->getErrorCode() . "\n";
+    echo $e->getErrorMsg() . "\n";
+  }
+  
