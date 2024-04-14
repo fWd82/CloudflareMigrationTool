@@ -170,14 +170,22 @@
                                 anyone else.</small>
                         </div>
                         <div class="form-group">
-                            <label for="videoType">Video Type</label>
-                            <input type="text" class="form-control form-control-sm" id="videoType" placeholder="MP4"
-                                name="videoType" value="MP4">
+                            <label for="videoType">Videos Type</label>
+                            <select class="form-control form-control-sm" id="videoType" name="videoType">
+                                <option value="MP4">MP4</option>
+                                <option value="AVI">AVI</option>
+                                <option value="MOV">MOV</option>
+                                <option value="WMV">WMV</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="videoTemplateGroupName">Video Template Group Name</label>
-                            <input type="text" class="form-control form-control-sm" id="videoTemplateGroupName"
-                                placeholder="HLS_264" name="videoTemplateGroupName" value="HLS_264">
+                            <label for="videoTemplateGroupName">Videos Template Group Name</label>
+                            <select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">
+                                <option value="HLS_264">HLS_264</option>
+                                <option value="HLS_265">HLS_265</option>
+                                <option value="VP9">VP9</option>
+                                <option value="AV1">AV1</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -207,7 +215,7 @@
                         VOD</a> -->
 
                     <p class="card-text">Paste the enabled mp4 links copied from above step or from another source and paste it here
-                        to store in huawei cloud. Take care that each link end with a comma ','.
+                        to store in huawei cloud. Take care that each link end with a new line '\n'.
                     </p>
                     <textarea name="txtarea_cloudflare_links" id="cloudflareVideosMp4Links" rows="10"
                         style='min-width: 100%; font-size: 10pt'></textarea>

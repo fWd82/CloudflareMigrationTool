@@ -14,6 +14,7 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 if(!isset($_GET["ak"]) || !isset($_GET["sk"]) || !isset($_GET["endpoint"]) || !isset($_GET["projectId"]) || !isset($_GET["videoType"]) || !isset($_GET["videoTitle"]) || !isset($_GET["videoUrl"]) || !isset($_GET["videoTemplateGroupName"])){
     $msg = "Some thing is missing in request body. Please check all the values...";
     echo "\n". $msg ."\n";
+    // echo $ak . $sk . $endpoint . $projectId . $videoType . $videoUrl . $videoTitle . $videoTemplateGroupName;
     exit();
 }
 
@@ -27,7 +28,6 @@ $videoTitle = $_GET["videoTitle"];
 $videoUrl = $_GET["videoUrl"];
 $videoTemplateGroupName = $_GET["videoTemplateGroupName"];
 
-// echo $ak . $sk . $endpoint . $projectId . $videoType . $videoUrl . $videoTitle . $videoTemplateGroupName;
 // exit();
 
 // $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
