@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./dist/indexStyle.css">
+  <title>VOD-JS-UPLOAD-SDK</title>
+</head>
+
+<body>
+  <!-- 直接上传到点播桶 -->
+  <div class="box">
+    <H1 id="title">视频点播服务上传JS-SDK示例</H1>
+    <div class="warnTip">提示：
+      <br /> 1、搭建租户服务端；
+      <br /> 2、通过租户服务端向VOD获取临时AK,SK,返回给租户web客户端供SDK VodClient初始化使用；
+      <br /> 3、通过租户服务端向VOD发起创建媒资，将媒资信息返回给租户web客户端供添加上传addAsset使用；
+      <br /> 4、添加完媒资信息，调用startUpload进行上传；
+      <br /> 5、客户端上传完毕，租户服务端向VOD发起确认媒资；
+      <br /> 6、详细请参考
+      <a target="_blank" href="https://support.huaweicloud.com/api-vod/vod_04_0216.html">官网简介</a>
+    </div>
+    <h3 class="title">VodClient初始化参数</h3>
+    <input placeholder="access(AK)" id="app_Key" class="form-control" value="6BLF4STWXLX9KLPPQ8B8">
+    <input placeholder="secret(SK)" id="app_Secret" class="form-control"
+      value="HFCFU2dQkiLppmJaCPZqurwwia7kki6VEezA1Nq8">
+    <input placeholder="security_token" id="security_token" class="form-control"
+      value="gQpjbi1ub3J0aC00jj2PjlE8gGkpTMyDkW9P2Ij3t-y2WqlCj4IOMIdR9e7S77qNSYQprTOj8UvwEo0yaHJ8rM2rYkOGRZLlqmgdc3q4KAsZ0NN1UIFa1pA3YlQFIp1PDcMa4DNu1_dRQECnmp_h5hO5Ztn-LHbXZMsdC7Ir8WkGW1cqOaIjON8B_MgWqLJYIstnQGw_kFDY34WJf9sgFeUU2aSRy6I-hZ5rOEweOMUne1A9sL3V_ZrcOW-l6xPmuIjCK-R_C0gphRNreWcuAM_YgRIBQY-1QeGhm5xSWO5UWWk9v3oIeCwsjKn0fXRsBx_3KgIes8uCHEHikrLD8uzDYV1mLQI0fIHZsN_PcTjzszRyfyzYUAexJmtHzLyXiUCuaPttEGgxcLif_zFrQuz1Lv8wC1kl9wEf3p74wfDwQ2P8-ucmoUiaOH0aBScKRRnSI56nlt9vyAhxdm3c3OjXq7qqkQMOG7qjIWApevb3CttvdKeDrgjqAjOUpRlw7DPQ4A3Z8xGtvfc4abhyYfigHn93ffBwOBqhnZWd1oCXDr3hGNj8TGPsncvNzUSgtAvLNjsK78DsM-5dQ-y-fo65sk2cCZXdg991VjzSpzyW7YgUDjQWRBLnFc4xWirxNrVylaEcC87v_zOEH2c-m-zwNOHv14rKf0Dtl8JsNwr1Hf-E3C3I74yv1ys7zx-d6PDlIBQMYGSuMzmbjYwL1tCfqWNM8bSvRUHQzEwp59Igb7j6zhjsy5_4hze6CkK169TezXPKjcxWKVc9MDLYmt4I6tWwqXZeQQH6OoSX-HlEWIIAEEooxOdDAaR1oyn__z8sDj-KAI3fz-eJDA==">
+    <input placeholder="projectID" id="project_id" class="form-control" value="0707047be20026072ff7c00f3d96823d">
+    <input placeholder="VOD domain" id="vod_server" class="form-control" value="vod.cn-north-4.myhuaweicloud.com">
+    <input placeholder="VOD域名地址端口号" id="vod_port" class="form-control" value="">
+
+    <h3 class="title">上传文件参数准备</h3>
+    <div class="upload-param">
+      <div class="asset-title">媒资信息0</div>
+      <input placeholder="bucket" name="bucket" class="form-control" value="">
+      <input placeholder="object" name="object" class="form-control"
+        value="">
+      <input placeholder="asset_id" name="asset_id" class="form-control" value="">
+    </div>
+    <button class="add-btn file">添加上传参数</button><br />
+    <label for="">是否开启重复上传校验</label>
+    <input type="radio" name="is_check" value="false" checked>否
+    <input type="radio" name="is_check" value="true">是
+    <br />
+    <br />
+    <label for="MulitUploadFile" class="file">选择文件</label>
+    <input id="MulitUploadFile" type="file" multiple="multiple" placeholder="请选择文件" style="display: none;">
+    <button id="startUpload" class="file">开始上传</button>
+    <br />
+    <!--进度条标签-->
+    <table border="1" cellpadding="0" cellspacing="0" style="width: 100%;margin-bottom:40px;">
+      <thead>
+        <tr>
+          <th width="30%">文件名</th>
+          <th width="50%">上传进度</th>
+          <th width="20%">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</body>
+<script src="./dist/jquery-3.7.1.min.js"></script>
+<script src="./js-apig/moment.min.js"></script>
+<script src="./js-apig/moment-timezone-with-data.min.js"></script>
+<script src="./js-apig/hmac-sha256.js"></script>
+<script src="./js-apig/signer.js"></script>
+<script src="./dist/js-vod-sdk.min.js"></script>
+<script>
+  var vodClient;
+  var filesArr = [];//文件数组
+  var canUpload = false;//是否可以开始上传
+
+  $(document).ready(function(){
+    console.log(VodClient.getVersion())
+  });
+
+  /**
+   *显示选择的文件名称
+   * */
+  $("body").unbind().on("change", "input[type='file']", function () {
+    if(!vodClient){
+      vodClient = new VodClient({
+        access_key_id: $('#app_Key').val(),
+        secret_access_key: $('#app_Secret').val(),
+        security_token: $('#security_token').val(),
+        project_id: $('#project_id').val(),
+        vod_server: $('#vod_server').val(),
+        vod_port: $('#vod_port').val(),
+        partSize: 3,
+        // 开始上传
+        onUploadstarted: function (assetInfo) {
+          console.log(assetInfo.file.name + "start upload！");
+        },
+        // 上传进度
+        onUploadProgress: function (assetInfo) {
+          console.log("onUploadProgress, progress: " + assetInfo.progress + "; status: " + assetInfo.upFlag + "; file name: " + assetInfo.file.name);
+          if (assetInfo.progress && (assetInfo.upFlag == "UPLOADING" || assetInfo.upFlag == "COMPLETE")) {
+            $("tbody tr[id=" + assetInfo.index + "] div[id=progress]").css({
+              "background": "#3dcca6"
+            });
+
+            $("tbody tr[id=" + assetInfo.index + "] div[id=progress]").css("width", assetInfo.progress + "%");
+            $("tbody tr[id=" + assetInfo.index + "] span[id=progress_num]").html(`(${Math.ceil(assetInfo.progress * assetInfo.file.size / 100)} / ${assetInfo.file.size}) | ${assetInfo.progress}%`);
+          }
+        },
+        // 合并段成功
+        onUploadSucceed: function (assetInfo) {
+          console.log(assetInfo.index + " complete part success!");
+        },
+        // 上传失败
+        onUploadFailed: function (assetInfo, err) {
+          try {
+            if (err && assetInfo.upFlag == "FAILED") {
+              console.log('err：' + err.msg);
+              $(".progress-box[data-id=" + assetInfo.index + "] .progress-bar").css({
+                "background": "#ff8833"
+              });
+            } else if (err && assetInfo.upFlag == "REPEAT") {
+              for (var i = 0; i < filesArr.length; i++) {
+                if (filesArr[i].file.name == assetInfo.file.name) {
+                  filesArr.splice(i, 1);
+                  $('tbody').find('tr[data-id=' + assetInfo.index + ']').remove();
+                  break;
+                }
+              }
+            }
+            alert('warning:' + err.msg);
+          } catch (err) {
+            console.log(err);
+          }
+        },
+        // 凭证超时过期
+        onUploadTokenExpired: function () {
+          // 重新设置临时凭证并重新上传 setTimeout仅为模拟异步操作，实际获取凭证无需使用setTimeout
+          setTimeout(function () {
+            vodClient.resumeUploadWithAuth($('#app_Key').val(), $('#app_Secret').val(), $('#security_token').val());
+          }, 300);
+        }
+      })
+    }
+
+    var files = document.getElementById('MulitUploadFile').files;
+    // 是否进行重复校验
+    var is_check = $('input[type=radio]:checked').val() === "true";
+    // 选择视频是否重复
+    var flag = false;
+    $.each(files, function (index, value) {
+      if (filesArr.length) {
+        for (var i = 0; i < filesArr.length; i++) {
+          if (filesArr[i].file.name == value.name) {
+            flag = true;
+            if (is_check){
+              alert("please do not upload duplicate file!");
+              break;
+            }
+          }
+        }
+        if (!(is_check && flag)) {
+          filesArr.push({ file: value, added: false });
+        }
+      } else {
+        filesArr.push({ file: value, added: false });
+      }
+    })
+    if (flag) {
+      console.log("MulitUploadFile clear！")
+      $('#MulitUploadFile').val('');
+    }
+    // 添加媒资
+    filesArr.forEach(function (value, index) {
+      var random = Math.ceil(Math.random() * 10) * 100;
+      // 模拟异步操作,媒资信息
+      if (!value.added) { // 判断是否已添加过
+        setTimeout(function () {
+          if ($(".upload-param").eq(index).find('input[name=object]').val()) {
+            var tempArr1 = value.file.name.split('.');
+            var fileType = tempArr1[tempArr1.length - 1];
+            var tempArr2 = $(".upload-param").eq(index).find('input[name=object]').val().split('.');
+            var objectType = tempArr2[tempArr2.length - 1];
+            if (fileType.toLowerCase() != objectType.toLowerCase()) {
+              console.log('object file type is not same with actually upload file type！please check!');
+              filesArr.splice(-1, 1);
+              $('#MulitUploadFile').val('');
+              return;
+            }
+          }
+          var data = {};
+          data.videoFile = value.file;
+          data.bucket = $(".upload-param").eq(index).find('input[name=bucket]').val()||"";
+          data.object = $(".upload-param").eq(index).find('input[name=object]').val()||"";
+          data.asset_id = $(".upload-param").eq(index).find('input[name=asset_id]').val()||"";
+          data.is_check = is_check;
+          // 添加到vodClient
+          vodClient.addAsset(data,function (res) {
+            if(res.code){
+              console.log(res.msg)
+              console.log('addAsset failed,file:' + value.file.name);
+              filesArr.splice(-1, 1);
+            }else{
+              canUpload = false;
+              value.added = true;//设置为已添加到listsAsset
+              var html = '<tr id="' + $("tbody tr").length + '">' +
+                      '<td width="30%">' + data.videoFile.name + '</td>' +
+                      '<td width="50%">' +
+                      '<div id="progress-box" class="progress-box">' +
+                      '<div id="progress" class="progress-bar"></div>' +
+                      '<span id="progress_num" class="progress_num"></span>' +
+                      '</div>' +
+                      '</td>' +
+                      '<td width="20%">' +
+                      '<button class="file cancelUpload">取消</button>' +
+                      '<button class="file restartUpload">续传</button>' +
+                      '<button class="file startUploadForItem">上传</button>' +
+                      '<button class="file delAsset">删除</button>' +
+                      '</td>' +
+                      '</tr>';
+              $('tbody').append(html);
+
+              var lists = vodClient.listAssets();
+              if (filesArr.length == lists.length) {
+                // 设置上传状态为true
+                canUpload = true;
+              }
+            }
+            console.log("MulitUploadFile clear")
+            $('#MulitUploadFile').val('');
+          });
+        }, random);
+      }
+    })
+  });
+  /**
+   * 添加上传媒资参数
+   */
+  $(".add-btn").click(function () {
+    var html = '<div class="upload-param">' +
+      '<div class="asset-title">媒资信息<span>' + ($('.upload-param').length) + '</span><button style="margin-left:15px;" class="del-btn file">删除</button></div>' +
+      '<input placeholder="bucket" name="bucket" class="form-control" value="">' +
+      '<input placeholder="object" name="object" class="form-control" value="">' +
+      '<input placeholder="asset_id" name="asset_id" class="form-control" value="">' +
+      '</div>';
+    $(this).before(html);
+  })
+
+  // 删除媒资参数
+  $('body').on('click', '.del-btn', function () {
+    $(this).parents('.upload-param').remove();
+    $.each($('.upload-param'), function (index, value) {
+      $(value).find('div>span').text(index + 1);
+    })
+  })
+
+  // 开始上传
+  $('body').on('click', '#startUpload', function () {
+    if (canUpload) {
+      vodClient.startUpload();
+    } else {
+      console.log('file not ready，please check and try!');
+    }
+  });
+  // 取消上传
+  $('body').on('click', '.cancelUpload', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && vodClient.cancelUpload(index);
+    $(".progress-box[data-id=" + lists[index].asset_id + "] .progress-bar").css({
+      "background": "#ff8833"
+    });
+  })
+  // 续传
+  $('body').on('click', '.restartUpload', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && (lists[index].upFlag == "CANCEL" || lists[index].upFlag == "FAILED") && vodClient.restartUpload(index);
+    $(".progress-box[data-id=" + lists[index].asset_id + "] .progress-bar").css({
+      "background": "#3dcca6"
+    });
+  })
+  // 单个视频开始上传
+  $('body').on('click', '.startUploadForItem', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && lists[index].upFlag == "WAITING" && vodClient.startUpload(index);
+  })
+  // 删除单个文件
+  $('body').on('click', '.delAsset', function () {
+    var index = $(this).parents('tr').index();
+
+    filesArr.splice(index, 1);
+    vodClient && vodClient.delListsAsset(index);
+    $(this).parents('tr').remove();
+
+    //重新对id排序
+    $('tbody tr').each(function(index, element) {
+      $(element).attr("id", index);
+    })
+  })
+</script>
+
+</html>

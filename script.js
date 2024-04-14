@@ -192,4 +192,60 @@ $(document).ready(function () {
         });
 
     });
+
+
+
+    // a function to update videos links in MySQL Database
+    $("#updateMySqlDbLinks").click(function () {
+
+        
+        // console.log("importFromCloudflareToHuawei Method is called");
+
+        // let ak = $("#ak").val();
+        // let sk = $("#sk").val();
+        // let endpoint = $("endpoint").val();
+        // let projectId = $("projectId").val();
+
+        let db_host = $("#db_host").val();
+        let db_name = $("#db_name").val();
+        let db_username = $("#db_username").val();
+        let db_password = $("#db_password").val();
+
+        alert(db_host + " : " + db_name + " : " + db_username + " : " + db_password);  
+        alert(db_host);  
+
+        let videoTemplateGroupName = $("videoTemplateGroupName").val();
+
+        let inputTextUrls = $("#cloudflareVideosMp4Links").val();
+        let mp4Urls = inputTextUrls.split(',').map(link => link.trim()).filter(link => link !== "");
+ 
+
+        $.ajax({
+            url: `5-script_db.php`,
+            method: "GET",
+            timeout: 0,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                db_host,
+                db_name,
+                db_username,
+                db_password,
+            },
+            success: function (response) {
+                console.log('Success: ', response); // handle success
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ', error); // handle error
+            }
+        });
+
+    });
+
+
+
+
+
+
 });

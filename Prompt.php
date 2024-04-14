@@ -1,5 +1,9 @@
 
+git rm -r --cached .env
 
+git add .
+git commit -m 'your message'
+git push
 
 https://support.huaweicloud.com/api-iam/iam_17_0002.html
 https://support.huaweicloud.com/iam_faq/iam_01_034.html

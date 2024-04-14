@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./dist/indexStyle.css">
+  <title>VOD-JS-UPLOAD-SDK</title>
+</head>
+
+<body>
+  <!-- upload to vod bucket -->
+  <div class="box">
+    <H1>VOD UPLOAD JS-SDK EXAMPLE</H1>
+    <div class="warnTip">Tips:
+      <br /> 1、build your server;
+      <br /> 2、your server get temp AK,SK from VOD,web get temp AK,SK from your server,web SDK VodClient init with temp AK,SK;
+      <br /> 3、your server create media asset form VOD,and return to web,then web clent add assert using addAsset interface ;
+      <br /> 4、then upload your media asset using startUpload interface;
+      <br /> 5、when complete upload,your server to confirm uploaded using your server.
+    </div>
+    <h3 class="title">VodClient init param</h3>
+    <input placeholder="access(AK)" id="app_Key" class="form-control" value="M2HCR8QZ7C32J81237UW">
+    <input placeholder="secret(SK)" id="app_Secret" class="form-control"
+      value="2GuqhypFHLNDDk9JqWs1gEsJrqIFRAX1ZQDyqmRv">
+    <input placeholder="security_token" id="security_token" class="form-control"
+      value="gQpjbi1ub3J0aC00i1eDRNv6M_2HSyE7oNsi2ckURqxqqSh8zyJBmsz6hUpO8MZP0frPJG7-ZLBTdzP0eY1dpDy139lgS05HMyeKEi8uLKCPshkuY0WFwgn_PjNp4-AJtqlxTleyrRYyP6ATxqfy46xvGpvRN7JTN3xR_v5NDbjIqYnBZ3JtQo7C1gFGaLd4-A8rnnmuykp4SQ97HwK_LyO7vQuL35RVtttpvJYkTfzY25kpYYi11eKkkGH63h9dHtkENmwnFpgDDUV60Y78sHVh0b5i2Ooz7CubD0RVT-jXT9xnciW3tbONSvItFEjZBobHRPM5H3FXGv0hCfKVeXrpGsaaoE-U9gwYviRe2wNIipAwohIAYW2LJ6HagWpcXRzrU5Lj73mFjrCRil2ZaQB3mr1C2UqIcMHaxebuy9upG4DkX-RwajHv0XpAp9WRYN0ts4pWp1ybwmIaXeCfBp9hhgKesRPxoIcbTizUkD-Xn1M1MatLyuE32Bw9hl-y_sYQUmyx24zxmzm3D-M3mSdkidRZvhzxU5rRQNl06aVSUUPUDSmqNYecALguFcQP76xZyqQqW3rw2SVUkMVzCSLUIJsxoA3qNiVQ5aJ_e2BMcOLbh-F7lx3IWTe4YikZzGkEfYW-dUrK03zPTrXM4_d0vm8aKcyfVKArs5llC43KNjheapa02TpntV78C_J058U84mJbhbsSxvOgsnFm8OGMbTDhSxMG5iO87APF0UR8qIrROeuuL0-fIfI1citFM3HC4_E9g1AUZa0DZ_PRzvQLV90UvyGo0lzxqD8hOuBEvG_ecMFKAy1lrs7J9k_Pf00IBT3s6fXu_QZdIg==">
+    <input placeholder="projectID" id="project_id" class="form-control" value="0707047be20026072ff7c00f3d96823d">
+    <input placeholder="VOD domain" id="vod_server" class="form-control" value="vod.cn-north-4.myhuaweicloud.com">
+    <input placeholder="VOD domain port" id="vod_port" class="form-control" value="">
+
+    <h3 class="title">prepare to upload</h3>
+    <div class="upload-param">
+      <div class="asset-title">media info 0</div>
+      <input placeholder="bucket" name="bucket" class="form-control" value="">
+      <input placeholder="object" name="object" class="form-control"
+        value="">
+      <input placeholder="asset_id" name="asset_id" class="form-control" value="">
+    </div>
+    <button class="add-btn file">add upload info</button><br />
+    <label for="">enable duplicate upload check</label>
+    <input type="radio" name="is_check" value="false" checked>false
+    <input type="radio" name="is_check" value="true">true
+    <br />
+    <br />
+    <label for="MulitUploadFile" class="file">select file</label>
+    <input id="MulitUploadFile" type="file" multiple="multiple" placeholder="please select file" style="display: none;">
+    <!-- <input id="fileName" type="text" class="form-control" style="margin: 10px 0px;"/> -->
+    <button id="startUpload" class="file">start upload</button>
+    <br />
+    <!--upload progress-->
+    <table border="1" cellpadding="0" cellspacing="0" style="width: 100%;margin-bottom:40px;">
+      <thead>
+        <tr>
+          <th width="30%">file name</th>
+          <th width="50%">upload progress</th>
+          <th width="20%">operate</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</body>
+<script src="./dist/jquery-3.7.1.min.js"></script>
+<script src="./js-apig/moment.min.js"></script>
+<script src="./js-apig/moment-timezone-with-data.min.js"></script>
+<script src="./js-apig/hmac-sha256.js"></script>
+<script src="./js-apig/signer.js"></script>
+<script src="./dist/js-vod-sdk.min.js"></script>
+<script>
+  var vodClient;
+  var filesArr = [];//文件数组
+  var canUpload = false;//是否可以开始上传
+
+  $(document).ready(function(){
+    console.log(VodClient.getVersion())
+  });
+
+  /**
+   *display select file
+   * */
+  $("body").unbind().on("change", "input[type='file']", function () {
+    if(!vodClient){
+      vodClient = new VodClient({
+        access_key_id: $('#app_Key').val(),
+        secret_access_key: $('#app_Secret').val(),
+        security_token: $('#security_token').val(),
+        project_id: $('#project_id').val(),
+        vod_server: $('#vod_server').val(),
+        vod_port: $('#vod_port').val(),
+        partSize: 3,
+        // start upload
+        onUploadstarted: function (assetInfo) {
+          console.log(assetInfo.file.name + "start upload！");
+        },
+        // upload progress
+        onUploadProgress: function (assetInfo) {
+          console.log("onUploadProgress, progress: " + assetInfo.progress + "; status: " + assetInfo.upFlag + "; file name: " + assetInfo.file.name);
+          if (assetInfo.progress && (assetInfo.upFlag == "UPLOADING" || assetInfo.upFlag == "COMPLETE")) {
+            $("tbody tr[id=" + assetInfo.index + "] div[id=progress]").css({
+              "background": "#3dcca6"
+            });
+
+            $("tbody tr[id=" + assetInfo.index + "] div[id=progress]").css("width", assetInfo.progress + "%");
+            $("tbody tr[id=" + assetInfo.index + "] span[id=progress_num]").html(`(${Math.ceil(assetInfo.progress * assetInfo.file.size / 100)} / ${assetInfo.file.size}) | ${assetInfo.progress}%`);
+          }
+        },
+        // upload succeed
+        onUploadSucceed: function (assetInfo) {
+          console.log(assetInfo.index + " complete part success!");
+        },
+        // upload failed
+        onUploadFailed: function (assetInfo, err) {
+          try {
+            if (err && assetInfo.upFlag == "FAILED") {
+              console.log('err：' + err.msg);
+              $(".progress-box[data-id=" + assetInfo.index + "] .progress-bar").css({
+                "background": "#ff8833"
+              });
+            } else if (err && assetInfo.upFlag == "REPEAT") {
+              for (var i = 0; i < filesArr.length; i++) {
+                if (filesArr[i].file.name == assetInfo.file.name) {
+                  filesArr.splice(i, 1);
+                  $('tbody').find('tr[data-id=' + assetInfo.index + ']').remove();
+                  break;
+                }
+              }
+            }
+            alert('warning:' + err.msg);
+          } catch (err) {
+            console.log(err);
+          }
+        },
+        // token expired
+        onUploadTokenExpired: function () {
+          //renew token,no need use setTimeout in you case.
+          setTimeout(function () {
+            vodClient.resumeUploadWithAuth($('#app_Key').val(), $('#app_Secret').val(), $('#security_token').val());
+          }, 300);
+        }
+      })
+    }
+
+    var files = document.getElementById('MulitUploadFile').files;
+    // whether check file duplicate
+    var is_check = $('input[type=radio]:checked').val() === "true";
+    var flag = false;
+    $.each(files, function (index, value) {
+      if (filesArr.length) {
+        for (var i = 0; i < filesArr.length; i++) {
+          if (filesArr[i].file.name == value.name) {
+            flag = true;
+            if (is_check){
+              alert("please do not upload duplicate file!");
+              break;
+            }
+          }
+        }
+        if (!(is_check && flag)) {
+          filesArr.push({ file: value, added: false });
+        }
+      } else {
+        filesArr.push({ file: value, added: false });
+      }
+    })
+    if (flag) {
+      console.log("MulitUploadFile clear!")
+      $('#MulitUploadFile').val('');
+    }
+    // add media file
+    filesArr.forEach(function (value, index) {
+      var random = Math.ceil(Math.random() * 10) * 100;
+      // setTimeout is not need in you case
+      if (!value.added) {
+        setTimeout(function () {
+          if ($(".upload-param").eq(index).find('input[name=object]').val()) {
+            var tempArr1 = value.file.name.split('.');
+            var fileType = tempArr1[tempArr1.length - 1];
+            var tempArr2 = $(".upload-param").eq(index).find('input[name=object]').val().split('.');
+            var objectType = tempArr2[tempArr2.length - 1];
+            if (fileType.toLowerCase() != objectType.toLowerCase()) {
+              console.log('object file type is not same with actually upload file type！please check!');
+              filesArr.splice(-1, 1);
+              $('#MulitUploadFile').val('');
+              return;
+            }
+          }
+          var data = {};
+          data.videoFile = value.file;
+          data.bucket = $(".upload-param").eq(index).find('input[name=bucket]').val()||"";
+          data.object = $(".upload-param").eq(index).find('input[name=object]').val()||"";
+          data.asset_id = $(".upload-param").eq(index).find('input[name=asset_id]').val()||"";
+          data.is_check = is_check;
+          // add to vodClient
+          vodClient.addAsset(data,function (res) {
+            if(res.code){
+              console.log(res.msg)
+              console.log('addAsset failed,file:' + value.file.name);
+              filesArr.splice(-1, 1);
+            }else{
+              canUpload = false;
+              value.added = true;//设置为已添加到listsAsset
+              var html = '<tr id="' + $("tbody tr").length + '">' +
+                      '<td width="30%">' + data.videoFile.name + '</td>' +
+                      '<td width="50%">' +
+                      '<div id="progress-box" class="progress-box">' +
+                      '<div id="progress" class="progress-bar"></div>' +
+                      '<span id="progress_num" class="progress_num"></span>' +
+                      '</div>' +
+                      '</td>' +
+                      '<td width="20%">' +
+                      '<button class="file cancelUpload">取消</button>' +
+                      '<button class="file restartUpload">续传</button>' +
+                      '<button class="file startUploadForItem">上传</button>' +
+                      '<button class="file delAsset">删除</button>' +
+                      '</td>' +
+                      '</tr>';
+              $('tbody').append(html);
+
+              var lists = vodClient.listAssets();
+              if (filesArr.length == lists.length) {
+                // 设置上传状态为true
+                canUpload = true;
+              }
+            }
+            console.log("MulitUploadFile clear")
+            $('#MulitUploadFile').val('');
+          });
+        }, random);
+      }
+    })
+  });
+  /**
+   * add media info
+   */
+  $(".add-btn").click(function () {
+    var html = '<div class="upload-param">' +
+      '<div class="asset-title">media info<span>' + ($('.upload-param').length) + '</span><button style="margin-left:15px;" class="del-btn file">delete</button></div>' +
+      '<input placeholder="bucket" name="bucket" class="form-control" value="">' +
+      '<input placeholder="object" name="object" class="form-control" value="">' +
+      '<input placeholder="asset_id" name="asset_id" class="form-control" value="">' +
+      '</div>';
+    $(this).before(html);
+  })
+
+  // delete media info
+  $('body').on('click', '.del-btn', function () {
+    $(this).parents('.upload-param').remove();
+    $.each($('.upload-param'), function (index, value) {
+      $(value).find('div>span').text(index + 1);
+    })
+  })
+
+  // start upload
+  $('body').on('click', '#startUpload', function () {
+    if (canUpload) {
+      vodClient.startUpload();
+    } else {
+      console.log('file not ready，please check and try!');
+    }
+  });
+  // cancle upload
+  $('body').on('click', '.cancelUpload', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && vodClient.cancelUpload(index);
+    $(".progress-box[data-id=" + lists[index].asset_id + "] .progress-bar").css({
+      "background": "#ff8833"
+    });
+  })
+  // restart upload
+  $('body').on('click', '.restartUpload', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && (lists[index].upFlag == "CANCEL" || lists[index].upFlag == "FAILED") && vodClient.restartUpload(index);
+    $(".progress-box[data-id=" + lists[index].asset_id + "] .progress-bar").css({
+      "background": "#3dcca6"
+    });
+  })
+  // single file upload
+  $('body').on('click', '.startUploadForItem', function () {
+    var index = $(this).parents('tr').index();
+    var lists = vodClient && vodClient.listAssets();
+    vodClient && lists[index].upFlag == "WAITING" && vodClient.startUpload(index);
+  })
+  // delete file
+  $('body').on('click', '.delAsset', function () {
+    var index = $(this).parents('tr').index();
+
+    filesArr.splice(index, 1);
+    vodClient && vodClient.delListsAsset(index);
+    $(this).parents('tr').remove();
+
+    //re-order
+    $('tbody tr').each(function(index, element) {
+      $(element).attr("id", index);
+    })
+  })
+</script>
+
+</html>
