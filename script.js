@@ -149,46 +149,43 @@ $(document).ready(function () {
 
     // a function to add a video to huawei cloud from a link
     $("#importFromCloudflareToHuawei").click(function () {
-
-        // console.log("importFromCloudflareToHuawei Method is called");
-
         let ak = $("#ak").val();
         let sk = $("#sk").val();
-        let endpoint = $("endpoint").val();
-        let projectId = $("projectId").val();
+        let endpoint = $("#endpoint").val();
+        let projectId = $("#projectId").val();
 
-        let videoType = $("videoType").val();
-        let videoTemplateGroupName = $("videoTemplateGroupName").val();
+        let videoType = $("#videoType").val();
+        let videoTemplateGroupName = $("#videoTemplateGroupName").val();
 
         let inputTextUrls = $("#cloudflareVideosMp4Links").val();
-        let mp4Urls = inputTextUrls.split(',').map(link => link.trim()).filter(link => link !== "");
+        let mp4Urls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
 
-        let videoTitle = "NewAPIVideo1";
-        let videoUrl = "https://example.com/vid.mp4";
-
-        $.ajax({
-            url: `UploadMetaDataByUrl.php`,
-            method: "GET",
-            timeout: 0,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: {
-                ak,
-                sk,
-                endpoint,
-                projectId,
-                videoType,
-                videoTemplateGroupName,
-                videoTitle: "NewAPIVideo1",
-                videoUrl: "https://example.com/vid.mp4",
-            },
-            success: function (response) {
-                console.log('Success: ', response); // handle success
-            },
-            error: function (xhr, status, error) {
-                console.log('Error: ', error); // handle error
-            }
+        // for each link call the api to store the content from link to huawei
+        mp4Urls.forEach(mp4Url => {
+            $.ajax({
+                url: `UploadMetaDataByUrl.php`,
+                method: "GET", // I think we should use POST
+                timeout: 0,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: {
+                    ak,
+                    sk,
+                    endpoint,
+                    projectId,
+                    videoType,
+                    videoTemplateGroupName,
+                    videoTitle: mp4Url.split('/')[3],
+                    videoUrl: mp4Url,
+                },
+                success: function (response) {
+                    console.log('Success: ', response); // handle success in html
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ', error); // handle error in html
+                }
+            });
         });
 
     });
