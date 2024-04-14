@@ -189,9 +189,9 @@ $(document).ready(function () {
         });
 
     });
+    // eof #importFromCloudflareToHuawei()
 
-
-
+    
     // a function to update videos links in MySQL Database
     $("#updateMySqlDbLinks").click(function () {
 
@@ -240,20 +240,7 @@ $(document).ready(function () {
         });
 
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // eof updateMySqlDbLinks();
 
 
 });
