@@ -59,7 +59,6 @@
 
 <!-- ================================ -->
 <?php
-
 require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
@@ -70,33 +69,14 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 // $password = '';
 
 # Load environment variables
-// $env = parse_ini_file('.env');
-// $host = $env["host"];
-// $dbname = $env["dbname"];
-// $username = $env["username"];
-// $password = $env["password"];
-
-if(!isset($_GET["db_host"]) || !isset($_GET["db_name"]) || !isset($_GET["db_username"]) ){
-    $msg = "Some thing is missing in request body. Please check all the values...";
-    echo "\n". $msg ."\n";
-    exit();
-}
-
-$db_host = $_GET["db_host"];
-$db_name = $_GET["db_name"];
-$db_username = $_GET["db_username"];
-$db_password = $_GET["db_password"];
-
-
-print_r($db_host . $db_name . $db_username . $db_password);
-
-// db_host,
-// db_name,
-// db_username,
-// db_password,
+$env = parse_ini_file('.env');
+$host = $env["host"];
+$dbname = $env["dbname"];
+$username = $env["username"];
+$password = $env["password"];
 
 // Establish database connection
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_username, $db_password);
+$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 
 // Load the Excel file
 $reader = new Xlsx();
