@@ -58,62 +58,56 @@
         <br>
 
 <!-- ================================ -->
-<?php
-require 'vendor/autoload.php';
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+        <?php
+        require 'vendor/autoload.php';
+        use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-// Database configuration
-// $host = 'localhost';
-// $dbname = 'MyDB';
-// $username = 'root';
-// $password = '';
+        # Load environment variables
+        $env = parse_ini_file('.env');
+        $host = $env["host"];
+        $dbname = $env["dbname"];
+        $username = $env["username"];
+        $password = $env["password"];
 
-# Load environment variables
-$env = parse_ini_file('.env');
-$host = $env["host"];
-$dbname = $env["dbname"];
-$username = $env["username"];
-$password = $env["password"];
+        // Establish database connection
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 
-// Establish database connection
-$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-
-// Load the Excel file
-$reader = new Xlsx();
-$spreadsheet = $reader->load("cleaned_data-2024-04-01-09-52-02.xlsx");
-// $spreadsheet = $reader->load("videos.xlsx");
+        // Load the Excel file
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load("cleaned_data-2024-04-01-09-52-02.xlsx");
+        // $spreadsheet = $reader->load("videos.xlsx");
 
 
-// Assuming our data starts from the first row and is in the first sheet
-$worksheet = $spreadsheet->getActiveSheet();
-$rows = $worksheet->toArray();
+        // Assuming our data starts from the first row and is in the first sheet
+        $worksheet = $spreadsheet->getActiveSheet();
+        $rows = $worksheet->toArray();
 
-foreach ($rows as $row) {
-    // Assuming the first column is video_id and the second is new_video_links
-    $videoId = $row[0];
-    $newVideoLink = $row[1];
+        foreach ($rows as $row) {
+            // Assuming the first column is video_id and the second is new_video_links
+            $videoId = $row[0];
+            $newVideoLink = $row[1];
 
-    // Update the database
-    $sql = "UPDATE videos SET video_links = :newVideoLink WHERE video_links LIKE :videoId";
-    $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([
-        ':newVideoLink' => $newVideoLink,
-        ':videoId' => "%{$videoId}%",
-    ]);
+            // Update the database
+            $sql = "UPDATE videos SET video_links = :newVideoLink WHERE video_links LIKE :videoId";
+            $stmt = $pdo->prepare($sql);
+            $result = $stmt->execute([
+                ':newVideoLink' => $newVideoLink,
+                ':videoId' => "%{$videoId}%",
+            ]);
 
-    // Feedback based on the result
-    if ($result) {
-        echo '<div class="alert alert-success" role="alert">Updated <strong>' . $videoId . '</strong> with <a href="' . $newVideoLink . '" class="alert-link">' . $newVideoLink . '</a></div>';
-    } else {
-        $errorInfo = $stmt->errorInfo();
-        echo '<div class="alert alert-danger" role="alert">Error updating record for ' . $videoId . ': ' . $errorInfo[2] . '</div>';
-    }
-}
+            // Feedback based on the result
+            if ($result) {
+                echo '<div class="alert alert-success" role="alert">Updated <strong>' . $videoId . '</strong> with <a href="' . $newVideoLink . '" class="alert-link">' . $newVideoLink . '</a></div>';
+            } else {
+                $errorInfo = $stmt->errorInfo();
+                echo '<div class="alert alert-danger" role="alert">Error updating record for ' . $videoId . ': ' . $errorInfo[2] . '</div>';
+            }
+        }
 
-echo '<center><strong><span style="color:#fc5e03;text-align:center;"> Update completed </span></strong><center>';
+        echo '<center><strong><span style="color:#fc5e03;text-align:center;"> Update completed </span></strong><center>';
 
-?>
-        <!-- Closing PHP tag here if necessary -->
+        ?>
+
         </div> <!-- /.container -->
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

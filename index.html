@@ -294,9 +294,9 @@ password=
 
                     <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
                         <div class="form-group">
-                            <label for="X-Auth-Email">DB Host</label>
-                            <input type="email" class="form-control form-control-sm" id="X-Auth-Email"
-                                aria-describedby="emailHelp" placeholder="fwd82@live.com" name="X-Auth-Email"
+                            <label for="db_host">DB Host</label>
+                            <input type="email" class="form-control form-control-sm" id="db_host"
+                                aria-describedby="emailHelp" placeholder="fwd82@live.com" name="db_host"
                                 value="localhost">
                             <small id="emailHelp" class="form-text text-muted">We'll never share your X Auth Email with
                                 anyone
@@ -304,27 +304,27 @@ password=
                         </div>
                         <div class="form-group">
                             <label for="X-Auth-Key">DB Name</label>
-                            <input type="text" class="form-control form-control-sm" id="X-Auth-Key"
-                                placeholder="1eab14593a06d3722782f30526a779378a5ee" name="X-Auth-Key" value="MyDB">
+                            <input type="text" class="form-control form-control-sm" id="db_name"
+                                placeholder="1eab14593a06d3722782f30526a779378a5ee" name="db_name" value="MyDB">
                             <small id="emailHelp" class="form-text text-muted">We'll never share your Auth Key with
                                 anyone else.</small>
                         </div>
                         <div class="form-group">
                             <label for="account_id">DB Username</label>
-                            <input type="text" class="form-control form-control-sm" id="account_id"
-                                placeholder="2590b14a48271988be21c06479697cee" name="account_id" value="root">
+                            <input type="text" class="form-control form-control-sm" id="db_username"
+                                placeholder="2590b14a48271988be21c06479697cee" name="db_username" value="root">
                             <small id="account_id" class="form-text text-muted">We'll never share your Account ID with
                                 anyone else.</small>
                         </div>
                         <div class="form-group">
                             <label for="customer_subdomain">DB Password</label>
-                            <input type="text" class="form-control form-control-sm" id="customer_subdomain"
-                                placeholder="" name="customer_subdomain" value="">
+                            <input type="text" class="form-control form-control-sm" id="db_password"
+                                placeholder="" name="db_password" value="">
                             <small id="account_id" class="form-text text-muted">We'll never share your Customer
                                 subdomain with
                                 anyone else.</small>
                         </div>
-                        <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> -->
+                        <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> --> 
                     </form>
                 </div>
             </div>
@@ -348,17 +348,15 @@ password=
                         Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
                         <code>Cloudflare Cloudstream</code>.
                     </p>
-                    <a class="btn btn-primary btn-sm" href="5-script_db.php" target="_blank" role="button">Update the
+                    <a class="btn btn-primary btn-sm" id="updateMySqlDbLinks" role="button">Update the
                         links</a>
+
+                        <div id="mysql_response"></div>
                 </div>
             </div>
             <!-- eof Sixth Step -->
             <br />
-
-
             <br>
-
-
 
         </div>
 
