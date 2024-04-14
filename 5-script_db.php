@@ -62,15 +62,16 @@
         require 'vendor/autoload.php';
         use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-        # Load environment variables
-        $env = parse_ini_file('.env');
-        $host = $env["host"];
-        $dbname = $env["dbname"];
-        $username = $env["username"];
-        $password = $env["password"];
+        $db_host = $_GET["db_host"];
+        $db_name = $_GET["db_name"];
+        $db_username = $_GET["db_username"];
+        $db_password = $_GET["db_password"];
+
+        print_r($db_host . " : " . $db_name . " : " . $db_username . " : " . $db_password);
+        exit();
 
         // Establish database connection
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+        $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_username, $db_password);
 
         // Load the Excel file
         $reader = new Xlsx();
