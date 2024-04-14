@@ -1,5 +1,7 @@
 
-
+git rm -r one-of-the-directories // This deletes from filesystem
+git commit . -m "Remove duplicated directory"
+git push origin <your-git-branch> (typically 'master', but not always)
 
 https://support.huaweicloud.com/api-iam/iam_17_0002.html
 https://support.huaweicloud.com/iam_faq/iam_01_034.html
