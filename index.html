@@ -132,7 +132,7 @@
             <!-- Third step data -->
             <div class="card" style="width: rem; background-color: #f1f1f1;">
                 <div class="card-body">
-                    <h5 class="card-title text-secondary">Requirements Steps for step third<span
+                    <h5 class="card-title text-secondary">Requirements for Third Step<span
                             class="text-danger">*</span></h5>
                     <h6 class="card-text text-primary">Gathering Credentials for Huawei Cloud</h6>
                     <p class="card-text">Please enter your all credentials to continue with the later steps
@@ -169,24 +169,7 @@
                             <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
                                 anyone else.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="videoType">Videos Type</label>
-                            <select class="form-control form-control-sm" id="videoType" name="videoType">
-                                <option value="MP4">MP4</option>
-                                <option value="AVI">AVI</option>
-                                <option value="MOV">MOV</option>
-                                <option value="WMV">WMV</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="videoTemplateGroupName">Videos Template Group Name</label>
-                            <select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">
-                                <option value="HLS_264">HLS_264</option>
-                                <option value="HLS_265">HLS_265</option>
-                                <option value="VP9">VP9</option>
-                                <option value="AV1">AV1</option>
-                            </select>
-                        </div>
+                        
                     </form>
                 </div>
             </div>
@@ -219,6 +202,32 @@
                     </p>
                     <textarea name="txtarea_cloudflare_links" id="cloudflareVideosMp4Links" rows="10"
                         style='min-width: 100%; font-size: 10pt'></textarea>
+
+                        <form action="">
+                            <div class="form-group">
+                                <label for="videoType">Videos Type</label>
+                                <select class="form-control form-control-sm" id="videoType" name="videoType">
+                                    <option value="MP4">MP4</option>
+                                    <option value="AVI">AVI</option>
+                                    <option value="MOV">MOV</option>
+                                    <option value="WMV">WMV</option>
+                                </select>
+                                <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
+                                    anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="videoTemplateGroupName">Videos Template Group Name</label>
+                                <select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">
+                                    <option value="HLS_264">HLS_264</option>
+                                    <option value="HLS_265">HLS_265</option>
+                                    <option value="VP9">VP9</option>
+                                    <option value="AV1">AV1</option>
+                                </select>
+                                <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
+                                    anyone else.</small>
+                            </div>
+                        </form>
+
                     <button class="btn btn-primary btn-sm" id="importFromCloudflareToHuawei">Import From Cloudflare To
                         Huawei</button>
                 </div>
@@ -310,28 +319,61 @@ password=
                                 anyone
                                 else.</small>
                         </div>
-                        <div class="form-group">
-                            <label for="X-Auth-Key">DB Name</label>
+                        <!-- <div class="form-group">
+                            <label for="db_name">DB Name</label>
                             <input type="text" class="form-control form-control-sm" id="db_name"
                                 placeholder="1eab14593a06d3722782f30526a779378a5ee" name="db_name" value="MyDB">
                             <small id="emailHelp" class="form-text text-muted">We'll never share your Auth Key with
                                 anyone else.</small>
-                        </div>
+                        </div> -->
                         <div class="form-group">
-                            <label for="account_id">DB Username</label>
+                            <label for="db_username">DB Username</label>
                             <input type="text" class="form-control form-control-sm" id="db_username"
                                 placeholder="2590b14a48271988be21c06479697cee" name="db_username" value="root">
                             <small id="account_id" class="form-text text-muted">We'll never share your Account ID with
                                 anyone else.</small>
                         </div>
                         <div class="form-group">
-                            <label for="customer_subdomain">DB Password</label>
+                            <label for="db_password">DB Password</label>
                             <input type="text" class="form-control form-control-sm" id="db_password"
                                 placeholder="" name="db_password" value="">
                             <small id="account_id" class="form-text text-muted">We'll never share your Customer
                                 subdomain with
                                 anyone else.</small>
                         </div> 
+
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="db_name">Database - Name </label>
+                                    <input type="text" class="form-control form-control-sm" id="db_name"
+                                        placeholder="" name="db_name" value="MyDB"> 
+                                        <!-- database name rung -->
+                                    <small id="account_id" class="form-text text-muted">Please paste the table name of your database</small>
+                                </div> 
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="db_table_name">Database - Table Name </label>
+                                    <input type="text" class="form-control form-control-sm" id="db_table_name"
+                                        placeholder="" name="db_table_name" value="videos"> 
+                                        <!-- database name rung -->
+                                    <small id="account_id" class="form-text text-muted">Please paste the table name of your database</small>
+                                </div> 
+                            </div>
+                            <!-- videos
+                            video_links -->
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="db_table_column">Database - Column Name</label>
+                                    <input type="text" class="form-control form-control-sm" id="db_table_column"
+                                        placeholder="" name="db_table_column" value="video_links">
+                                    <small id="account_id" class="form-text text-muted">Please paste the column name of your table where the links resides</small>
+                                </div> 
+                            </div> 
+                          </div>
+
+
                     </form>
                 </div>
             </div>
