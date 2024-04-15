@@ -60,54 +60,63 @@
 <!-- ================================ -->
         <?php
         require 'vendor/autoload.php';
+        header('Content-Type: application/json');
+
         use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-        $db_host = $_GET["db_host"];
-        $db_name = $_GET["db_name"];
-        $db_username = $_GET["db_username"];
-        $db_password = $_GET["db_password"];
+        header('Content-Type: application/json'); // Send JSON response
 
-        print_r($db_host . " : " . $db_name . " : " . $db_username . " : " . $db_password);
-        exit();
+        // Input from POST for security
+        $db_host = $_POST["db_host"];
+        $db_name = $_POST["db_name"];
+        $db_username = $_POST["db_username"];
+        $db_password = $_POST["db_password"];
 
         // Establish database connection
-        $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_username, $db_password);
+        try {
+            $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_username, $db_password);
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Connection failed: ' . $e->getMessage()]);
+            exit;
+        }
 
         // Load the Excel file
         $reader = new Xlsx();
         $spreadsheet = $reader->load("cleaned_data-2024-04-01-09-52-02.xlsx");
-        // $spreadsheet = $reader->load("videos.xlsx");
 
-
-        // Assuming our data starts from the first row and is in the first sheet
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
+        $response = [];
 
         foreach ($rows as $row) {
-            // Assuming the first column is video_id and the second is new_video_links
             $videoId = $row[0];
             $newVideoLink = $row[1];
 
-            // Update the database
             $sql = "UPDATE videos SET video_links = :newVideoLink WHERE video_links LIKE :videoId";
             $stmt = $pdo->prepare($sql);
+            
+            if (!$stmt) {
+                $errorInfo = $pdo->errorInfo();
+                $response[] = ['videoId' => $videoId, 'status' => 'failed', 'message' => 'Prepare failed: ' . $errorInfo[2]];
+                continue;
+            }
+            
             $result = $stmt->execute([
                 ':newVideoLink' => $newVideoLink,
                 ':videoId' => "%{$videoId}%",
             ]);
 
-            // Feedback based on the result
             if ($result) {
-                echo '<div class="alert alert-success" role="alert">Updated <strong>' . $videoId . '</strong> with <a href="' . $newVideoLink . '" class="alert-link">' . $newVideoLink . '</a></div>';
+                $response[] = ['videoId' => $videoId, 'status' => 'success', 'message' => 'Update successful'];
             } else {
                 $errorInfo = $stmt->errorInfo();
-                echo '<div class="alert alert-danger" role="alert">Error updating record for ' . $videoId . ': ' . $errorInfo[2] . '</div>';
+                $response[] = ['videoId' => $videoId, 'status' => 'failed', 'message' => 'Update failed: ' . $errorInfo[2]];
             }
         }
 
-        echo '<center><strong><span style="color:#fc5e03;text-align:center;"> Update completed </span></strong><center>';
-
+        echo json_encode($response);
         ?>
+
 
         </div> <!-- /.container -->
     <!-- Optional JavaScript -->

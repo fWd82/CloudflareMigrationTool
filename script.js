@@ -191,28 +191,23 @@ $(document).ready(function () {
     });
     // eof #importFromCloudflareToHuawei()
 
-    
-    // a function to update videos links in MySQL Database
+    // Function to update video links in MySQL Database
     $("#updateMySqlDbLinks").click(function () {
 
         console.log("updateMySqlDbLinks Method is called");
+        console.log("Aw kana 7");
 
         let db_host = $("#db_host").val();
         let db_name = $("#db_name").val();
         let db_username = $("#db_username").val();
         let db_password = $("#db_password").val();
 
-        // alert(db_host + " : " + db_name + " : " + db_username + " : " + db_password);  
-
-        // let mp4Urls = inputTextUrls.split(',').map(link => link.trim()).filter(link => link !== "");
- 
         $.ajax({
-            url: `5-script_db.php`,
-            method: "GET",
+            url: `5-script_db_2.php`,
+            method: "POST",
             timeout: 0,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            contentType: "application/x-www-form-urlencoded",
+            dataType: 'json', // Expect JSON response
             data: {
                 db_host,
                 db_name,
@@ -220,17 +215,23 @@ $(document).ready(function () {
                 db_password,
             },
             success: function (response) {
-                $("#mysql_response").html(response);
+                response.forEach(function(item) {
+                    let message = `<div class="alert ${item.status === 'success' ? 'alert-success' : 'alert-danger'}">` +
+                                `Video ID: ${item.videoId} - ${item.message}</div>`;
+                    console.log(item);
+                    $("#mysql_response2").append(message);
+                });
 
-                console.log('Success: ', response); // handle success
+                console.log('Success: ', response);
             },
             error: function (xhr, status, error) {
-                console.log('Error: ', error); // handle error
+                console.log('Error: ', error);
+                $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             }
         });
-
     });
     // eof updateMySqlDbLinks();
+
 
 
 });
