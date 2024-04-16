@@ -169,7 +169,6 @@
                             <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
                                 anyone else.</small>
                         </div>
-                        
                     </form>
                 </div>
             </div>
@@ -218,7 +217,7 @@
                             <div class="form-group">
                                 <label for="videoTemplateGroupName">Videos Template Group Name</label>
                                 <select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">
-                                    <option value="HLS_264">HLS_264</option>
+                                    <option value="HLS_H264">HLS_264</option>
                                     <option value="HLS_265">HLS_265</option>
                                     <option value="VP9">VP9</option>
                                     <option value="AV1">AV1</option>
@@ -298,16 +297,16 @@
                     </p>
 
                     <!-- $host = $env["host"];
-$dbname = $env["dbname"];
-$username = $env["username"];
-$password = $env["password"]; 
+                    $dbname = $env["dbname"];
+                    $username = $env["username"];
+                    $password = $env["password"]; 
 
-host=localhost
-dbname=MyDB
-username=root
-password=
+                    host=localhost
+                    dbname=MyDB
+                    username=root
+                    password= -->
 
--->
+
 
                     <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
                         <div class="form-group">
@@ -397,6 +396,9 @@ password=
                         Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
                         <code>Cloudflare Cloudstream</code>.
                     </p>
+                    <textarea name="txtarea_huawei_links" id="huaweiVideosLinks" rows="10"
+                        style='min-width: 100%; font-size: 10pt'></textarea>
+                        <br />
                     <a class="btn btn-primary btn-sm" id="updateMySqlDbLinks" role="button">Update the links</a>
 
                     <br /><br />

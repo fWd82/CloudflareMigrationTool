@@ -196,7 +196,7 @@ $(document).ready(function () {
 
         console.log("updateMySqlDbLinks Method is called");
         console.log("Aw kana 7");
-
+        
         let db_host = $("#db_host").val();
         let db_username = $("#db_username").val();
         let db_password = $("#db_password").val();
@@ -204,7 +204,15 @@ $(document).ready(function () {
         let db_table_name = $("#db_table_name").val();
         let db_table_column = $("#db_table_column").val();
 
+        // Extracting huawei links and then its ids from the text area.
+        let inputTextUrls = $("#huaweiVideosLinks").val();
+        let huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
+        let huaweiCloudVideoIds = huaweiCloudVideoUrls.map(videoUrl => videoUrl.split('/')[4]);
+
+        console.log(huaweiCloudVideoUrls, huaweiCloudVideoIds);
         console.log(db_host, db_username, db_password, db_name, db_table_name, db_table_column);
+
+        return; // remove this line to execute all function. I have just added it for testing purpose.
 
         // $db_table_name = "videos";
         // $db_table_column = "video_links";
@@ -224,9 +232,9 @@ $(document).ready(function () {
                 db_table_name,
             },
             success: function (response) {
-                response.forEach(function(item) {
+                response.forEach(function (item) {
                     let message = `<div class="alert ${item.status === 'success' ? 'alert-success' : 'alert-danger'}">` +
-                                `Video ID: ${item.videoId} - ${item.message}</div>`;
+                        `Video ID: ${item.videoId} - ${item.message}</div>`;
                     console.log(item);
                     $("#mysql_response2").append(message);
                 });
@@ -240,7 +248,4 @@ $(document).ready(function () {
         });
     });
     // eof updateMySqlDbLinks();
-
-
-
 });
