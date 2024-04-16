@@ -11,6 +11,8 @@ $db_name = $_POST["db_name"];
 $db_table_name = $_POST["db_table_name"];
 $db_table_column = $_POST["db_table_column"];
 
+$assetid_and_url = $_POST["assetid_and_url"]; // Receiving "assetid_and_url" here
+
 
 // $db_host = "localhost";
 // $db_username = "root";
@@ -18,10 +20,12 @@ $db_table_column = $_POST["db_table_column"];
 // $db_name = "MyDB";
 // $db_table_name = "videos";
 // $db_table_column = "video_links";
+// $assetid_and_url = ...
 
 // print_r($db_host ." : ". $db_username ." : ". $db_password ." : ". $db_name ." : ". $db_table_name ." : ". $db_table_column);
 
 // exit();
+
 // Establish database connection
 try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_username, $db_password);

@@ -22,6 +22,8 @@ $(document).ready(function () {
     $('#spinner1').addClass('d-none'); // first hide the loader of links.
     $('#spinner2').addClass('d-none'); // first hide the loader of links.
 
+    listTemplateGroup();
+
     // a function to fetch video links from cloudflare.
     $("#fetchCloudflareVideoLinks").click(function () {
         $('#spinner1').removeClass('d-none'); // display the spinner.
@@ -192,11 +194,12 @@ $(document).ready(function () {
     // eof #importFromCloudflareToHuawei()
 
     // Function to update video links in MySQL Database
-    function updateLinksInMySQL(urlAndIds) {
+    function updateLinksInMySQL(assetid_and_url) {
 
-        console.log(urlAndIds);
+        console.log(assetid_and_url);
 
         return; // remove this to make changes to db and execute rest of function.
+
         let db_host = $("#db_host").val();
         let db_username = $("#db_username").val();
         let db_password = $("#db_password").val();
@@ -217,6 +220,7 @@ $(document).ready(function () {
                 db_name,
                 db_table_column,
                 db_table_name,
+                // assetid_and_url // Sending this array to PHP file
             },
             success: function (response) {
                 response.forEach(function (item) {
@@ -273,13 +277,20 @@ $(document).ready(function () {
                 projectId,
             },
             success: function (response) {
-                const urlAndIds = response.assets.map(({ asset_id, title, original_url }) => ({
-                    huaweiCloudVideoId: asset_id,
-                    cloudflareVideoId: title,
-                    huaweiCloudVideoUrl: original_url
+                const assetid_and_url = response.assets.map(({ asset_id, title, original_url }) => ({
+                    // asset_id: asset_id,
+                    // huaweiCloudVideoUrl: original_url
+                    title: title,
+                    huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
+                    
+                    // "cover_url": "https://vod.fawadiqbal.me/asset/00484fad9c58191f3cc77f31020bb698/cover/Cover0.jpg
+                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/index.m3u8
+                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/af65ad22a95561d9674019fff16d193c.mp4
+                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_0.m3u8
+                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_1.m3u8
                 }));
 
-                updateLinksInMySQL(urlAndIds);
+                updateLinksInMySQL(assetid_and_url);
             },
             error: function (xhr, status, error) {
                 console.log('Error: ', error);
@@ -289,10 +300,16 @@ $(document).ready(function () {
     });
     // eof getHuaweiVODLinks();
 
+    // function to get ids, and links of videos from huawei VOD.
+    $("#listTemplateGroup").click(function () {
+        listTemplateGroup();
+    });
+    // eof listTemplateGroup();
 
     // Function to get template groups from Huawei Cloud
     // This function will load when the page loads
-    $("#listTemplateGroup").click(function () {
+    function listTemplateGroup() {
+
         console.log("list_template_group Method is called");
         console.log("Aw kana 1");
 
@@ -325,6 +342,7 @@ $(document).ready(function () {
                     // MP4_H264
                     // HLS_H265
                     // HLS_H264
+                    // ..git diff 04871631 07b13291
                 });
             },
             error: function (xhr, status, error) {
@@ -332,7 +350,7 @@ $(document).ready(function () {
                 $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             }
         });
-    });
+    };
     // eof list_template_group();
 
 });
