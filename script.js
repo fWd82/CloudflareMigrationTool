@@ -306,4 +306,50 @@ $(document).ready(function () {
     });
     // eof getHuaweiVODLinks();
 
+
+    // Function to get template groups from Huawei Cloud
+    // This function will load when the page loads
+    $("#listTemplateGroup").click(function () {
+        console.log("list_template_group Method is called");
+        console.log("Aw kana 1");
+        
+        let ak = $("#ak").val();
+        let sk = $("#sk").val();
+        let endpoint = $("#endpoint").val();
+        let projectId = $("#projectId").val();
+
+        $.ajax({
+            url: `list_template_group.php`,
+            method: "POST",
+            timeout: 0,
+            contentType: "application/x-www-form-urlencoded",
+            dataType: 'json', // Expect JSON response
+            data: {
+                ak,
+                sk,
+                endpoint,
+                projectId,
+            }, 
+            success: function (response) {
+                jQuery.each(response.template_group_list, function(index, item) {
+                    console.log(item.name);
+                    // non_transcoding_template_group
+                    // system_template_group
+                    // original_template_group
+                    // adaptive_template_group
+                    // HLS_H265_4K
+                    // MP4_H265
+                    // MP4_H264
+                    // HLS_H265
+                    // HLS_H264
+                });
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ', error);
+                $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            }
+        });
+    });
+    // eof list_template_group();
+
 });
