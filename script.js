@@ -192,30 +192,17 @@ $(document).ready(function () {
     // eof #importFromCloudflareToHuawei()
 
     // Function to update video links in MySQL Database
-    $("#updateMySqlDbLinks").click(function () {
+    function updateLinksInMySQL(urlAndIds) {
 
-        console.log("updateMySqlDbLinks Method is called");
-        console.log("Aw kana 7");
-        
+        console.log(urlAndIds);
+
+        return; // remove this to make changes to db and execute rest of function.
         let db_host = $("#db_host").val();
         let db_username = $("#db_username").val();
         let db_password = $("#db_password").val();
         let db_name = $("#db_name").val();
         let db_table_name = $("#db_table_name").val();
         let db_table_column = $("#db_table_column").val();
-
-        // Extracting huawei links and then its ids from the text area.
-        let inputTextUrls = $("#huaweiVideosLinks").val();
-        let huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
-        let huaweiCloudVideoIds = huaweiCloudVideoUrls.map(videoUrl => videoUrl.split('/')[4]);
-
-        console.log(huaweiCloudVideoUrls, huaweiCloudVideoIds);
-        console.log(db_host, db_username, db_password, db_name, db_table_name, db_table_column);
-
-        return; // remove this line to execute all function. I have just added it for testing purpose.
-
-        // $db_table_name = "videos";
-        // $db_table_column = "video_links";
 
         $.ajax({
             url: `5-script_db_2.php`,
@@ -246,19 +233,32 @@ $(document).ready(function () {
                 $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             }
         });
+    }
+    // Function to extract video links and ids of huawei from textarea
+    $("#updateMySqlDbLinks").click(function () {
+        const inputTextUrls = $("#huaweiVideosLinks").val();
+        const huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
+
+        const urlAndIds = huaweiCloudVideoUrls.map(videoUrl => {
+            const huaweiCloudVideoId = videoUrl.split('/')[4];
+            return {
+                huaweiCloudVideoId: huaweiCloudVideoId,
+                cloudflareVideoId: null, // placeholder until we have a method to determine this
+                huaweiCloudVideoUrl: videoUrl
+            };
+        });
+        // $db_table_name = "videos";
+        // $db_table_column = "video_links";
+
+        updateLinksInMySQL(urlAndIds);
     });
-    // eof updateMySqlDbLinks();
 
-    // Function to update video links in MySQL Database
+    // function to get ids, and links of videos from huawei VOD.
     $("#getHuaweiVODLinks").click(function () {
-
-        console.log("getHuaweiVODLinks Method is called");
-        console.log("Aw kana 1");
-        
-        let ak = $("#ak").val();
-        let sk = $("#sk").val();
-        let endpoint = $("#endpoint").val();
-        let projectId = $("#projectId").val();
+        const ak = $("#ak").val();
+        const sk = $("#sk").val();
+        const endpoint = $("#endpoint").val();
+        const projectId = $("#projectId").val();
 
         $.ajax({
             url: `get_huawei_vod_links.php`,
@@ -272,31 +272,14 @@ $(document).ready(function () {
                 endpoint,
                 projectId,
             },
-            // success: function (response) {
-            //     response.forEach(function (item) {
-            //         let message = `<div class="alert ${item.status === 'success' ? 'alert-success' : 'alert-danger'}">` +
-            //             `Video ID: ${item.videoId} - ${item.message}</div>`;
-            //         console.log(item);
-            //         $("#mysql_response2").append(message);
-            //     });
-
-            //     console.log('Success: ', response);
-            // },
             success: function (response) {
-                console.log('Total Videos: ', response.total);
+                const urlAndIds = response.assets.map(({ asset_id, title, original_url }) => ({
+                    huaweiCloudVideoId: asset_id,
+                    cloudflareVideoId: title,
+                    huaweiCloudVideoUrl: original_url
+                }));
 
-                jQuery.each(response, function(index, item) {
-                    //now you can access properties using dot notation
-                    console.log(response.assets);
-
-                    // title =    4ad5c5f073e03235c52833d283f20745
-                    // asset_id = 00484fad9c58191f3cc77f31020bb698
-                    // m3u8_url = https://vod.fawadiqbal.me/asset/---asset_id--/play_video/index.m3u8
-
-                    // $("#mysql_response2").append(message);
-                });
- 
-
+                updateLinksInMySQL(urlAndIds);
             },
             error: function (xhr, status, error) {
                 console.log('Error: ', error);
@@ -312,7 +295,7 @@ $(document).ready(function () {
     $("#listTemplateGroup").click(function () {
         console.log("list_template_group Method is called");
         console.log("Aw kana 1");
-        
+
         let ak = $("#ak").val();
         let sk = $("#sk").val();
         let endpoint = $("#endpoint").val();
@@ -329,9 +312,9 @@ $(document).ready(function () {
                 sk,
                 endpoint,
                 projectId,
-            }, 
+            },
             success: function (response) {
-                jQuery.each(response.template_group_list, function(index, item) {
+                jQuery.each(response.template_group_list, function (index, item) {
                     console.log(item.name);
                     // non_transcoding_template_group
                     // system_template_group
