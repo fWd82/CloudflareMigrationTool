@@ -331,7 +331,11 @@ $(document).ready(function () {
                 projectId,
             },
             success: function (response) {
+                var optionsValues = '<select class="form-control form-control-sm">';
+                // Add an empty option at the start
+                optionsValues += '<option value="">No Template</option>';
                 jQuery.each(response.template_group_list, function (index, item) {
+                    optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
                     console.log(item.name);
                     // non_transcoding_template_group
                     // system_template_group
@@ -341,9 +345,12 @@ $(document).ready(function () {
                     // MP4_H265
                     // MP4_H264
                     // HLS_H265
-                    // HLS_H264
-                    // ..git diff 04871631 07b13291
+                    // HLS_H264 git diff 04871631 07b13291
                 });
+                optionsValues += '</select>';
+                var options = $('#videoTemplateGroupName');
+                options.replaceWith(optionsValues);
+                 
             },
             error: function (xhr, status, error) {
                 console.log('Error: ', error);
