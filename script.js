@@ -248,4 +248,62 @@ $(document).ready(function () {
         });
     });
     // eof updateMySqlDbLinks();
+
+    // Function to update video links in MySQL Database
+    $("#getHuaweiVODLinks").click(function () {
+
+        console.log("getHuaweiVODLinks Method is called");
+        console.log("Aw kana 1");
+        
+        let ak = $("#ak").val();
+        let sk = $("#sk").val();
+        let endpoint = $("#endpoint").val();
+        let projectId = $("#projectId").val();
+
+        $.ajax({
+            url: `get_huawei_vod_links.php`,
+            method: "POST",
+            timeout: 0,
+            contentType: "application/x-www-form-urlencoded",
+            dataType: 'json', // Expect JSON response
+            data: {
+                ak,
+                sk,
+                endpoint,
+                projectId,
+            },
+            // success: function (response) {
+            //     response.forEach(function (item) {
+            //         let message = `<div class="alert ${item.status === 'success' ? 'alert-success' : 'alert-danger'}">` +
+            //             `Video ID: ${item.videoId} - ${item.message}</div>`;
+            //         console.log(item);
+            //         $("#mysql_response2").append(message);
+            //     });
+
+            //     console.log('Success: ', response);
+            // },
+            success: function (response) {
+                console.log('Total Videos: ', response.total);
+
+                jQuery.each(response, function(index, item) {
+                    //now you can access properties using dot notation
+                    console.log(response.assets);
+
+                    // title =    4ad5c5f073e03235c52833d283f20745
+                    // asset_id = 00484fad9c58191f3cc77f31020bb698
+                    // m3u8_url = https://vod.fawadiqbal.me/asset/---asset_id--/play_video/index.m3u8
+
+                    // $("#mysql_response2").append(message);
+                });
+ 
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ', error);
+                $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            }
+        });
+    });
+    // eof getHuaweiVODLinks();
+
 });
