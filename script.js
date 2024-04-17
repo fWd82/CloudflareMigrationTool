@@ -353,13 +353,10 @@ $(document).ready(function () {
 
                 }));
 
-                // updateLinksInMySQL(assetid_and_url); // Call this function later 
-
                 console.log(assetid_and_url);
                 // $("#div_huawei_cloud_links").html('<div class="alert alert-success">Success: ' + assetid_and_url[0].title + " : " + assetid_and_url[0].huaweiCloudVideoUrl + '</div>');
-
-
-
+                // updateLinksInMySQL(assetid_and_url); // Call this function later  
+              
                 // Create HTML content with all titles and URLs
                 let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
                 assetid_and_url.forEach(({ title, huaweiCloudVideoUrl }) => {
