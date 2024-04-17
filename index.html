@@ -1,393 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Progress - Migration</title>
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link href="./styles.css" rel="stylesheet" type="text/css" />
+        <style></style>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progress - Migration</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./styles.css" rel="stylesheet" type="text/css">
-    <style>
-
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="text-center mb-4">
-            <h3 class="mt-5 font-weight-light" style="color:#cf0a2c;">MIGRATION PROCESS</h3>
-        </div>
-
-
-        <div class="class">
-
-            <!-- Requirements Step -->
-            <div class="card" style="width: rem; background-color: #f1f1f1;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Requirements Step<span class="text-danger">*</span></h5>
-                    <h6 class="card-text text-primary">Gathering Credentials for Cloudflare</h6>
-                    <p class="card-text">Please enter your all credentials to continue with the later steps
-                        un-interruptedly.
-                    </p>
-                    <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
-                        <div class="form-group">
-                            <label for="X-Auth-Email">X Auth Email</label>
-                            <input type="email" class="form-control form-control-sm" id="X-Auth-Email"
-                                aria-describedby="emailHelp" placeholder="fwd82@live.com" name="X-Auth-Email"
-                                value="fwd82@live.com">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your X Auth Email with
-                                anyone
-                                else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="X-Auth-Key">X Auth Key</label>
-                            <input type="text" class="form-control form-control-sm" id="X-Auth-Key"
-                                placeholder="1eab14593a06d3722782f30526a779378a5ee" name="X-Auth-Key"
-                                value="1eab14593a06d3722782f30526a779378a58e">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your Auth Key with
-                                anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="account_id">Account ID</label>
-                            <input type="text" class="form-control form-control-sm" id="account_id"
-                                placeholder="2590b14a48271988be21c06479697cee" name="account_id"
-                                value="2590b14a48271988be21c06479697c88">
-                            <small id="account_id" class="form-text text-muted">We'll never share your Account ID with
-                                anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="customer_subdomain">Customer subdomain</label>
-                            <input type="text" class="form-control form-control-sm" id="customer_subdomain"
-                                placeholder="customer-0rjknk9n0a2sedbn.cloudflarestream.com" name="customer_subdomain"
-                                value="customer-0rjknk9n0a2sedbn.cloudflarestream.com">
-                            <small id="account_id" class="form-text text-muted">We'll never share your Customer
-                                subdomain with
-                                anyone else.</small>
-                        </div>
-                        <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> -->
-                    </form>
-                </div>
+    <body>
+        <div class="container">
+            <div class="text-center mb-4">
+                <h3 class="mt-5 font-weight-light" style="color: #cf0a2c">
+                    MIGRATION PROCESS
+                </h3>
             </div>
-            <!-- eof Requirements Step -->
-            <br />
-            <!-- First Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">First Step (Optional)</h5>
-                    <h6 class="card-text text-primary">Fetching Cloudflare Videos Links</h6>
-                    <p class="card-text">Fetch the links from the cloudflare via clicking on the button after entering
-                        credentials from above or skip this step and continue with the next one!</p>
-                    <form>
-                        <button type="button" class="btn btn-primary btn-sm" id="fetchCloudflareVideoLinks">Get
-                            Links</button>
-                        <div class="spinner-border text-primary" id="spinner1" role="status">
+
+            <div class="class">
+                <!-- Requirements Step -->
+                <div class="card" style="width: rem; background-color: #f1f1f1">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            Requirements Step<span class="text-danger">*</span>
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Gathering Credentials for Cloudflare
+                        </h6>
+                        <p class="card-text">
+                            Please enter your all credentials to continue with
+                            the later steps un-interruptedly.
+                        </p>
+                        <form
+                            action="1-list-cloudflare-videos.php"
+                            method="POST"
+                            id="credentialsForm"
+                        >
+                            <div class="form-group">
+                                <label for="X-Auth-Email">X Auth Email</label>
+                                <input
+                                    type="email"
+                                    class="form-control form-control-sm"
+                                    id="X-Auth-Email"
+                                    aria-describedby="emailHelp"
+                                    placeholder="fwd82@live.com"
+                                    name="X-Auth-Email"
+                                    value="fwd82@live.com"
+                                />
+                                <small
+                                    id="emailHelp"
+                                    class="form-text text-muted"
+                                    >We'll never share your X Auth Email with
+                                    anyone else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="X-Auth-Key">X Auth Key</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="X-Auth-Key"
+                                    placeholder="1eab14593a06d3722782f30526a779378a5ee"
+                                    name="X-Auth-Key"
+                                    value="1eab14593a06d3722782f30526a779378a58e"
+                                />
+                                <small
+                                    id="emailHelp"
+                                    class="form-text text-muted"
+                                    >We'll never share your Auth Key with anyone
+                                    else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="account_id">Account ID</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="account_id"
+                                    placeholder="2590b14a48271988be21c06479697cee"
+                                    name="account_id"
+                                    value="2590b14a48271988be21c06479697c88"
+                                />
+                                <small
+                                    id="account_id"
+                                    class="form-text text-muted"
+                                    >We'll never share your Account ID with
+                                    anyone else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="customer_subdomain"
+                                    >Customer subdomain</label
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="customer_subdomain"
+                                    placeholder="customer-0rjknk9n0a2sedbn.cloudflarestream.com"
+                                    name="customer_subdomain"
+                                    value="customer-0rjknk9n0a2sedbn.cloudflarestream.com"
+                                />
+                                <small
+                                    id="account_id"
+                                    class="form-text text-muted"
+                                    >We'll never share your Customer subdomain
+                                    with anyone else.</small
+                                >
+                            </div>
+                            <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> -->
+                        </form>
+                    </div>
+                </div>
+                <!-- eof Requirements Step -->
+                <br />
+                <!-- First Step -->
+                <div class="card" style="width: rem">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            First Step (Optional)
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Fetching Cloudflare Videos Links
+                        </h6>
+                        <p class="card-text">
+                            Fetch the links from the cloudflare via clicking on
+                            the button after entering credentials from above or
+                            skip this step and continue with the next one!
+                        </p>
+                        <form>
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm"
+                                id="fetchCloudflareVideoLinks"
+                            >
+                                Get Links
+                            </button>
+                            <div
+                                class="spinner-border text-primary"
+                                id="spinner-step-1"
+                                role="status"
+                            >
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </form>
+                        <br />
+                        <div id="videoLinks"></div>
+                        <!-- <a class="btn btn-primary btn-sm" href="1-list-cloudflare-videos.php" target="_blank" role="button">Get all Cloudflare Links</a> -->
+                    </div>
+                </div>
+                <!-- eof First Step -->
+                <br />
+                <!-- Second Step -->
+                <div class="card" style="width: rem">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">Second Step</h5>
+                        <h6 class="card-text text-primary">
+                            Preparing Cloudflare files to Migrate
+                        </h6>
+                        <p class="card-text"></p>
+
+                        <p class="card-text">
+                            Go to <code>index.js</code> and add your information
+                            <code>X-Auth-Email</code> and
+                            <code>X-Auth-Key</code>, once done, save the file,
+                            install <code>NodeJS</code> and run these commands
+                            <br /><code>npm i</code><br />
+                            and<br />
+                            <code>node index.js</code><br />
+                            it will create one Excel Sheet
+                            <code>Output_.....xlsx</code>. This file has
+                            different <code>Video UID</code>,
+                            <code>Link Status</code>,
+                            <code>Is Link Enabled</code>,
+                            <code>Default Link</code> and
+                            <code>Link With File Name</code>
+                        </p>
+                        <p class="card-text">
+                            Paste the links copied from above step or from
+                            another source and paste it here to enable the mp4
+                            formate and get the links. take care that each link
+                            end with a comma ','.
+                        </p>
+                        <textarea
+                            name="txtarea_cloudflare_links"
+                            id="cloudflareLinks"
+                            rows="10"
+                            style="min-width: 100%; font-size: 10pt"
+                        ></textarea>
+                        <br />
+                        <!-- <a class="btn btn-primary btn-sm" href="2-index-node.php" target="_blank" role="button">Prepare the
+                        environment - Enable MP4 Download Links</a> -->
+                        <button
+                            class="btn btn-primary btn-sm"
+                            id="enableMp4DownloadLinks"
+                        >
+                            Enable MP4 Download Links
+                        </button>
+                        <div
+                            class="spinner-border text-primary"
+                            id="spinner-step-2"
+                            role="status"
+                        >
                             <span class="sr-only">Loading...</span>
                         </div>
-
-                    </form>
-                    <br />
-                    <div id="videoLinks"></div>
-                    <!-- <a class="btn btn-primary btn-sm" href="1-list-cloudflare-videos.php" target="_blank" role="button">Get all Cloudflare Links</a> -->
-                </div>
-            </div>
-            <!-- eof First Step -->
-            <br>
-            <!-- Second Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Second Step</h5>
-                    <h6 class="card-text text-primary">Preparing Cloudflare files to Migrate </h6>
-                    <p class="card-text"></p>
-
-                    <p class="card-text">Go to <code>index.js</code> and add your information <code>X-Auth-Email</code>
-                        and <code>X-Auth-Key</code>, once done, save the file, install <code>NodeJS</code> and run these
-                        commands <br /><code>npm i</code><br /> and<br /> <code>node index.js</code><br /> it will
-                        create one Excel Sheet <code>Output_.....xlsx</code>. This file has different
-                        <code>Video UID</code>, <code>Link Status</code>, <code>Is Link Enabled</code>,
-                        <code>Default Link</code> and <code>Link With File Name</code>
-
-                    </p>
-                    <p class="card-text">Paste the links copied from above step or from another source and paste it here
-                        to enable the mp4 formate and get the links. take care that each link end with a comma ','.
-                    </p>
-                    <textarea name="txtarea_cloudflare_links" id="cloudflareLinks" rows="10"
-                        style='min-width: 100%; font-size: 10pt'></textarea>
-                    <br />
-                    <!-- <a class="btn btn-primary btn-sm" href="2-index-node.php" target="_blank" role="button">Prepare the
-                        environment - Enable MP4 Download Links</a> -->
-                    <button class="btn btn-primary btn-sm" id="enableMp4DownloadLinks">Enable MP4 Download
-                        Links</button>
-                    <div class="spinner-border text-primary" id="spinner2" role="status">
-                        <span class="sr-only">Loading...</span>
+                        <!-- here to print the results -->
+                        <div id="failedLinks"></div>
+                        <div id="successfulLinks"></div>
                     </div>
-                    <!-- here to print the results -->
-                    <div id="failedLinks"></div>
-                    <div id="successfulLinks"></div>
-
                 </div>
-            </div>
-            <!-- eof Second Step -->
-            <br>
-            <!-- Third step data -->
-            <div class="card" style="width: rem; background-color: #f1f1f1;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Requirements for Third Step<span
-                            class="text-danger">*</span></h5>
-                    <h6 class="card-text text-primary">Gathering Credentials for Huawei Cloud</h6>
-                    <p class="card-text">Please enter your all credentials to continue with the later steps
-                        un-interruptedly.
-                    </p>
-                    <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
-                        <div class="form-group">
-                            <label for="ak">AK</label>
-                            <input type="text" class="form-control form-control-sm" id="ak" aria-describedby="emailHelp"
-                                placeholder="9NW1ATJF9UAHZY5XXESS" name="ak" value="9NW1ATJF9UAHZY5XXESS">
-                            <small id="akHelp" class="form-text text-muted">We'll never share your AK with
-                                anyone
-                                else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="sk">SK</label>
-                            <input type="text" class="form-control form-control-sm" id="sk"
-                                placeholder="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0" name="sk"
-                                value="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0">
-                            <small id="skHelp" class="form-text text-muted">We'll never share your SK with
-                                anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="endpoint">Endpoint</label>
-                            <input type="text" class="form-control form-control-sm" id="endpoint"
-                                placeholder="https://vod.ap-southeast-3.myhuaweicloud.com" name="endpoint"
-                                value="https://vod.ap-southeast-3.myhuaweicloud.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="projectId">Project ID</label>
-                            <input type="text" class="form-control form-control-sm" id="projectId"
-                                placeholder="31e2da1575cc47048f26be2a2b5c6ec9" name="projectId"
-                                value="31e2da1575cc47048f26be2a2b5c6ec9">
-                            <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
-                                anyone else.</small>
-                        </div>
-                    </form>
+                <!-- eof Second Step -->
+                <br />
+                <!-- Third step data -->
+                <div class="card" style="width: rem; background-color: #f1f1f1">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            Requirements for Third Step<span class="text-danger"
+                                >*</span
+                            >
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Gathering Credentials for Huawei Cloud
+                        </h6>
+                        <p class="card-text">
+                            Please enter your all credentials to continue with
+                            the later steps un-interruptedly.
+                        </p>
+                        <form
+                            action="1-list-cloudflare-videos.php"
+                            method="POST"
+                            id="credentialsForm"
+                        >
+                            <div class="form-group">
+                                <label for="ak">AK</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="ak"
+                                    aria-describedby="emailHelp"
+                                    placeholder="9NW1ATJF9UAHZY5XXESS"
+                                    name="ak"
+                                    value="9NW1ATJF9UAHZY5XXESS"
+                                />
+                                <small id="akHelp" class="form-text text-muted"
+                                    >We'll never share your AK with anyone
+                                    else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="sk">SK</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="sk"
+                                    placeholder="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0"
+                                    name="sk"
+                                    value="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0"
+                                />
+                                <small id="skHelp" class="form-text text-muted"
+                                    >We'll never share your SK with anyone
+                                    else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="endpoint">Endpoint</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="endpoint"
+                                    placeholder="https://vod.ap-southeast-3.myhuaweicloud.com"
+                                    name="endpoint"
+                                    value="https://vod.ap-southeast-3.myhuaweicloud.com"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="projectId">Project ID</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="projectId"
+                                    placeholder="31e2da1575cc47048f26be2a2b5c6ec9"
+                                    name="projectId"
+                                    value="31e2da1575cc47048f26be2a2b5c6ec9"
+                                />
+                                <small
+                                    id="projectId"
+                                    class="form-text text-muted"
+                                    >We'll never share your Project ID with
+                                    anyone else.</small
+                                >
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <!-- eof Third step data -->
-            <br />
-            <!-- Third Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Third Step<span class="text-danger">*</span></h5>
-                    <h6 class="card-text text-primary">Uploading (Importing) videos from Cloudflare | Cloudstream to
-                        Huawei Cloud VOD </h6>
-                    <p class="card-text">Now, open <code>Output_....xlsx</code> and copy all the links from
-                        <code>Link With File Name</code> and paste it into
-                        <code>Huawei Cloud VOD > Upload Videos & Audio > Upload from URL</code>, to import videos to
-                        Huawei Cloud. Currently Huawei Cloud VOD only supports 100 links at a time.
-                    </p>
-                    <p class="card-text">
-                        Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
-                        <code>Cloudflare Cloudstream</code>. But in the database the links are still pointing to
-                        Cloudflare instead of Huawei Cloud VOD. Make sure to take backup out of your database before
-                        proceeding to next step.
-                    </p>
-                    <!-- <a class="btn btn-primary btn-sm"
+                <!-- eof Third step data -->
+                <br />
+                <!-- Third Step -->
+                <div class="card" style="width: rem">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            Third Step<span class="text-danger">*</span>
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Uploading (Importing) videos from Cloudflare |
+                            Cloudstream to Huawei Cloud VOD
+                        </h6>
+                        <p class="card-text">
+                            Now, open <code>Output_....xlsx</code> and copy all
+                            the links from <code>Link With File Name</code> and
+                            paste it into
+                            <code
+                                >Huawei Cloud VOD > Upload Videos & Audio >
+                                Upload from URL</code
+                            >, to import videos to Huawei Cloud. Currently
+                            Huawei Cloud VOD only supports 100 links at a time.
+                        </p>
+                        <p class="card-text">
+                            Until this stage, our videos are successfully
+                            migrated to <code>Huawei Cloud VOD</code> from
+                            <code>Cloudflare Cloudstream</code>. But in the
+                            database the links are still pointing to Cloudflare
+                            instead of Huawei Cloud VOD. Make sure to take
+                            backup out of your database before proceeding to
+                            next step.
+                        </p>
+                        <!-- <a class="btn btn-primary btn-sm"
                         href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/audioVideoUrlPull"
                         target="_blank" title="OpenPull from URLs and paste all links" role="button">Open Huawei Cloud
                         VOD</a> -->
 
-                    <p class="card-text">Paste the enabled mp4 links copied from above step or from another source and paste it here
-                        to store in huawei cloud. Take care that each link end with a new line '\n'.
-                    </p>
-                    <textarea name="txtarea_cloudflare_links" id="cloudflareVideosMp4Links" rows="10"
-                        style='min-width: 100%; font-size: 10pt'></textarea>
+                        <p class="card-text">
+                            Paste the enabled mp4 links copied from above step
+                            or from another source and paste it here to store in
+                            huawei cloud. Take care that each link end with a
+                            new line '\n'.
+                        </p>
+                        <textarea
+                            name="txtarea_cloudflare_links"
+                            id="cloudflareVideosMp4Links"
+                            rows="10"
+                            style="min-width: 100%; font-size: 10pt"
+                        ></textarea>
 
                         <form action="">
                             <div class="form-group">
                                 <label for="videoType">Videos Type</label>
-                                <select class="form-control form-control-sm" id="videoType" name="videoType">
-                                    <option value="MP4">MP4</option>
+                                <select
+                                    class="form-control form-control-sm"
+                                    id="videoType"
+                                    name="videoType"
+                                >
+                                    <option value="MP4" selected>MP4</option>
                                     <option value="AVI">AVI</option>
                                     <option value="MOV">MOV</option>
                                     <option value="WMV">WMV</option>
                                 </select>
-                                <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
-                                    anyone else.</small>
+                                <small
+                                    id="projectId"
+                                    class="form-text text-muted"
+                                    >We'll never share your Project ID with
+                                    anyone else.</small
+                                >
                             </div>
                             <div class="form-group">
-                                <label for="videoTemplateGroupName">Videos Template Group Name</label><br />
-                                
-                                <a class="hover" id="listTemplateGroup" role="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                <label for="videoTemplateGroupName"
+                                    >Videos Template Group Name</label
+                                ><br />
+
+                                <a
+                                    class="hover"
+                                    id="listTemplateGroup"
+                                    role="button"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-arrow-clockwise"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
+                                        />
+                                        <path
+                                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"
+                                        />
                                     </svg>
                                 </a>
+                                <div
+                                    class="spinner-border text-primary"
+                                    id="spinner-step-31"
+                                    role="status"
+                                >
+                                    <span class="sr-only">Loading...</span>
+                                </div>
 
-                                <select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">
-                                    <option value=""></option>
-                                    <!-- <option value="HLS_H264">HLS_264</option>
-                                    <option value="HLS_265">HLS_265</option>
-                                    <option value="VP9">VP9</option>
-                                    <option value="AV1">AV1</option> -->
+                                <select
+                                    class="form-control form-control-sm"
+                                    id="videoTemplateGroupName"
+                                    name="videoTemplateGroupName"
+                                >
+                                    <option value="">
+                                        No Values Yet. Click on refresh to get
+                                        values
+                                    </option>
                                 </select>
-                                
-                                <small id="projectId" class="form-text text-muted">We'll never share your Project ID with
-                                    anyone else.</small>
+
+                                <small
+                                    id="projectId"
+                                    class="form-text text-muted"
+                                    >We'll never share your Project ID with
+                                    anyone else.</small
+                                >
                             </div>
                         </form>
 
-                    <button class="btn btn-primary btn-sm" id="importFromCloudflareToHuawei">Import From Cloudflare To
-                        Huawei</button>
-                </div>
-            </div>
-            <!-- eof Third Step -->
-            <br />
-            <!-- https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=ShowAssetMeta -->
-            <!-- Fourth Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Fourth Step<span class="text-danger">*</span></h5>
-                    <h6 class="card-text text-primary">Getting new links from Huawei Cloud VOD </h6>
-                    <p class="card-text">
-                        Dummy Text - I will update this later
-                    </p>
-                    <p class="card-text">
-                        Dummy text<code> 1 later</code>
-                    </p>
-                    <p class="card-text">Open Huawei Cloud VOD <a href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
-                    </p>
-                    <a class="btn btn-primary btn-sm" id="getHuaweiVODLinks" role="button">Get Huawei VOD Links</a>
-                    <div class="spinner-border text-primary" id="spinner-step-4" role="status">
-                        <span class="sr-only">Loading...</span>
+                        <button
+                            class="btn btn-primary btn-sm"
+                            id="importFromCloudflareToHuawei"
+                        >
+                            Import From Cloudflare To Huawei
+                        </button>
+                        <div
+                            class="spinner-border text-primary"
+                            id="spinner-step-32"
+                            role="status"
+                        >
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <!-- A div where responses are saved to indicate the user with request status -->
+                        <div
+                            class="mt-2"
+                            id="importedFromCloudflareToHuaweiLinks"
+                        ></div>
                     </div>
-                    <br />
-                    <div class="mt-2" id="div_huawei_cloud_links">Get Huawei VOD Links here</div>
                 </div>
-            </div>
-            <!-- eof Fourth Step -->
-            <br />
-
-            <br />
-
-            <!-- MySQL DB Step -->
-            <div class="card" style="width: rem; background-color: #f1f1f1;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">MySQL DB Updation Step<span class="text-primary">*</span></h5>
-                    <h6 class="card-text text-primary">Gathering Credentials for Cloudflare</h6>
-                    <p class="card-text">Please enter your all credentials to continue with the later steps
-                        un-interruptedly.
-                    </p>
-
-                    <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
-                        <div class="form-group">
-                            <label for="db_host">DB Host</label>
-                            <input type="email" class="form-control form-control-sm" id="db_host"
-                                aria-describedby="emailHelp" placeholder="fwd82@live.com" name="db_host"
-                                value="localhost">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your X Auth Email with
-                                anyone
-                                else.</small>
+                <!-- eof Third Step -->
+                <br />
+                <!-- https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=ShowAssetMeta -->
+                <!-- Fourth Step -->
+                <div class="card" style="width: rem">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            Fourth Step<span class="text-danger">*</span>
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Getting new links from Huawei Cloud VOD
+                        </h6>
+                        <p class="card-text">
+                            Dummy Text - I will update this later
+                        </p>
+                        <p class="card-text">Dummy text<code> 1 later</code></p>
+                        <p class="card-text">
+                            Open Huawei Cloud VOD
+                            <a
+                                href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage"
+                                >HERE</a
+                            >
+                        </p>
+                        <a
+                            class="btn btn-primary btn-sm"
+                            id="getHuaweiVODLinks"
+                            role="button"
+                            >Get Huawei VOD Links</a
+                        >
+                        <div
+                            class="spinner-border text-primary"
+                            id="spinner-step-4"
+                            role="status"
+                        >
+                            <span class="sr-only">Loading...</span>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="db_username">DB Username</label>
-                            <input type="text" class="form-control form-control-sm" id="db_username"
-                                placeholder="2590b14a48271988be21c06479697cee" name="db_username" value="root">
-                            <small id="account_id" class="form-text text-muted">We'll never share your Account ID with
-                                anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="db_password">DB Password</label>
-                            <input type="text" class="form-control form-control-sm" id="db_password"
-                                placeholder="" name="db_password" value="">
-                            <small id="account_id" class="form-text text-muted">We'll never share your Customer
-                                subdomain with
-                                anyone else.</small>
-                        </div> 
-
-                        <div class="row">
-                            <div class="col-sm">
-                                <div class="form-group">
-                                    <label for="db_name">Database - Name </label>
-                                    <input type="text" class="form-control form-control-sm" id="db_name"
-                                        placeholder="" name="db_name" value="MyDB"> 
-                                        <!-- database name rung -->
-                                    <small id="account_id" class="form-text text-muted">Please paste the table name of your database</small>
-                                </div> 
-                            </div>
-                            <div class="col-sm">
-                                <div class="form-group">
-                                    <label for="db_table_name">Database - Table Name </label>
-                                    <input type="text" class="form-control form-control-sm" id="db_table_name"
-                                        placeholder="" name="db_table_name" value="videos"> 
-                                        <!-- database name rung -->
-                                    <small id="account_id" class="form-text text-muted">Please paste the table name of your database</small>
-                                </div> 
-                            </div>
-                            <!-- videos
-                            video_links -->
-                            <div class="col-sm">
-                                <div class="form-group">
-                                    <label for="db_table_column">Database - Column Name</label>
-                                    <input type="text" class="form-control form-control-sm" id="db_table_column"
-                                        placeholder="" name="db_table_column" value="video_links">
-                                    <small id="account_id" class="form-text text-muted">Please paste the column name of your table where the links resides</small>
-                                </div> 
-                            </div> 
-                          </div>
-                    </form>
-                </div>
-            </div>
-            <!-- eof Requirements Step -->
-            <br />
-
-
-            <!-- Fifth Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Fifth Step<span class="text-primary">*</span></h5>
-                    <h6 class="card-text text-primary">Updating database from Cloudstream links to Huawei Cloud VOD
-                        links </h6>
-                    <p class="card-text">
-                        Now open <code>5-script_db.php</code> and change the configuration for <code>$host</code>,
-                        <code>$dbname</code>, <code>$username</code> and <code>$password</code>. That's it, just click
-                        on below <code>Update the links</code> and you database will be updated with new links
-                    </p>
-                    </p>
-                    <p class="card-text">
-                        Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
-                        <code>Cloudflare Cloudstream</code>.
-                    </p>
-                    <textarea name="textareaHuaweiVideosLinks" id="textareaHuaweiVideosLinks" rows="10"
-                        style='min-width: 100%; font-size: 10pt'></textarea>
                         <br />
-                    <a class="btn btn-primary btn-sm" id="updateMySqlDbLinks" role="button">Update the links</a>
 
-                    <br /><br />
-                    <div id="mysql_response2"></div>
+                        <!-- A div where responses are saved to indicate the user with request status -->
+                        <div class="mt-2" id="div_huawei_cloud_links"></div>
+                    </div>
                 </div>
+                <!-- eof Fourth Step -->
+                <br />
+
+                <br />
+
+                <!-- MySQL DB Step -->
+                <div class="card" style="width: rem; background-color: #f1f1f1">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            MySQL DB Updation Step<span class="text-primary"
+                                >*</span
+                            >
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Gathering Credentials for Cloudflare
+                        </h6>
+                        <p class="card-text">
+                            Please enter your all credentials to continue with
+                            the later steps un-interruptedly.
+                        </p>
+
+                        <form
+                            action="1-list-cloudflare-videos.php"
+                            method="POST"
+                            id="credentialsForm"
+                        >
+                            <div class="form-group">
+                                <label for="db_host">DB Host</label>
+                                <input
+                                    type="email"
+                                    class="form-control form-control-sm"
+                                    id="db_host"
+                                    aria-describedby="emailHelp"
+                                    placeholder="fwd82@live.com"
+                                    name="db_host"
+                                    value="localhost"
+                                />
+                                <small
+                                    id="emailHelp"
+                                    class="form-text text-muted"
+                                    >We'll never share your X Auth Email with
+                                    anyone else.</small
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="db_username">DB Username</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="db_username"
+                                    placeholder="2590b14a48271988be21c06479697cee"
+                                    name="db_username"
+                                    value="root"
+                                />
+                                <small
+                                    id="account_id"
+                                    class="form-text text-muted"
+                                    >We'll never share your Account ID with
+                                    anyone else.</small
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="db_password">DB Password</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="db_password"
+                                    placeholder=""
+                                    name="db_password"
+                                    value=""
+                                />
+                                <small
+                                    id="account_id"
+                                    class="form-text text-muted"
+                                    >We'll never share your Customer subdomain
+                                    with anyone else.</small
+                                >
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="db_name"
+                                            >Database - Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-sm"
+                                            id="db_name"
+                                            placeholder=""
+                                            name="db_name"
+                                            value="MyDB"
+                                        />
+                                        <!-- database name rung -->
+                                        <small
+                                            id="account_id"
+                                            class="form-text text-muted"
+                                            >Please paste the table name of your
+                                            database</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="db_table_name"
+                                            >Database - Table Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-sm"
+                                            id="db_table_name"
+                                            placeholder=""
+                                            name="db_table_name"
+                                            value="videos"
+                                        />
+                                        <!-- database name rung -->
+                                        <small
+                                            id="account_id"
+                                            class="form-text text-muted"
+                                            >Please paste the table name of your
+                                            database</small
+                                        >
+                                    </div>
+                                </div>
+                                <!-- videos
+                            video_links -->
+                                <div class="col-sm">
+                                    <div class="form-group">
+                                        <label for="db_table_column"
+                                            >Database - Column Name</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-sm"
+                                            id="db_table_column"
+                                            placeholder=""
+                                            name="db_table_column"
+                                            value="video_links"
+                                        />
+                                        <small
+                                            id="account_id"
+                                            class="form-text text-muted"
+                                            >Please paste the column name of
+                                            your table where the links
+                                            resides</small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- eof MySQL DB Step -->
+                <br />
+
+                <!-- Fifth Step -->
+                <div class="card" style="width: rem">
+                    <div class="card-body">
+                        <h5 class="card-title text-secondary">
+                            Fifth Step<span class="text-primary">*</span>
+                        </h5>
+                        <h6 class="card-text text-primary">
+                            Updating database from Cloudstream links to Huawei
+                            Cloud VOD links
+                        </h6>
+                        <p class="card-text">
+                            Now open <code>5-script_db.php</code> and change the
+                            configuration for <code>$host</code>,
+                            <code>$dbname</code>, <code>$username</code> and
+                            <code>$password</code>. That's it, just click on
+                            below <code>Update the links</code> and you database
+                            will be updated with new links
+                        </p>
+
+                        <p class="card-text">
+                            Until this stage, our videos are successfully
+                            migrated to <code>Huawei Cloud VOD</code> from
+                            <code>Cloudflare Cloudstream</code>.
+                        </p>
+                        <textarea
+                            name="textareaHuaweiVideosLinks"
+                            id="textareaHuaweiVideosLinks"
+                            rows="10"
+                            style="min-width: 100%; font-size: 10pt"
+                        ></textarea>
+                        <br />
+                        <a
+                            class="btn btn-primary btn-sm"
+                            id="updateMySqlDbLinks"
+                            role="button"
+                            >Update the links</a
+                        >
+                        <div
+                            class="spinner-border text-primary"
+                            id="spinner-step-5"
+                            role="status"
+                        >
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                        <br /><br />
+                        <div id="mysql_response2"></div>
+                    </div>
+                </div>
+                <!-- eof Fifth Step -->
+                <br />
+                <br />
             </div>
-            <!-- eof Fifth Step -->
+
+            <div class="text-center mb-4">
+                <h3 class="mt-5" style="color: #fc5e03"></h3>
+            </div>
+
             <br />
-            <br>
-
         </div>
-
-        <div class="text-center mb-4">
-            <h3 class="mt-5" style="color:#fc5e03;"> </h3>
-        </div>
-
-        <br>
-
-    </div> <!-- /.container -->
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
-</body>
-
+        <!-- /.container -->
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
