@@ -21,8 +21,12 @@
 $(document).ready(function () {
     $('#spinner1').addClass('d-none'); // first hide the loader of links.
     $('#spinner2').addClass('d-none'); // first hide the loader of links.
+    $('#spinner-step-4').addClass('d-none'); // first hide the loader of links.
 
-    listTemplateGroup();
+    // $('#textareaHuaweiVideosLinks').append('Something that i don\'t understand');
+
+    
+    // listTemplateGroup();
 
     // a function to fetch video links from cloudflare.
     $("#fetchCloudflareVideoLinks").click(function () {
@@ -240,7 +244,7 @@ $(document).ready(function () {
     }
     // Function to extract video links and ids of huawei from textarea
     $("#updateMySqlDbLinks").click(function () {
-        const inputTextUrls = $("#huaweiVideosLinks").val();
+        const inputTextUrls = $("#textareaHuaweiVideosLinks").val();
         const huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
 
         const urlAndIds = huaweiCloudVideoUrls.map(videoUrl => {
@@ -259,6 +263,9 @@ $(document).ready(function () {
 
     // function to get ids, and links of videos from huawei VOD.
     $("#getHuaweiVODLinks").click(function () {
+        console.log("#getHuaweiVODLinks called");
+        $('#spinner-step-4').removeClass('d-none'); // display the spinner
+
         const ak = $("#ak").val();
         const sk = $("#sk").val();
         const endpoint = $("#endpoint").val();
@@ -288,13 +295,38 @@ $(document).ready(function () {
                     // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/af65ad22a95561d9674019fff16d193c.mp4
                     // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_0.m3u8
                     // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_1.m3u8
+
                 }));
 
-                updateLinksInMySQL(assetid_and_url);
+                // updateLinksInMySQL(assetid_and_url); // Call this function later 
+
+                console.log(assetid_and_url);
+                // $("#div_huawei_cloud_links").html('<div class="alert alert-success">Success: ' + assetid_and_url[0].title + " : " + assetid_and_url[0].huaweiCloudVideoUrl + '</div>');
+                 
+
+
+                // Create HTML content with all titles and URLs
+                let contentHtml = '<div class="alert alert-success">';
+                assetid_and_url.forEach(item => {
+                    contentHtml += '<p>Title | Name: ' + item.title + '</p>';
+                    contentHtml += '<p>URL: <a href="' + item.huaweiCloudVideoUrl + '">' + item.huaweiCloudVideoUrl + '</a></p> <hr />';
+                    
+                    $('#textareaHuaweiVideosLinks').append(item.huaweiCloudVideoUrl + "\n"); 
+                
+                });
+                contentHtml += '</div>';
+
+                // Update the div with the new content
+                $("#div_huawei_cloud_links").html(contentHtml);
+
+                // Hide the spinner
+                $('#spinner-step-4').addClass('d-none'); // show it
+
             },
             error: function (xhr, status, error) {
                 console.log('Error: ', error);
-                $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+                $('#spinner-step-4').addClass('d-none'); // hide it
+                $("#div_huawei_cloud_links").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             }
         });
     });

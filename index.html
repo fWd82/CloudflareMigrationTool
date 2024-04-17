@@ -177,7 +177,7 @@
             <!-- Third Step -->
             <div class="card" style="width: rem;">
                 <div class="card-body">
-                    <h5 class="card-title text-secondary">Third Step </h5>
+                    <h5 class="card-title text-secondary">Third Step<span class="text-danger">*</span></h5>
                     <h6 class="card-text text-primary">Uploading (Importing) videos from Cloudflare | Cloudstream to
                         Huawei Cloud VOD </h6>
                     <p class="card-text">Now, open <code>Output_....xlsx</code> and copy all the links from
@@ -247,76 +247,37 @@
             <!-- Fourth Step -->
             <div class="card" style="width: rem;">
                 <div class="card-body">
-                    <h5 class="card-title text-secondary">Fourth Step </h5>
+                    <h5 class="card-title text-secondary">Fourth Step<span class="text-danger">*</span></h5>
                     <h6 class="card-text text-primary">Getting new links from Huawei Cloud VOD </h6>
                     <p class="card-text">
-                        Now, to update the links of recently migrated videos we have to follow these steps. We can go to
-                        Huawei Cloud VOD, select videos and click on <code>Export</code> button, the records will be
-                        download in Excel Sheet. <br /> The only problem with the exported excel sheet is we cannot
-                        process it as it is in .xls format. So we have to open the excel sheet, go to File > click on
-                        Convert to Compatibility Mode and save it.
+                        Dummy Text - I will update this later
                     </p>
                     <p class="card-text">
-                        In the next step we have to open <code>process_excel.php</code> and paste the correct name of
-                        the excel sheet downloaded, probably it will be: <code>Video Details.xlsx</code>. Save the file
-                        and click on below <strong>Clean the data</strong> button. It will generate another file with
-                        name probably like: <code>cleaned_data-20240401000000.xlsx</code>
+                        Dummy text<code> 1 later</code>
                     </p>
-                    <p class="card-text">Open Huawei Cloud VOD <a
-                            href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
+                    <p class="card-text">Open Huawei Cloud VOD <a href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
                     </p>
-                    <a class="btn btn-primary btn-sm" href="4-process_excel.php" target="_blank" role="button">Clean the
-                        data</a>
+                    <a class="btn btn-primary btn-sm" id="getHuaweiVODLinks" role="button">Get Huawei VOD Links</a>
+                    <div class="spinner-border text-primary" id="spinner-step-4" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <br />
+                    <div class="mt-2" id="div_huawei_cloud_links">Get Huawei VOD Links here</div>
                 </div>
             </div>
             <!-- eof Fourth Step -->
             <br />
-
-
-            <!-- Fifth Step -->
-            <div class="card" style="width: rem;">
-                <div class="card-body">
-                    <h5 class="card-title text-secondary">Fifth Step (Optional)</h5>
-                    <h6 class="card-text text-primary">Renaming VOD Files </h6>
-                    <p class="card-text">
-                        Video name has something like <code>default.mp4?filename=123456789</code> which looks so bad, so
-                        in this stage, we are looping through all video <code>$titles</code>, and removing the resedue
-                        <code>default.mp4?filename=</code>, while leaving the number<code> 123456789 </code> behind from
-                        all the videos.
-                    </p>
-                    </p>
-                    <p class="card-text">
-                        After this stage our videos fully migrated to <code>Huawei Cloud VOD</code> from
-                        <code>Cloudflare Cloudstream</code>.
-                    </p>
-                    <a class="btn btn-primary btn-sm" href="6-script_rename_vod.php" target="_blank" role="button">Fix
-                        the titles | names</a>
-                </div>
-            </div>
-            <!-- eof Fifth Step -->
 
             <br />
 
             <!-- MySQL DB Step -->
             <div class="card" style="width: rem; background-color: #f1f1f1;">
                 <div class="card-body">
-                    <h5 class="card-title text-secondary">MySQL DB Updation Step<span class="text-danger">*</span></h5>
+                    <h5 class="card-title text-secondary">MySQL DB Updation Step<span class="text-primary">*</span></h5>
                     <h6 class="card-text text-primary">Gathering Credentials for Cloudflare</h6>
                     <p class="card-text">Please enter your all credentials to continue with the later steps
                         un-interruptedly.
                     </p>
-
-                    <!-- $host = $env["host"];
-                    $dbname = $env["dbname"];
-                    $username = $env["username"];
-                    $password = $env["password"]; 
-
-                    host=localhost
-                    dbname=MyDB
-                    username=root
-                    password= -->
-
-
 
                     <form action="1-list-cloudflare-videos.php" method="POST" id="credentialsForm">
                         <div class="form-group">
@@ -328,13 +289,7 @@
                                 anyone
                                 else.</small>
                         </div>
-                        <!-- <div class="form-group">
-                            <label for="db_name">DB Name</label>
-                            <input type="text" class="form-control form-control-sm" id="db_name"
-                                placeholder="1eab14593a06d3722782f30526a779378a5ee" name="db_name" value="MyDB">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your Auth Key with
-                                anyone else.</small>
-                        </div> -->
+                        
                         <div class="form-group">
                             <label for="db_username">DB Username</label>
                             <input type="text" class="form-control form-control-sm" id="db_username"
@@ -381,8 +336,6 @@
                                 </div> 
                             </div> 
                           </div>
-
-
                     </form>
                 </div>
             </div>
@@ -390,10 +343,10 @@
             <br />
 
 
-            <!-- Sixth Step -->
+            <!-- Fifth Step -->
             <div class="card" style="width: rem;">
                 <div class="card-body">
-                    <h5 class="card-title text-secondary">Sixth Step</h5>
+                    <h5 class="card-title text-secondary">Fifth Step<span class="text-primary">*</span></h5>
                     <h6 class="card-text text-primary">Updating database from Cloudstream links to Huawei Cloud VOD
                         links </h6>
                     <p class="card-text">
@@ -406,17 +359,16 @@
                         Until this stage, our videos are successfully migrated to <code>Huawei Cloud VOD</code> from
                         <code>Cloudflare Cloudstream</code>.
                     </p>
-                    <textarea name="txtarea_huawei_links" id="huaweiVideosLinks" rows="10"
+                    <textarea name="textareaHuaweiVideosLinks" id="textareaHuaweiVideosLinks" rows="10"
                         style='min-width: 100%; font-size: 10pt'></textarea>
                         <br />
                     <a class="btn btn-primary btn-sm" id="updateMySqlDbLinks" role="button">Update the links</a>
-                    <a class="btn btn-primary btn-sm" id="getHuaweiVODLinks" role="button">Get Huawei VOD Links</a>
 
                     <br /><br />
                     <div id="mysql_response2"></div>
                 </div>
             </div>
-            <!-- eof Sixth Step -->
+            <!-- eof Fifth Step -->
             <br />
             <br>
 
