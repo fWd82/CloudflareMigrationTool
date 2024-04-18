@@ -8,27 +8,20 @@ use HuaweiCloud\SDK\Core\Exceptions\RequestTimeoutException;
 use HuaweiCloud\SDK\Core\Exceptions\ServiceResponseException;
 use HuaweiCloud\SDK\Vod\V1\VodClient;
 
-// The AK and SK used for authentication are hard-coded or stored in plaintext, which has great security risks. It is recommended that the AK and SK be stored in ciphertext in configuration files or environment variables and decrypted during use to ensure security.
-// In this example, AK and SK are stored in environment variables for authentication. Before running this example, set environment variables CLOUD_SDK_AK and CLOUD_SDK_SK in the local environment
- 
-// if(!isset($_GET["ak"]) || !isset($_GET["sk"]) || !isset($_GET["endpoint"]) || !isset($_GET["projectId"])){
-//     $msg = "Some thing is missing in request body. Please check all the values...";
-//     echo "\n". $msg ."\n";
-//     // echo $ak . $sk . $endpoint . $projectId . $videoType . $videoUrl . $videoTitle . $videoTemplateGroupName;
-//     exit();
-// }
 
 // Uncomment these values. 
-// $ak = $_GET["ak"];
-// $sk = $_GET["sk"];
-// $endpoint = $_GET["endpoint"];
-// $projectId = $_GET["projectId"];
+$ak =               $_POST["ak"];
+$sk =               $_POST["sk"];
+$endpoint =         $_POST["endpoint"];
+$projectId =        $_POST["projectId"];
+$listAssetPageNo =  $_POST["listAssetPageNo"];
 
 // Comment below hard coded values
-$ak = "9NW1ATJF9UAHZY5XXESS";
-$sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
-$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
-$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+// $ak = "9NW1ATJF9UAHZY5XXESS";
+// $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
+// $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+// $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+// $listAssetPageNo = 0;
 
 
 $credentials = new BasicCredentials($ak,$sk,$projectId);
@@ -40,19 +33,25 @@ $client = VodClient::newBuilder(new VodClient)
   ->withEndpoint($endpoint)
   ->withCredentials($credentials)
   ->build();
+  // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/sdk?api=ListAssetList
 $request = new ListAssetListRequest();
+$request->setSize(100); // Huawei Cloud's ListAssetList fetch only 10 records by default, but we have to pass 100 and page number as well. 
+$request->setPage($listAssetPageNo);
 
 try {
   $response = $client->ListAssetList($request);
   echo "\n";
   echo $response;
+  // echo json_encode($response);
 
 } catch (ConnectionException $e) {
   $msg = $e->getMessage();
+  // echo json_encode($msg);
   echo "\n". $msg ."\n";
 } catch (RequestTimeoutException $e) {
   $msg = $e->getMessage();
   echo "\n". $msg ."\n";
+  // echo json_encode($msg);
 } catch (ServiceResponseException $e) {
   echo "\n";
   echo $e->getHttpStatusCode(). "\n";

@@ -41,12 +41,12 @@ function listTemplateGroup() {
         success: function (response) {
             let optionsValues = '<select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">';
             // Add an empty option at the start
-            optionsValues += '<option value="">No Template</option>';
+            optionsValues += '<option value="">Don\'t apply any Template</option>';
             jQuery.each(response.template_group_list, function (index, item) {
-                if (item.name === "HLS_H264")
-                    // Add the 'selected' attribute to make it the default option
-                    optionsValues += '<option value="' + item.name + '" selected>' + item.name + '</option>';
-                else
+                // if (item.name === "HLS_H264")
+                //     // Add the 'selected' attribute to make it the default option
+                //     optionsValues += '<option value="' + item.name + '" selected>' + item.name + '</option>';
+                // else
                     optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
 
                 /* non_transcoding_template_group
@@ -128,10 +128,27 @@ $(document).ready(function () {
     $('#spinner-step-4').addClass('d-none'); // hide the loader 
     $('#spinner-step-5').addClass('d-none'); // hide the loader 
 
+
+    /////////////////////////////////////////////////////////////////
+    $('#cloudflareVideosMp4Links').on('input', function() {
+        // Get the current text from textarea
+        var text = $(this).val();
+        
+        // Calculate the number of lines
+        var lineCount = text.split("\n").length;
+
+        // Update the line count display
+        $('#lineCountDisplay').html('Number of lines: <span class="badge badge-primary">' + lineCount + '</span>');
+
+        
+    });
+    /////////////////////////////////////////////////////////////////
+
     // $('#textareaHuaweiVideosLinks').append('Something that i don\'t understand');
 
     // function to get ids, and links of videos from huawei VOD.This function will be called when the page loads or can be called manually if failed.
-    listTemplateGroup();
+    // listTemplateGroup(); Later I will uncomment
+
     $("#listTemplateGroup").click(listTemplateGroup);
 
     // a function to fetch video links from cloudflare.
@@ -258,127 +275,167 @@ $(document).ready(function () {
         });
     });
 
-    // a function to add a video to huawei cloud from a link
+
+    // A function to add a video to huawei cloud from a link
     $("#importFromCloudflareToHuawei").click(function () {
         $('#spinner-step-32').removeClass('d-none');
         let ak = $("#ak").val();
         let sk = $("#sk").val();
         let endpoint = $("#endpoint").val();
         let projectId = $("#projectId").val();
-
         let videoType = $("#videoType").val();
         let videoTemplateGroupName = $("#videoTemplateGroupName").val();
-
+    
         let inputTextUrls = $("#cloudflareVideosMp4Links").val();
-        let mp4Urls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
+    
+        let mp4Urls = inputTextUrls.split('\n')
+                                    .map(link => link.trim())      // Remove any leading or trailing whitespace
+                                    .filter(link => link !== "");  // Remove any empty lines
+    
+        // Batch since Huawei Cloud just supports 100 videos to be uploaded at once
+        const BATCH_SIZE = 100;
+        for (let i = 0; i < mp4Urls.length; i += BATCH_SIZE) {
+            // Create batches of up to 100 urls
+            const batchUrls = mp4Urls.slice(i, i + BATCH_SIZE);
+            sendBatch(batchUrls);
 
-        // for each link call the api to store the content from link to huawei
-        mp4Urls.forEach(mp4Url => {
-            $.ajax({
-                url: `UploadMetaDataByUrl.php`,
-                method: "GET", // I think we should use POST
-                timeout: 0,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                data: {
-                    ak,
-                    sk,
-                    endpoint,
-                    projectId,
-                    videoType,
-                    videoTemplateGroupName,
-                    videoTitle: mp4Url.split('/')[3],
-                    videoUrl: mp4Url,
-                },
-                success: function (response) {
-                    $('#spinner-step-32').addClass('d-none');
-                    const { url, asset_id } = JSON.parse(response).upload_assets[0];
+            $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary">' + (i + 1) + '</span>'); 
 
-                    // Create HTML content with all ids and URLs
+        }
+    
+        function sendBatch(batchUrls) {
+            batchUrls.forEach(mp4Url => {
+                $.ajax({
+                    url: `UploadMetaDataByUrl.php`,
+                    method: "GET",  
+                    timeout: 0,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: {
+                        ak,
+                        sk,
+                        endpoint,
+                        projectId,
+                        videoType,
+                        videoTemplateGroupName,
+                        videoTitle: mp4Url.split('/')[3],
+                        videoUrl: mp4Url,
+                    }, 
+                    success: function (response) {
+                        // Handle success for each URL in the batch
+                        processResponse(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error with batch:', error);
+                    },
+                    complete: function () {
+                        // This will trigger when the last AJAX call within this batch is complete
+                        $('#spinner-step-32').addClass('d-none'); // Hide the spinner when all requests are done
+                    }
+                });
+            });
+        }
+    
+        function processResponse(response) {
+            $('#spinner-step-32').addClass('d-none'); // Hide the spinner
+            try {
+                const data = JSON.parse(response);
+                if (data.upload_assets && data.upload_assets.length > 0) {
+                    const { url, asset_id } = data.upload_assets[0];
                     let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
                     contentHtml += '<p>Asset Id: ' + asset_id + '</p>';
                     contentHtml += '<p>URL: <a href="' + url + '">' + url + '</a></p>';
                     contentHtml += '</div>';
                     $("#importedFromCloudflareToHuaweiLinks").append(contentHtml);
-                },
 
-                error: function (xhr, status, error) {
-                    $('#spinner-step-32').addClass('d-none');
-
-                    let contentHtml = '<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">';
-                    contentHtml += '<p>Error: ' + error + '</p>';
-                    contentHtml += '</div>';
-                    $("#importedFromCloudflareToHuaweiLinks").append(contentHtml);
+                    importedFromCloudflareToHuaweiLinks1
+                } else {
+                    const dataAsString = JSON.stringify(data, null, 2); // Pretty print the JSON
+                    console.error('No assets found in the response:', data);
+                    let warningHtml = '<div class="alert alert-warning text-sm" style="font-size: smaller; margin: 1rem;">';
+                    warningHtml += '<p>No assets found. Data received:</p>';
+                    warningHtml += '<pre>' + dataAsString + '</pre>';
+                    warningHtml += '</div>';
+                    $("#importedFromCloudflareToHuaweiLinks").append(warningHtml);
                 }
-            });
-        });
-    });
+            } catch (e) {
+                console.error('Error parsing JSON!', e);
+                let errorHtml = '<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">';
+                errorHtml += '<p>Error parsing JSON! ' + e.message + '</p>';
+                errorHtml += '</div>';
+                $("#importedFromCloudflareToHuaweiLinks").append(errorHtml);
+            }
+        }
+    });    
     // eof #importFromCloudflareToHuawei()
 
     // function to get ids, and links of videos from huawei VOD.
     $("#getHuaweiVODLinks").click(function () {
         console.log("#getHuaweiVODLinks called");
-        $('#spinner-step-4').removeClass('d-none'); // display the spinner
-
+        $('#spinner-step-4').removeClass('d-none'); // Display the spinner
+    
         const ak = $("#ak").val();
         const sk = $("#sk").val();
         const endpoint = $("#endpoint").val();
         const projectId = $("#projectId").val();
-
-        $.ajax({
-            url: `get_huawei_vod_links.php`,
-            method: "POST",
-            timeout: 0,
-            contentType: "application/x-www-form-urlencoded",
-            dataType: 'json', // Expect JSON response
-            data: {
-                ak,
-                sk,
-                endpoint,
-                projectId,
-            },
-            success: function (response) {
-                const assetid_and_url = response.assets.map(({ asset_id, title, original_url }) => ({
-                    // asset_id: asset_id,
-                    // huaweiCloudVideoUrl: original_url
-                    title: title,
-                    huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
-
-                    // "cover_url": "https://vod.fawadiqbal.me/asset/00484fad9c58191f3cc77f31020bb698/cover/Cover0.jpg
-                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/index.m3u8
-                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/af65ad22a95561d9674019fff16d193c.mp4
-                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_0.m3u8
-                    // https://vod.fawadiqbal.me/asset/cb3a23b3ffc5cb3e711ef89b35b7dd8c/play_video/bc2d7c5b36cd59f0aa393125510840e9_1.m3u8
-
-                }));
-
-                console.log(assetid_and_url);
-                // $("#div_huawei_cloud_links").html('<div class="alert alert-success">Success: ' + assetid_and_url[0].title + " : " + assetid_and_url[0].huaweiCloudVideoUrl + '</div>');
-                // updateLinksInMySQL(assetid_and_url); // Call this function later  
-              
-                // Create HTML content with all titles and URLs
-                let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
-                assetid_and_url.forEach(({ title, huaweiCloudVideoUrl }) => {
-                    contentHtml += '<p>Title | Name: ' + title + '</p>';
-                    contentHtml += '<p>URL: <a href="' + huaweiCloudVideoUrl + '">' + huaweiCloudVideoUrl + '</a></p> <hr />';
-                    $('#textareaHuaweiVideosLinks').append(huaweiCloudVideoUrl + "\n");
-
-                });
-                contentHtml += '</div>';
-                $("#div_huawei_cloud_links").html(contentHtml);
-
-                // Hide the spinner
-                $('#spinner-step-4').addClass('d-none'); // show it
-
-            },
-            error: function (xhr, status, error) {
-                console.log('Error: ', error);
-                $('#spinner-step-4').addClass('d-none'); // hide it
-                $("#div_huawei_cloud_links").html('<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">An error occurred: ' + error + '</div>');
-            }
-        });
+        let listAssetPageNo = 0;
+        const listAssetSize = 100;
+        let allAssets = [];
+    
+        function fetchAssets(pageNo) {
+            $.ajax({
+                url: `get_huawei_vod_links.php`,
+                method: "POST",
+                timeout: 0,
+                contentType: "application/x-www-form-urlencoded",
+                dataType: 'json', // Expect JSON response
+                data: {
+                    ak,
+                    sk,
+                    endpoint,
+                    projectId,
+                    listAssetPageNo: pageNo
+                },
+                success: function (response) {
+                    allAssets = allAssets.concat(response.assets.map(({ asset_id, title, original_url }) => ({
+                        title: title,
+                        huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
+                    })));
+    
+                    if ((pageNo + 1) * listAssetSize < response.total) {
+                        fetchAssets(pageNo + 1); // Fetch the next page
+                    } else {
+                        $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary">' + response.total + '</span>');
+                        updateUI(allAssets); // Update UI once all data is fetched
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ', error);
+                    $('#spinner-step-4').addClass('d-none'); // Hide spinner
+                    $("#div_huawei_cloud_links").html('<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">An error occurred: ' + error + '</div>');
+                }
+            });
+        }
+    
+        fetchAssets(listAssetPageNo); // Start fetching from the first page
     });
+    
+    function updateUI(assets) {
+        let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
+        let count = 0;
+        assets.forEach(({ title, huaweiCloudVideoUrl }) => {
+            contentHtml += '<p><strong>' + (count+1) + '</strong>: Title | Name: ' + title + '</p>';
+            contentHtml += '<p>URL: <a href="' + huaweiCloudVideoUrl + '">' + huaweiCloudVideoUrl + '</a></p> <hr />';
+            $('#textareaHuaweiVideosLinks').append(huaweiCloudVideoUrl + "\n");
+            count++;
+        });
+        contentHtml += '</div>';
+        $("#div_huawei_cloud_links").html(contentHtml);
+        $('#spinner-step-4').addClass('d-none'); // Hide spinner
+        $("#div_huawei_cloud_links_count").html('Total Records Fetched: <span class="badge badge-primary">' + count + '</span>');
+    }
+    
     // eof getHuaweiVODLinks();
 
     // Function to extract video links and ids of huawei from textarea

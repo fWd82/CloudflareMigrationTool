@@ -338,6 +338,8 @@
                             huawei cloud. Take care that each link end with a
                             new line '\n'.
                         </p>
+                        <div id="lineCountDisplay">Number of Records: <span class='badge badge-primary'>0</span></div>
+                        <div class="mt-2" id="importedFromCloudflareToHuaweiLinks1">Batch Size of (100): <span class='badge badge-primary'>0</span></div>
                         <textarea
                             name="txtarea_cloudflare_links"
                             id="cloudflareVideosMp4Links"
@@ -434,10 +436,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                         <!-- A div where responses are saved to indicate the user with request status -->
-                        <div
-                            class="mt-2"
-                            id="importedFromCloudflareToHuaweiLinks"
-                        ></div>
+                        <div class="mt-2" id="importedFromCloudflareToHuaweiLinks"></div>
                     </div>
                 </div>
                 <!-- eof Third Step -->
@@ -455,20 +454,16 @@
                         <p class="card-text">
                             Dummy Text - I will update this later
                         </p>
-                        <p class="card-text">Dummy text<code> 1 later</code></p>
-                        <p class="card-text">
-                            Open Huawei Cloud VOD
-                            <a
-                                href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage"
-                                >HERE</a
-                            >
+                        <p class="card-text">Open Huawei Cloud VOD
+                            <a href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
                         </p>
+                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_total_records">Total Records Found: <span class='badge badge-primary'>0</span></div>
+                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_count">Total Records Fetched: <span class='badge badge-primary'>0</span></div>
                         <a
                             class="btn btn-primary btn-sm"
                             id="getHuaweiVODLinks"
                             role="button"
-                            >Get Huawei VOD Links</a
-                        >
+                            >Get Huawei VOD Links</a>
                         <div
                             class="spinner-border text-primary"
                             id="spinner-step-4"
@@ -477,7 +472,6 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                         <br />
-
                         <!-- A div where responses are saved to indicate the user with request status -->
                         <div class="mt-2" id="div_huawei_cloud_links"></div>
                     </div>
