@@ -163,10 +163,38 @@ $(document).ready(function () {
     // First Step
     // a function to fetch video links from cloudflare.
     $("#fetchCloudflareVideoLinks").click(function () {
+        
+        // Restting div view
+        $("#videoLinks").html("");
+        // $("#failedLinks").html("");
+
+        let authEmail = $("#X-Auth-Email").val().trim();
+        let authKey = $("#X-Auth-Key").val().trim();
+        let accountId = $("#account_id").val().trim();
+        let customer_subdomain = $("#customer_subdomain").val().trim();
+
+        if (!authEmail) {
+            console.log("X-Auth-Email is empty");
+            $("#videoLinks").html("<span class='text-danger'>X-Auth-Email is empty</span>");
+            return;
+        }
+
+        if (!authKey) {
+            $("#videoLinks").html("<span class='text-danger'>X-Auth-Key is empty</span>");
+            return;
+        }
+
+        if (!accountId) {
+            $("#videoLinks").html("<span class='text-danger'>Account ID is empty</span>");
+            return;
+        }
+
+        if (!customer_subdomain) {
+            $("#videoLinks").html("<span class='text-danger'>Customer Subdomain is empty</span>");
+            return;
+        }
+
         $('#spinner-step-1').removeClass('d-none'); // display the spinner.
-        let authEmail = $("#X-Auth-Email").val();
-        let authKey = $("#X-Auth-Key").val();
-        let accountId = $("#account_id").val();
         let cloudflareLinksCount = 0;
 
         let apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/stream";
@@ -205,10 +233,24 @@ $(document).ready(function () {
         });
     });
 
-    // Second Step
+    // Second Step - Preparing Cloudflare files to Migrate
     // a function to enable download mp4 links in cloudflare
     $("#enableMp4DownloadLinks").click(function () {
         $('#spinner-step-2').removeClass('d-none'); // display the spinner.
+
+        // Restting div view
+        $("#successfulLinks").html("");
+        $("#failedLinks").html("");
+
+        // Getting the value from the textarea
+        var inputTextUrls0 = $("#cloudflareLinks").val().trim();
+        // Check if the textarea is empty or not
+        if (inputTextUrls0 === "") {
+            $("#failedLinks").html("<span class='text-danger'>Please enter at least one URL</span>");
+            $('#spinner-step-2').addClass('d-none');
+            return;  // Stop further execution if the textarea is empty
+        }
+
         let inputTextUrls = $("#cloudflareLinks").val();
         let m3u8Urls = inputTextUrls.split(',').map(link => link.trim()).filter(link => link !== "");
         let successfulLinks = [];
@@ -290,34 +332,63 @@ $(document).ready(function () {
         });
     });
 
-    // Third Step
-    // A function to add a video to huawei cloud from a link
+    // Third Step - Uploading (Importing) videos from Cloudflare | Cloudstream to Huawei Cloud VOD
+    // A function to add a video to Huawei cloud from a link
     $("#importFromCloudflareToHuawei").click(function () {
-        $('#spinner-step-32').removeClass('d-none');
-        let ak = $("#ak").val();
-        let sk = $("#sk").val();
-        let endpoint = $("#endpoint").val();
-        let projectId = $("#projectId").val();
-        let videoType = $("#videoType").val();
-        let videoTemplateGroupName = $("#videoTemplateGroupName").val();
-    
+
+        // Restting div view
+        $("#importedFromCloudflareToHuaweiLinks").html("");
+
+        // Collecting inputs
+        let ak = $("#ak").val().trim();
+        let sk = $("#sk").val().trim();
+        let endpoint = $("#endpoint").val().trim();
+        let projectId = $("#projectId").val().trim();
+        let videoType = $("#videoType").val().trim();
+        let videoTemplateGroupName = $("#videoTemplateGroupName").val().trim();
         let inputTextUrls = $("#cloudflareVideosMp4Links").val();
-    
+
+        if (!ak) { 
+            $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>AK is empty</span>");
+            return;
+        }
+
+        if (!sk) { 
+            $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>SK is empty</span>");
+            return;
+        }
+
+        if (!endpoint) { 
+            $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Endpoint is empty</span>");
+            return;
+        }
+
+        if (!projectId) { 
+            $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Project ID is empty</span>");
+            return;
+        }
+
+        // Getting the value from the textarea
+        var inputTextUrls0 = $("#cloudflareVideosMp4Links").val().trim();
+        // Check if the textarea is empty or not
+        if (inputTextUrls0 === "") {
+            $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Please enter at least one URL</span>");
+            return;  // Stop further execution if the textarea is empty
+        }
+
+        $('#spinner-step-32').removeClass('d-none');
+
         let mp4Urls = inputTextUrls.split('\n')
-                                    .map(link => link.trim())      // Remove any leading or trailing whitespace
-                                    .filter(link => link !== "");  // Remove any empty lines
-    
-        // Batch since Huawei Cloud just supports 100 videos to be uploaded at once
+                                    .map(link => link.trim())      // Trim whitespace
+                                    .filter(link => link !== "");  // Remove empty lines
+
         const BATCH_SIZE = 100;
         for (let i = 0; i < mp4Urls.length; i += BATCH_SIZE) {
-            // Create batches of up to 100 urls
             const batchUrls = mp4Urls.slice(i, i + BATCH_SIZE);
             sendBatch(batchUrls);
-
             $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary badge-pill">' + (i + 1) + '</span>'); 
-
         }
-    
+
         function sendBatch(batchUrls) {
             batchUrls.forEach(mp4Url => {
                 $.ajax({
@@ -338,63 +409,75 @@ $(document).ready(function () {
                         videoUrl: mp4Url,
                     }, 
                     success: function (response) {
-                        // Handle success for each URL in the batch
-                        processResponse(response);
+                        processResponse(response, mp4Url);  // Now passing mp4Url to processResponse
                     },
                     error: function (xhr, status, error) {
-                        console.error('Error with batch:', error);
+                        console.error('Error with URL:', mp4Url, error);
+                        $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-danger">Failed to import URL: ' + mp4Url + ' Error: ' + error + '</div>');
                     },
                     complete: function () {
-                        // This will trigger when the last AJAX call within this batch is complete
-                        $('#spinner-step-32').addClass('d-none'); // Hide the spinner when all requests are done
+                        $('#spinner-step-32').addClass('d-none');
                     }
                 });
             });
         }
-    
-        function processResponse(response) {
-            $('#spinner-step-32').addClass('d-none'); // Hide the spinner
+
+        let urlCounter = 0;
+
+        function processResponse(response, mp4Url) {
+            urlCounter++;  // Increment counter for each processed URL
             try {
                 const data = JSON.parse(response);
-                if (data.upload_assets && data.upload_assets.length > 0) {
-                    const { url, asset_id } = data.upload_assets[0];
-                    let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
-                    contentHtml += '<p>Asset Id: ' + asset_id + '</p>';
-                    contentHtml += '<p>URL: <a href="' + url + '">' + url + '</a></p>';
-                    contentHtml += '</div>';
-                    $("#importedFromCloudflareToHuaweiLinks").append(contentHtml);
-
-                    importedFromCloudflareToHuaweiLinks1
+                if (Object.keys(data).length === 0) {  // Checking if the response is an empty object
+                    $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-success"><strong>' + urlCounter + '</strong>. Successfully imported URL: <br />' + mp4Url + '</div>');
                 } else {
-                    const dataAsString = JSON.stringify(data, null, 2); // Pretty print the JSON
-                    console.error('No assets found in the response:', data);
-                    let warningHtml = '<div class="alert alert-warning text-sm" style="font-size: smaller; margin: 1rem;">';
-                    warningHtml += '<p>No assets found. Data received:</p>';
-                    warningHtml += '<pre>' + dataAsString + '</pre>';
-                    warningHtml += '</div>';
-                    $("#importedFromCloudflareToHuaweiLinks").append(warningHtml);
+                    const dataAsString = JSON.stringify(data, null, 2);
+                    console.error('Unexpected data format for URL:', mp4Url, data);
+                    $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-warning"><strong>' + urlCounter + '</strong>. Unexpected data format for URL: ' + mp4Url + '<pre>' + dataAsString + '</pre></div>');
                 }
             } catch (e) {
-                console.error('Error parsing JSON!', e);
-                let errorHtml = '<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">';
-                errorHtml += '<p>Error parsing JSON! ' + e.message + '</p>';
-                errorHtml += '</div>';
-                $("#importedFromCloudflareToHuaweiLinks").append(errorHtml);
+                console.error('Error parsing JSON for URL:', mp4Url, e);
+                $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-danger"><strong>' + urlCounter + '</strong>. Error parsing JSON for URL: ' + mp4Url + ' Error: ' + e.message + '</div>');
             }
         }
-    });    
+    });
     // eof #importFromCloudflareToHuawei()
 
-    // Fourth Step
+    // Fourth Step - Getting new links from Huawei Cloud VOD
     // function to get ids, and links of videos from huawei VOD
     $("#getHuaweiVODLinks").click(function () {
         console.log("#getHuaweiVODLinks called");
         $('#spinner-step-4').removeClass('d-none'); // Display the spinner
-    
-        const ak = $("#ak").val();
-        const sk = $("#sk").val();
-        const endpoint = $("#endpoint").val();
-        const projectId = $("#projectId").val();
+
+        // Restting div view
+        $("#div_huawei_cloud_links").html("");
+
+        // Collecting inputs
+        let ak = $("#ak").val().trim();
+        let sk = $("#sk").val().trim();
+        let endpoint = $("#endpoint").val().trim();
+        let projectId = $("#projectId").val().trim();
+
+        if (!ak) {
+            $("#div_huawei_cloud_links").html("<span class='text-danger'>AK is empty</span>");
+            return;
+        }
+
+        if (!sk) {
+            $("#div_huawei_cloud_links").html("<span class='text-danger'>SK is empty</span>");
+            return;
+        }
+
+        if (!endpoint) {
+            $("#div_huawei_cloud_links").html("<span class='text-danger'>Endpoint is empty</span>");
+            return;
+        }
+
+        if (!projectId) {
+            $("#div_huawei_cloud_links").html("<span class='text-danger'>Project ID is empty</span>");
+            return;
+        }
+
         let listAssetPageNo = 0;
         const listAssetSize = 100;
         let allAssets = [];
@@ -453,10 +536,57 @@ $(document).ready(function () {
     }
     // eof getHuaweiVODLinks();
 
-    // Fifth Step
+    // Fifth Step - Updating database from Cloudstream links to Huawei Cloud VOD links
     // Function to extract video links and ids of huawei from textarea
     $("#updateMySqlDbLinks").click(function () {
+
+        // Restting div view
+        $("#mysql_response2").html("");
+        // $("#failedLinks").html("");
+
+        // Collecting inputs
+        let db_host = $("#db_host").val().trim();
+        let db_username = $("#db_username").val().trim();
+        let db_name = $("#db_name").val().trim();
+        let db_table_name = $("#db_table_name").val().trim();
+        let db_table_column = $("#db_table_column").val().trim();  
+
+        if (!db_host) { 
+            $("#mysql_response2").html("<span class='text-danger'>DB Host is empty</span>");
+            return;
+        }
+
+        if (!db_username) { 
+            $("#mysql_response2").html("<span class='text-danger'>DB Username is empty</span>");
+            return;
+        }
+
+        if (!db_table_name) { 
+            $("#mysql_response2").html("<span class='text-danger'>Database - Name is empty</span>");
+            return;
+        }
+
+        if (!db_host) { 
+            $("#mysql_response2").html("<span class='text-danger'>Database - Host is empty</span>");
+            return;
+        }
+
+        if (!db_table_column) { 
+            $("#mysql_response2").html("<span class='text-danger'>Database - Column Name is empty</span>");
+            return;
+        }
+
         $('#spinner-step-5').removeClass('d-none');
+
+        // Getting the value from the textarea to see if they are empty
+        var inputTextUrls0 = $("#textareaHuaweiVideosLinks").val().trim();
+        // Check if the textarea is empty or not
+        if (inputTextUrls0 === "") {
+            $("#mysql_response2").html("<span class='text-danger'>Please enter at least one URL</span>");
+            $('#spinner-step-5').addClass('d-none');
+            return;  // Stop further execution if the textarea is empty
+        }
+
         const inputTextUrls = $("#textareaHuaweiVideosLinks").val();
         const huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
 
