@@ -130,6 +130,7 @@ $(document).ready(function () {
 
 
     /////////////////////////////////////////////////////////////////
+    // Show Count of lines for TextArea 
     $('#cloudflareVideosMp4Links').on('input', function() {
         // Get the current text from textarea
         var text = $(this).val();
@@ -138,25 +139,35 @@ $(document).ready(function () {
         var lineCount = text.split("\n").length;
 
         // Update the line count display
-        $('#lineCountDisplay').html('Number of lines: <span class="badge badge-primary">' + lineCount + '</span>');
-
-        
+        $('#lineCountDisplay').html('Number of lines: <span class="badge badge-primary badge-pill">' + lineCount + '</span>');
     });
     /////////////////////////////////////////////////////////////////
+    // Show Count of lines for TextArea 
+    $('#cloudflareLinks').on('input', function() { 
+        // Get the current text from textarea
+        var text = $(this).val();
+        
+        // Calculate the number of lines
+        var lineCount = text.split("\n").length; 
 
-    // $('#textareaHuaweiVideosLinks').append('Something that i don\'t understand');
+        // Update the line count display
+        $('#enableMp4DownloadLinksCount').html('Number of lines: <span class="badge badge-primary badge-pill">' + lineCount + '</span>');
+    });
 
     // function to get ids, and links of videos from huawei VOD.This function will be called when the page loads or can be called manually if failed.
     // listTemplateGroup(); Later I will uncomment
 
+    // When reload button is pressed for dropdown, Template group is feteched and shown. 
     $("#listTemplateGroup").click(listTemplateGroup);
 
+    // First Step
     // a function to fetch video links from cloudflare.
     $("#fetchCloudflareVideoLinks").click(function () {
         $('#spinner-step-1').removeClass('d-none'); // display the spinner.
         let authEmail = $("#X-Auth-Email").val();
         let authKey = $("#X-Auth-Key").val();
         let accountId = $("#account_id").val();
+        let cloudflareLinksCount = 0;
 
         let apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/stream";
 
@@ -178,7 +189,10 @@ $(document).ready(function () {
                         }
                     });
                     linksHtml += "</ol><h3 class='text-secondary'>Total Links: " + response.result.length + "</h3>";
+                    
                     $("#videoLinks").html(linksHtml);
+                    console.log("Cloudflare Length is: " + response.result.length);
+                    $("#cloudflareLinksCount").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.result.length + '</span>');
                 } else {
                     $("#videoLinks").html("Failed to fetch HLS links. Check your credentials and account permissions.<br />");
                 }
@@ -191,7 +205,8 @@ $(document).ready(function () {
         });
     });
 
-    // a function to enable download mp4 links in cloudflare   
+    // Second Step
+    // a function to enable download mp4 links in cloudflare
     $("#enableMp4DownloadLinks").click(function () {
         $('#spinner-step-2').removeClass('d-none'); // display the spinner.
         let inputTextUrls = $("#cloudflareLinks").val();
@@ -275,7 +290,7 @@ $(document).ready(function () {
         });
     });
 
-
+    // Third Step
     // A function to add a video to huawei cloud from a link
     $("#importFromCloudflareToHuawei").click(function () {
         $('#spinner-step-32').removeClass('d-none');
@@ -299,14 +314,14 @@ $(document).ready(function () {
             const batchUrls = mp4Urls.slice(i, i + BATCH_SIZE);
             sendBatch(batchUrls);
 
-            $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary">' + (i + 1) + '</span>'); 
+            $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary badge-pill">' + (i + 1) + '</span>'); 
 
         }
     
         function sendBatch(batchUrls) {
             batchUrls.forEach(mp4Url => {
                 $.ajax({
-                    url: `UploadMetaDataByUrl.php`,
+                    url: `3-UploadMetaDataByUrl.php`,
                     method: "GET",  
                     timeout: 0,
                     headers: {
@@ -370,7 +385,8 @@ $(document).ready(function () {
     });    
     // eof #importFromCloudflareToHuawei()
 
-    // function to get ids, and links of videos from huawei VOD.
+    // Fourth Step
+    // function to get ids, and links of videos from huawei VOD
     $("#getHuaweiVODLinks").click(function () {
         console.log("#getHuaweiVODLinks called");
         $('#spinner-step-4').removeClass('d-none'); // Display the spinner
@@ -406,7 +422,7 @@ $(document).ready(function () {
                     if ((pageNo + 1) * listAssetSize < response.total) {
                         fetchAssets(pageNo + 1); // Fetch the next page
                     } else {
-                        $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary">' + response.total + '</span>');
+                        $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
                         updateUI(allAssets); // Update UI once all data is fetched
                     }
                 },
@@ -433,11 +449,11 @@ $(document).ready(function () {
         contentHtml += '</div>';
         $("#div_huawei_cloud_links").html(contentHtml);
         $('#spinner-step-4').addClass('d-none'); // Hide spinner
-        $("#div_huawei_cloud_links_count").html('Total Records Fetched: <span class="badge badge-primary">' + count + '</span>');
+        $("#div_huawei_cloud_links_count").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + count + '</span>');
     }
-    
     // eof getHuaweiVODLinks();
 
+    // Fifth Step
     // Function to extract video links and ids of huawei from textarea
     $("#updateMySqlDbLinks").click(function () {
         $('#spinner-step-5').removeClass('d-none');

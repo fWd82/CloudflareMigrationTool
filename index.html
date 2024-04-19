@@ -132,6 +132,7 @@
                             skip this step and continue with the next one!
                         </p>
                         <form>
+                            
                             <button
                                 type="button"
                                 class="btn btn-primary btn-sm"
@@ -146,6 +147,8 @@
                             >
                                 <span class="sr-only">Loading...</span>
                             </div>
+                            <div id="cloudflareLinksCount">Number of Records: <span class='badge badge-primary badge-pill'>0</span></div>
+                        
                         </form>
                         <br />
                         <div id="videoLinks"></div>
@@ -185,6 +188,7 @@
                             formate and get the links. take care that each link
                             end with a comma ','.
                         </p>
+                        <div id="enableMp4DownloadLinksCount">Number of Records: <span class='badge badge-primary badge-pill'>0</span></div>
                         <textarea
                             name="txtarea_cloudflare_links"
                             id="cloudflareLinks"
@@ -338,8 +342,8 @@
                             huawei cloud. Take care that each link end with a
                             new line '\n'.
                         </p>
-                        <div id="lineCountDisplay">Number of Records: <span class='badge badge-primary'>0</span></div>
-                        <div class="mt-2" id="importedFromCloudflareToHuaweiLinks1">Batch Size of (100): <span class='badge badge-primary'>0</span></div>
+                        <div id="lineCountDisplay">Number of Records: <span class='badge badge-primary badge-pill'>0</span></div>
+                        <div class="mt-2" id="importedFromCloudflareToHuaweiLinks1">Batch Size of (100): <span class='badge badge-primary badge-pill'>0</span></div>
                         <textarea
                             name="txtarea_cloudflare_links"
                             id="cloudflareVideosMp4Links"
@@ -457,8 +461,8 @@
                         <p class="card-text">Open Huawei Cloud VOD
                             <a href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
                         </p>
-                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_total_records">Total Records Found: <span class='badge badge-primary'>0</span></div>
-                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_count">Total Records Fetched: <span class='badge badge-primary'>0</span></div>
+                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_total_records">Total Records Found: <span class='badge badge-primary badge-pill'>0</span></div>
+                        <div class="mt-2 mb-2" id="div_huawei_cloud_links_count">Total Records Fetched: <span class='badge badge-primary badge-pill'>0</span></div>
                         <a
                             class="btn btn-primary btn-sm"
                             id="getHuaweiVODLinks"
@@ -505,7 +509,7 @@
                             <div class="form-group">
                                 <label for="db_host">DB Host</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     class="form-control form-control-sm"
                                     id="db_host"
                                     aria-describedby="emailHelp"
