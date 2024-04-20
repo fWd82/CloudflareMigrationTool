@@ -1,6 +1,6 @@
-:root{
-    --huawei-red : #cf0a2c;
-    --huawei-black : #232527;
+:root {
+    --huawei-red: #cf0a2c;
+    --huawei-black: #232527;
 
     /* --box-shadow: # */
 }
@@ -19,6 +19,7 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
+
 .container {
     padding-top: 2px;
     padding-bottom: 30px;
@@ -36,4 +37,34 @@ body {
 .success {
     color: #28a745;
     /* Bootstrap success color */
+}
+
+.scrollableContainer {
+    /* width: 80%;  */
+    max-height: 300px;
+    overflow: auto;
+    /* margin: 20px auto; */
+    padding: 30px;
+    border: 1px solid #888;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* Styling the scrollbar itself */
+.scrollableContainer::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollableContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+
+.scrollableContainer::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+
+.scrollableContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

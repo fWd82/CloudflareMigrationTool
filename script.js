@@ -14,6 +14,17 @@
 // Update Asset Meta
 // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=UpdateAssetMeta
 
+// Show a count of entered non empty lines in a badge
+function showLineNumberOnBadge(textAreaId, badgeId) {
+    // Get the current text from textarea
+    const text = $(textAreaId).val();
+
+    // Calculate the number of non-empty lines
+    const nonEmptyLineCount = text.split("\n").filter(line => line.trim() !== "").length;
+
+    // Update the line count display
+    $(badgeId).html('Number of lines: <span class="badge badge-primary badge-pill">' + nonEmptyLineCount + '</span>');
+}
 
 // Function to get template groups from Huawei Cloud
 function listTemplateGroup() {
@@ -47,7 +58,7 @@ function listTemplateGroup() {
                 //     // Add the 'selected' attribute to make it the default option
                 //     optionsValues += '<option value="' + item.name + '" selected>' + item.name + '</option>';
                 // else
-                    optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
+                optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
 
                 /* non_transcoding_template_group
                 system_template_group
@@ -120,6 +131,11 @@ function updateLinksInMySQL(assetid_and_url) {
 }
 // eo updateLinksInMySQL
 
+function updateProgressBar(selector, processedRecords, totalRecords) {
+    const progressPercentage = Math.min((processedRecords / totalRecords) * 100, 100);
+    $(selector).css('width', progressPercentage + '%').attr('aria-valuenow', processedRecords).text(progressPercentage.toFixed(0) + '%');
+}
+
 $(document).ready(function () {
     $('#spinner-step-1').addClass('d-none'); // hide the loader 
     $('#spinner-step-2').addClass('d-none'); // hide the loader
@@ -128,43 +144,24 @@ $(document).ready(function () {
     $('#spinner-step-4').addClass('d-none'); // hide the loader 
     $('#spinner-step-5').addClass('d-none'); // hide the loader 
 
-
     /////////////////////////////////////////////////////////////////
     // Show Count of lines for TextArea 
-    $('#cloudflareVideosMp4Links').on('input', function() {
-        // Get the current text from textarea
-        var text = $(this).val();
-        
-        // Calculate the number of lines
-        var lineCount = text.split("\n").length;
-
-        // Update the line count display
-        $('#lineCountDisplay').html('Number of lines: <span class="badge badge-primary badge-pill">' + lineCount + '</span>');
+    $('#cloudflareVideosMp4Links').on('input', function () {
+        showLineNumberOnBadge(this, '#lineCountDisplay');
     });
-    /////////////////////////////////////////////////////////////////
-    // Show Count of lines for TextArea 
-    $('#cloudflareLinks').on('input', function() { 
-        // Get the current text from textarea
-        var text = $(this).val();
-        
-        // Calculate the number of lines
-        var lineCount = text.split("\n").length; 
-
-        // Update the line count display
-        $('#enableMp4DownloadLinksCount').html('Number of lines: <span class="badge badge-primary badge-pill">' + lineCount + '</span>');
+    $('#cloudflareLinks').on('input', function () {
+        showLineNumberOnBadge(this, '#enableMp4DownloadLinksCount');
     });
 
-    // function to get ids, and links of videos from huawei VOD.This function will be called when the page loads or can be called manually if failed.
+    // Template group is fetched and shown either on taping reload/refresh button or when clicked on select. 
+    $("#listTemplateGroup").click(listTemplateGroup);
+    $("#videoTemplateGroupName").click(listTemplateGroup);
     // listTemplateGroup(); Later I will uncomment
 
-    // When reload button is pressed for dropdown, Template group is feteched and shown. 
-    $("#listTemplateGroup").click(listTemplateGroup);
-
-    // First Step
+    // First Step (Optional): Fetching Cloudflare Videos Links
     // a function to fetch video links from cloudflare.
     $("#fetchCloudflareVideoLinks").click(function () {
-        
-        // Restting div view
+        // Resetting div view
         $("#videoLinks").html("");
         // $("#failedLinks").html("");
 
@@ -210,14 +207,14 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    let linksHtml = "<h3 class='text-secondary'>Cloudflare Videos Links</h3><p>Links fetched from Cloudflare</p><ol class='text-sm'>";
+                    let linksHtml = "<h3 class='text-secondary'>Cloudflare Videos Links</h3><p>Links fetched from Cloudflare</p><ol class='scrollableContainer text-sm'>";
                     $.each(response.result, function (index, video) {
                         if (video.playback && video.playback.hls) {
-                            linksHtml += "<li>" + video.playback.hls + ",</li>";
+                            linksHtml += "<li>" + video.playback.hls + "</li>";
                         }
                     });
                     linksHtml += "</ol><h3 class='text-secondary'>Total Links: " + response.result.length + "</h3>";
-                    
+
                     $("#videoLinks").html(linksHtml);
                     console.log("Cloudflare Length is: " + response.result.length);
                     $("#cloudflareLinksCount").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.result.length + '</span>');
@@ -238,12 +235,12 @@ $(document).ready(function () {
     $("#enableMp4DownloadLinks").click(function () {
         $('#spinner-step-2').removeClass('d-none'); // display the spinner.
 
-        // Restting div view
+        // Resetting div view
         $("#successfulLinks").html("");
         $("#failedLinks").html("");
 
         // Getting the value from the textarea
-        var inputTextUrls0 = $("#cloudflareLinks").val().trim();
+        const inputTextUrls0 = $("#cloudflareLinks").val().trim();
         // Check if the textarea is empty or not
         if (inputTextUrls0 === "") {
             $("#failedLinks").html("<span class='text-danger'>Please enter at least one URL</span>");
@@ -252,7 +249,7 @@ $(document).ready(function () {
         }
 
         let inputTextUrls = $("#cloudflareLinks").val();
-        let m3u8Urls = inputTextUrls.split(',').map(link => link.trim()).filter(link => link !== "");
+        let m3u8Urls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
         let successfulLinks = [];
         let failedLinks = [];
 
@@ -299,7 +296,7 @@ $(document).ready(function () {
         function displayLinks() {
             $('#spinner-step-2').addClass('d-none'); // display the spinner.
             if (successfulLinks.length) {
-                let successHtml = "<h2>Successful Links </h2><ol>";
+                let successHtml = "<h2>Successful Links <span class='badge badge-primary badge-pill'>" + successfulLinks.length + "</span></h2><ol class='scrollableContainer'>";
                 $.each(successfulLinks, function (index, link) {
                     successHtml += "<li>" + link + "</li>";
                 });
@@ -308,7 +305,7 @@ $(document).ready(function () {
             }
 
             if (failedLinks.length) {
-                let failedHtml = "<h2>Failed Links 222</h2><ol>";
+                let failedHtml = "<h2>Failed Links <span class='badge badge-danger badge-pill'>" + failedLinks.length + "</span></h2><ol class='scrollableContainer'>";
                 $.each(failedLinks, function (index, link) {
                     failedHtml += '<li style="color: red">' + link + "</li>";
                 });
@@ -322,8 +319,7 @@ $(document).ready(function () {
             // extract video id from the pasted cloudflare links.
             let matches = /\/([^\/]+)\/manifest\/video.m3u8$/.exec(m3u8Url);
             if (matches && matches[1]) {
-                let videoUid = matches[1];
-                enableDownload(videoUid);
+                enableDownload(matches[1]);//matches[1] contains video uid
             } else {
                 failedLinks.push(m3u8Url);
                 displayLinks();
@@ -335,9 +331,7 @@ $(document).ready(function () {
     // Third Step - Uploading (Importing) videos from Cloudflare | Cloudstream to Huawei Cloud VOD
     // A function to add a video to Huawei cloud from a link
     $("#importFromCloudflareToHuawei").click(function () {
-
-        // Restting div view
-        $("#importedFromCloudflareToHuaweiLinks").html("");
+        $("#importedFromCloudflareToHuaweiLinks").html(""); // Resetting div view
 
         // Collecting inputs
         let ak = $("#ak").val().trim();
@@ -348,28 +342,28 @@ $(document).ready(function () {
         let videoTemplateGroupName = $("#videoTemplateGroupName").val().trim();
         let inputTextUrls = $("#cloudflareVideosMp4Links").val();
 
-        if (!ak) { 
+        if (!ak) {
             $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>AK is empty</span>");
             return;
         }
 
-        if (!sk) { 
+        if (!sk) {
             $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>SK is empty</span>");
             return;
         }
 
-        if (!endpoint) { 
+        if (!endpoint) {
             $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Endpoint is empty</span>");
             return;
         }
 
-        if (!projectId) { 
+        if (!projectId) {
             $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Project ID is empty</span>");
             return;
         }
 
         // Getting the value from the textarea
-        var inputTextUrls0 = $("#cloudflareVideosMp4Links").val().trim();
+        const inputTextUrls0 = $("#cloudflareVideosMp4Links").val();
         // Check if the textarea is empty or not
         if (inputTextUrls0 === "") {
             $("#importedFromCloudflareToHuaweiLinks").html("<span class='text-danger'>Please enter at least one URL</span>");
@@ -377,23 +371,28 @@ $(document).ready(function () {
         }
 
         $('#spinner-step-32').removeClass('d-none');
+        $('.progress-3').removeClass('d-none');
+        $('#progressBar-3').width('0%'); // Reset progress bar
 
         let mp4Urls = inputTextUrls.split('\n')
-                                    .map(link => link.trim())      // Trim whitespace
-                                    .filter(link => link !== "");  // Remove empty lines
+            .map(link => link.trim())      // Trim whitespace
+            .filter(link => link !== "");  // Remove empty lines
 
         const BATCH_SIZE = 100;
+        let processedUrls = 0;
+        const totalUrls = mp4Urls.length
+
         for (let i = 0; i < mp4Urls.length; i += BATCH_SIZE) {
             const batchUrls = mp4Urls.slice(i, i + BATCH_SIZE);
             sendBatch(batchUrls);
-            $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary badge-pill">' + (i + 1) + '</span>'); 
+            $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary badge-pill">' + (i + 1) + '</span>');
         }
 
         function sendBatch(batchUrls) {
             batchUrls.forEach(mp4Url => {
                 $.ajax({
                     url: `3-UploadMetaDataByUrl.php`,
-                    method: "GET",  
+                    method: "GET",
                     timeout: 0,
                     headers: {
                         "Content-Type": "application/json"
@@ -407,7 +406,7 @@ $(document).ready(function () {
                         videoTemplateGroupName,
                         videoTitle: mp4Url.split('/')[3],
                         videoUrl: mp4Url,
-                    }, 
+                    },
                     success: function (response) {
                         processResponse(response, mp4Url);  // Now passing mp4Url to processResponse
                     },
@@ -416,7 +415,11 @@ $(document).ready(function () {
                         $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-danger">Failed to import URL: ' + mp4Url + ' Error: ' + error + '</div>');
                     },
                     complete: function () {
-                        $('#spinner-step-32').addClass('d-none');
+                        processedUrls++;  // Increment after each URL processed
+                        updateProgressBar('#progressBar-3', processedUrls, totalUrls);  // Update the progress bar
+                        if (processedUrls === totalUrls) {
+                            $('#spinner-step-32').addClass('d-none'); // Hide spinner after all processes
+                        }
                     }
                 });
             });
@@ -429,7 +432,7 @@ $(document).ready(function () {
             try {
                 const data = JSON.parse(response);
                 if (Object.keys(data).length === 0) {  // Checking if the response is an empty object
-                    $("#importedFromCloudflareToHuaweiLinks").append('<div class="alert alert-success"><strong>' + urlCounter + '</strong>. Successfully imported URL: <br />' + mp4Url + '</div>');
+                    $("#importedFromCloudflareToHuaweiLinks").addClass('scrollableContainer').append('<div class="alert alert-success"><strong>' + urlCounter + '</strong>. Successfully imported URL: <br />' + mp4Url + '</div>');
                 } else {
                     const dataAsString = JSON.stringify(data, null, 2);
                     console.error('Unexpected data format for URL:', mp4Url, data);
@@ -448,6 +451,7 @@ $(document).ready(function () {
     $("#getHuaweiVODLinks").click(function () {
         console.log("#getHuaweiVODLinks called");
         $('#spinner-step-4').removeClass('d-none'); // Display the spinner
+        $('.progress-4').removeClass('d-none');
 
         // Restting div view
         $("#div_huawei_cloud_links").html("");
@@ -481,7 +485,8 @@ $(document).ready(function () {
         let listAssetPageNo = 0;
         const listAssetSize = 100;
         let allAssets = [];
-    
+        let totalRecordsExpected = 0;
+
         function fetchAssets(pageNo) {
             $.ajax({
                 url: `get_huawei_vod_links.php`,
@@ -497,12 +502,20 @@ $(document).ready(function () {
                     listAssetPageNo: pageNo
                 },
                 success: function (response) {
+                    if (totalRecordsExpected === 0) { // set total records expected on the first success
+                        totalRecordsExpected = response.total;
+                        $("#progressBar-4").attr("aria-valuemax", totalRecordsExpected);
+                    }
+
                     allAssets = allAssets.concat(response.assets.map(({ asset_id, title, original_url }) => ({
                         title: title,
                         huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
                     })));
-    
-                    if ((pageNo + 1) * listAssetSize < response.total) {
+
+                    const processedRecords = listAssetSize * (pageNo + 1);
+                    updateProgressBar('#progressBar-4', processedRecords, totalRecordsExpected);
+
+                    if (processedRecords < response.total) {
                         fetchAssets(pageNo + 1); // Fetch the next page
                     } else {
                         $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
@@ -516,15 +529,15 @@ $(document).ready(function () {
                 }
             });
         }
-    
+
         fetchAssets(listAssetPageNo); // Start fetching from the first page
     });
-    
+
     function updateUI(assets) {
-        let contentHtml = '<div class="alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
+        let contentHtml = '<div class="scrollableContainer alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
         let count = 0;
         assets.forEach(({ title, huaweiCloudVideoUrl }) => {
-            contentHtml += '<p><strong>' + (count+1) + '</strong>: Title | Name: ' + title + '</p>';
+            contentHtml += '<p><strong>' + (count + 1) + '</strong>: Title | Name: ' + title + '</p>';
             contentHtml += '<p>URL: <a href="' + huaweiCloudVideoUrl + '">' + huaweiCloudVideoUrl + '</a></p> <hr />';
             $('#textareaHuaweiVideosLinks').append(huaweiCloudVideoUrl + "\n");
             count++;
@@ -549,29 +562,29 @@ $(document).ready(function () {
         let db_username = $("#db_username").val().trim();
         let db_name = $("#db_name").val().trim();
         let db_table_name = $("#db_table_name").val().trim();
-        let db_table_column = $("#db_table_column").val().trim();  
+        let db_table_column = $("#db_table_column").val().trim();
 
-        if (!db_host) { 
+        if (!db_host) {
             $("#mysql_response2").html("<span class='text-danger'>DB Host is empty</span>");
             return;
         }
 
-        if (!db_username) { 
+        if (!db_username) {
             $("#mysql_response2").html("<span class='text-danger'>DB Username is empty</span>");
             return;
         }
 
-        if (!db_table_name) { 
+        if (!db_table_name) {
             $("#mysql_response2").html("<span class='text-danger'>Database - Name is empty</span>");
             return;
         }
 
-        if (!db_host) { 
+        if (!db_host) {
             $("#mysql_response2").html("<span class='text-danger'>Database - Host is empty</span>");
             return;
         }
 
-        if (!db_table_column) { 
+        if (!db_table_column) {
             $("#mysql_response2").html("<span class='text-danger'>Database - Column Name is empty</span>");
             return;
         }
@@ -579,7 +592,7 @@ $(document).ready(function () {
         $('#spinner-step-5').removeClass('d-none');
 
         // Getting the value from the textarea to see if they are empty
-        var inputTextUrls0 = $("#textareaHuaweiVideosLinks").val().trim();
+        const inputTextUrls0 = $("#textareaHuaweiVideosLinks").val().trim();
         // Check if the textarea is empty or not
         if (inputTextUrls0 === "") {
             $("#mysql_response2").html("<span class='text-danger'>Please enter at least one URL</span>");

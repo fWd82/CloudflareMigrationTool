@@ -151,7 +151,7 @@
                         
                         </form>
                         <br />
-                        <div id="videoLinks"></div>
+                        <div class="" id="videoLinks"></div>
                         <!-- <a class="btn btn-primary btn-sm" href="1-list-cloudflare-videos.php" target="_blank" role="button">Get all Cloudflare Links</a> -->
                     </div>
                 </div>
@@ -186,7 +186,7 @@
                             Paste the links copied from above step or from
                             another source and paste it here to enable the mp4
                             formate and get the links. take care that each link
-                            end with a comma ','.
+                            end with a comma '\n'.
                         </p>
                         <div id="enableMp4DownloadLinksCount">Number of Records: <span class='badge badge-primary badge-pill'>0</span></div>
                         <textarea
@@ -439,6 +439,9 @@
                         >
                             <span class="sr-only">Loading...</span>
                         </div>
+                        <div class="progress progress-3 mt-2 d-none">
+                            <div id="progressBar-3" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                        </div>                        
                         <!-- A div where responses are saved to indicate the user with request status -->
                         <div class="mt-2" id="importedFromCloudflareToHuaweiLinks"></div>
                     </div>
@@ -475,6 +478,9 @@
                             role="status"
                         >
                             <span class="sr-only">Loading...</span>
+                        </div>
+                        <div class="progress progress-4 mt-2 d-none">
+                            <div id="progressBar-4" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                         </div>
                         <br />
                         <!-- A div where responses are saved to indicate the user with request status -->
