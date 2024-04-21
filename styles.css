@@ -44,10 +44,11 @@ body {
     max-height: 300px;
     overflow: auto;
     /* margin: 20px auto; */
-    padding: 30px;
+    padding: 10px 30px;
     border: 1px solid #888;
     background-color: #f9f9f9;
     border-radius: 5px;
+    font-size: 10pt;
 }
 
 /* Styling the scrollbar itself */
@@ -67,4 +68,6 @@ body {
 
 .scrollableContainer::-webkit-scrollbar-thumb:hover {
     background: #555;
+
 }
+

@@ -296,7 +296,7 @@ $(document).ready(function () {
         function displayLinks() {
             $('#spinner-step-2').addClass('d-none'); // display the spinner.
             if (successfulLinks.length) {
-                let successHtml = "<h2>Successful Links <span class='badge badge-primary badge-pill'>" + successfulLinks.length + "</span></h2><ol class='scrollableContainer'>";
+                let successHtml = "<h3>Successful Links <span class='badge badge-primary badge-pill'>" + successfulLinks.length + "</span></h3><ol class='scrollableContainer'>";
                 $.each(successfulLinks, function (index, link) {
                     successHtml += "<li>" + link + "</li>";
                 });
@@ -613,6 +613,9 @@ $(document).ready(function () {
         });
         // $db_table_name = "videos";
         // $db_table_column = "video_links";
+
+
+        // Calling a function here to add 'huaweiCloudVideoId' & 'videoUrl' to addd to one excel sheet.
 
         updateLinksInMySQL(urlAndIds);
         $('#spinner-step-5').addClass('d-none');

@@ -18,29 +18,30 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 //     exit();
 // }
 
-$ak = $_GET["ak"];
-$sk = $_GET["sk"];
-$endpoint = $_GET["endpoint"];
-$projectId = $_GET["projectId"];
+// $ak = $_GET["ak"];
+// $sk = $_GET["sk"];
+// $endpoint = $_GET["endpoint"];
+// $projectId = $_GET["projectId"];
 
-$videoType = $_GET["videoType"];
-$videoTitle = $_GET["videoTitle"];
-$videoUrl = $_GET["videoUrl"];
-$videoTemplateGroupName = $_GET["videoTemplateGroupName"];
+// $videoType = $_GET["videoType"];
+// $videoTitle = $_GET["videoTitle"];
+// $videoUrl = $_GET["videoUrl"];
+// $videoTemplateGroupName = $_GET["videoTemplateGroupName"];
 
 // exit();
 
 // Comment below hard coded values
-// $ak = "9NW1ATJF9UAHZY5XXESS";
-// $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
-// $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
-// $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+$ak = "9NW1ATJF9UAHZY5XXESS";
+$sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
+$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
 
-// $videoType = "MP4";
-// $videoTitle = "TestVideo";
-// $videoUrl = "https://customer-0rjknk9n0a2sedbn.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4";
-// // $videoUrl = "['https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4', 'https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4'";
-// $videoTemplateGroupName = "";
+$videoType = "MP4";
+$videoTitle = "TestVideo";
+// $videoUrl = "https://customer-0rjknk9n0a2sedbn.cloudflarestream.com/352efaaf3f1b2add74821cd0287bfedd/downloads/default.mp4?filename=352efaaf3f1b2add74821cd0287bfedd.mp4";
+$videoUrl = "https://example.com";
+// $videoUrl = "['https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4', 'https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4'";
+$videoTemplateGroupName = "";
 
 $credentials = new BasicCredentials($ak,$sk,$projectId);
 $config = HttpConfig::getDefaultConfig();
@@ -66,8 +67,8 @@ $request->setBody($body);
 try {
   $response = $client->UploadMetaDataByUrl($request);
   echo "\n";
-  // echo $response;
-    echo json_encode($response);
+  echo $response;
+    // echo json_encode($response);
 } catch (ConnectionException $e) {
   $msg = $e->getMessage();
   // echo "\n". $msg ."\n";
