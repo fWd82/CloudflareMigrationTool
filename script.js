@@ -89,7 +89,7 @@ function updateLinksInMySQL(assetid_and_url) {
 
     console.log(assetid_and_url);
 
-    return; // remove this to make changes to db and execute rest of function.
+    // return; // remove this to make changes to db and execute rest of function.
 
     let db_host = $("#db_host").val();
     let db_username = $("#db_username").val();
@@ -99,7 +99,7 @@ function updateLinksInMySQL(assetid_and_url) {
     let db_table_column = $("#db_table_column").val();
 
     $.ajax({
-        url: `5-script_db_2.php`,
+        url: `5-script_db.php`,
         method: "POST",
         timeout: 0,
         contentType: "application/x-www-form-urlencoded",
@@ -492,7 +492,7 @@ $(document).ready(function () {
 
         function fetchAssets(pageNo) {
             $.ajax({
-                url: `get_huawei_vod_links.php`,
+                url: `4-get_huawei_vod_links.php`,
                 method: "POST",
                 timeout: 0,
                 contentType: "application/x-www-form-urlencoded",
