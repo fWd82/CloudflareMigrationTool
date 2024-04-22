@@ -18,6 +18,7 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 //     exit();
 // }
 
+// Comment below hard coded values
 // $ak = $_GET["ak"];
 // $sk = $_GET["sk"];
 // $endpoint = $_GET["endpoint"];
@@ -28,29 +29,33 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 // $videoUrl = $_GET["videoUrl"];
 // $videoTemplateGroupName = $_GET["videoTemplateGroupName"];
 
-// exit();
+///////////////////
 
 // Comment below hard coded values
 $ak = "9NW1ATJF9UAHZY5XXESS";
 $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
 $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
 $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
-
 $videoType = "MP4";
 $videoTitle = "NewAimalNow";
 // $videoUrl = "https://customer-0rjknk9n0a2sedbn.cloudflarestream.com/352efaaf3f1b2add74821cd0287bfedd/downloads/default.mp4?filename=352efaaf3f1b2add74821cd0287bfedd.mp4";
-$videoUrl = "https://example.com";
+// $videoUrl = "https://example.com";
+$videoUrl = "";
 // $videoUrl = "['https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4', 'https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4'";
 $videoTemplateGroupName = "";
+
 
 $credentials = new BasicCredentials($ak,$sk,$projectId);
 $config = HttpConfig::getDefaultConfig();
 $config->setIgnoreSslVerification(true);
+// $config->setHeader('X-Language', 'en-us');
+// $config->X-Language("en-us");
 
 $client = VodClient::newBuilder(new VodClient)
   ->withHttpConfig($config)
   ->withEndpoint($endpoint)
   ->withCredentials($credentials)
+  ->withHeader('X-Language', 'en-us')
   ->build();
 $request = new UploadMetaDataByUrlRequest();
 
@@ -60,6 +65,7 @@ array_push($listbodyUploadMetadatas,(new UploadMetaDataByUrl())
     ->setVideoType($videoType)
     ->setTitle($videoTitle)
     ->setUrl($videoUrl)
+    // ->setxLanguage('en-us')
     ->setTemplateGroupName($videoTemplateGroupName)
  );
 $body->setUploadMetadatas($listbodyUploadMetadatas);
@@ -71,12 +77,12 @@ try {
     // echo json_encode($response);
 } catch (ConnectionException $e) {
   $msg = $e->getMessage();
-  // echo "\n". $msg ."\n";
-  echo json_encode($msg);
+  echo "\n". $msg ."\n";
+  // echo json_encode($msg);
 } catch (RequestTimeoutException $e) {
   $msg = $e->getMessage();
-  // echo "\n". $msg ."\n";
-  echo json_encode($msg);
+  echo "\n". $msg ."\n";
+  // echo json_encode($msg);
 // } catch (ServiceResponseException $e) {
 //   echo "\n";
 //   echo $e->getHttpStatusCode(). "\n"; 
@@ -85,6 +91,10 @@ try {
 //   echo $e->getErrorMsg() . "\n"; 
 // } 
 // Because the error we are getting is not in JSON but sucessful response is in JSON already. This is why it was hard to handle it on frontend. 
+// 
+// After reading, PHP SDK does not support custom request headers, which is not supported by customers. - chenweixing(00518270)
+// So the requests we will be getting will always be in Chinese. We have to manually handle it by looking into errorCode and then display the translated message.
+// https://support.huaweicloud.com/intl/en-us/api-vod/ErrorCode.html
 
 } catch (ServiceResponseException $e) {
   $errorDetails = [

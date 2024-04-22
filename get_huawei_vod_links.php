@@ -1,6 +1,11 @@
 <?php
 namespace HuaweiCloud\SDK\Vod\V1\Model;
 require_once "vendor/autoload.php";
+
+// Enabling error reporting
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+
 use HuaweiCloud\SDK\Core\Auth\BasicCredentials;
 use HuaweiCloud\SDK\Core\Http\HttpConfig;
 use HuaweiCloud\SDK\Core\Exceptions\ConnectionException;
@@ -8,54 +13,83 @@ use HuaweiCloud\SDK\Core\Exceptions\RequestTimeoutException;
 use HuaweiCloud\SDK\Core\Exceptions\ServiceResponseException;
 use HuaweiCloud\SDK\Vod\V1\VodClient;
 
+// Uncomment these values for production.
+$ak = $_POST["ak"];
+$sk = $_POST["sk"];
+$endpoint = $_POST["endpoint"];
+$projectId = $_POST["projectId"];
+$listAssetPageNo = $_POST["listAssetPageNo"];
 
-// Uncomment these values. 
-$ak =               $_POST["ak"];
-$sk =               $_POST["sk"];
-$endpoint =         $_POST["endpoint"];
-$projectId =        $_POST["projectId"];
-$listAssetPageNo =  $_POST["listAssetPageNo"];
-
-// Comment below hard coded values
+// Use hardcoded values for testing.
 // $ak = "9NW1ATJF9UAHZY5XXESS";
 // $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
 // $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
 // $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
 // $listAssetPageNo = 0;
 
-
-$credentials = new BasicCredentials($ak,$sk,$projectId);
+// echo "Setting credentials and configuration.\n";
+$credentials = new BasicCredentials($ak, $sk, $projectId);
 $config = HttpConfig::getDefaultConfig();
 $config->setIgnoreSslVerification(true);
 
-$client = VodClient::newBuilder(new VodClient)
-  ->withHttpConfig($config)
-  ->withEndpoint($endpoint)
-  ->withCredentials($credentials)
-  ->build();
-  // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/sdk?api=ListAssetList
-$request = new ListAssetListRequest();
-$request->setSize(100); // Huawei Cloud's ListAssetList fetch only 10 records by default, but we have to pass 100 and page number as well. 
-$request->setPage($listAssetPageNo);
-
 try {
-  $response = $client->ListAssetList($request);
-  echo "\n";
-  echo $response;
-  // echo json_encode($response);
+    // echo "Building the VOD client.\n";
+    $client = VodClient::newBuilder(new VodClient)
+      ->withHttpConfig($config)
+      ->withEndpoint($endpoint)
+      ->withCredentials($credentials)
+      ->build();
+
+    // echo "Creating request.\n";
+    $request = new ListAssetListRequest();
+    $request->setStatus(['PUBLISHED']);
+    $request->setSize(100);
+    $request->setPage($listAssetPageNo);
+    $request->setOrder("desc");
+
+    // echo "Sending request.\n";
+    $response = $client->listAssetList($request);
+    // echo "Response received.\n";
+    // print_r($response);
+    echo "\n";
+    echo $response;
+
+// } catch (ConnectionException $e) {
+//     echo "Error connecting to the server: " . $e->getMessage();
+// } catch (RequestTimeoutException $e) {
+//     echo "Request to server timed out: " . $e->getMessage();
+// } catch (ServiceResponseException $e) {
+//     echo "Server responded with an error: " . $e->getMessage();
+// } catch (\Exception $e) {
+//     // echo $e->getMessage();
+//     echo "An unexpected error occurred: " . $e->getMessage();
+// }
+// Let convert all errors to Arrays
 
 } catch (ConnectionException $e) {
-  $msg = $e->getMessage();
-  // echo json_encode($msg);
-  echo "\n". $msg ."\n";
+  $errorDetails = [
+      "error" => "Error connecting to the server: " . $e->getMessage()
+  ];
+  echo json_encode($errorDetails);
 } catch (RequestTimeoutException $e) {
-  $msg = $e->getMessage();
-  echo "\n". $msg ."\n";
-  // echo json_encode($msg);
+  $errorDetails = [
+      "error" => "Request to server timed out: " . $e->getMessage()
+  ];
+  echo json_encode($errorDetails);
 } catch (ServiceResponseException $e) {
-  echo "\n";
-  echo $e->getHttpStatusCode(). "\n";
-  echo $e->getRequestId(). "\n";
-  echo $e->getErrorCode() . "\n";
-  echo $e->getErrorMsg() . "\n";
+  $errorDetails = [
+      "error" => "Server responded with an error: " . $e->getMessage()
+  ];
+  echo json_encode($errorDetails);
+} catch (\Exception $e) {
+  $errorDetails = [
+      "error" => "An unexpected error occurred: " . $e->getMessage()
+  ];
+  echo json_encode($errorDetails);
 }
+
+// curl -v https://vod.ap-southeast-3.myhuaweicloud.com
+
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+?>

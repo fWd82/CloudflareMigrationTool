@@ -395,7 +395,8 @@ $(document).ready(function () {
                     method: "GET",
                     timeout: 0,
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-Language": "en-us" // let us test it if it works.
                     },
                     data: {
                         ak,
@@ -449,12 +450,14 @@ $(document).ready(function () {
     // Fourth Step - Getting new links from Huawei Cloud VOD
     // function to get ids, and links of videos from huawei VOD
     $("#getHuaweiVODLinks").click(function () {
-        console.log("#getHuaweiVODLinks called");
-        $('#spinner-step-4').removeClass('d-none'); // Display the spinner
-        $('.progress-4').removeClass('d-none');
 
+        $("#progressBar-4").attr("aria-valuemax", 0); // bringing ProgressBar to normal.
         // Restting div view
         $("#div_huawei_cloud_links").html("");
+
+        console.log("#getHuaweiVODLinks Step 4 called");
+        $('#spinner-step-4').removeClass('d-none'); // Display the spinner
+        $('.progress-4').removeClass('d-none');
 
         // Collecting inputs
         let ak = $("#ak").val().trim();
@@ -493,7 +496,10 @@ $(document).ready(function () {
                 method: "POST",
                 timeout: 0,
                 contentType: "application/x-www-form-urlencoded",
-                dataType: 'json', // Expect JSON response
+                dataType: 'json', // Expect JSON response for success and even for failures
+                headers: { 
+                    "X-Language": "en-us" // let us test it if it works. Huawei Cloud will respond in Chinese. But PHP SDK is not sipporting sending and receiving in header, this is just my testing.
+                },
                 data: {
                     ak,
                     sk,
@@ -502,30 +508,48 @@ $(document).ready(function () {
                     listAssetPageNo: pageNo
                 },
                 success: function (response) {
-                    if (totalRecordsExpected === 0) { // set total records expected on the first success
-                        totalRecordsExpected = response.total;
-                        $("#progressBar-4").attr("aria-valuemax", totalRecordsExpected);
-                    }
-
-                    allAssets = allAssets.concat(response.assets.map(({ asset_id, title, original_url }) => ({
-                        title: title,
-                        huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
-                    })));
-
-                    const processedRecords = listAssetSize * (pageNo + 1);
-                    updateProgressBar('#progressBar-4', processedRecords, totalRecordsExpected);
-
-                    if (processedRecords < response.total) {
-                        fetchAssets(pageNo + 1); // Fetch the next page
+                    // The problem here is, even if internet is not connected etc, it will still come to success phase. So we have to look for array which is 'error' and then we will print it accordingly.
+                    console.log(response);
+                
+                    // Check for "error" in response.error and handle it
+                    // if (response.error && response.error.toLowerCase().includes("error")) {
+                    // if (response.error && typeof response.error === 'string' && response.error.toLowerCase().includes("error")) {
+                    if ('error' in response) {
+                        // Display the error in the div and log it
+                        $("#div_huawei_cloud_links").html('<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">An error occurred: ' + response.error + '</div>');
+                        console.log(response.error);
+                        $('#spinner-step-4').addClass('d-none'); // Hide spinner
                     } else {
-                        $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
-                        updateUI(allAssets); // Update UI once all data is fetched
+                        // Existing logic if there is no "error" in response.error
+                        if (totalRecordsExpected === 0) { // set total records expected on the first success
+                            totalRecordsExpected = response.total;
+                            $("#progressBar-4").attr("aria-valuemax", totalRecordsExpected);
+                        }
+
+                        allAssets = allAssets.concat(response.assets.map(({ asset_id, title, original_url }) => ({
+                            title: title,
+                            huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`
+                        })));
+                
+                        const processedRecords = listAssetSize * (pageNo + 1);
+                        updateProgressBar('#progressBar-4', processedRecords, totalRecordsExpected);
+                
+                        if (processedRecords < response.total) {
+                            fetchAssets(pageNo + 1); // Fetch the next page
+                        } else {
+                            $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
+                            updateUI(allAssets); // Update UI once all data is fetched
+                        }
                     }
                 },
+                
                 error: function (xhr, status, error) {
-                    console.log('Error: ', error);
+                    // console.log('Error: ', error);
                     $('#spinner-step-4').addClass('d-none'); // Hide spinner
                     $("#div_huawei_cloud_links").html('<div class="alert alert-danger text-sm" style="font-size: smaller; margin: 1rem;">An error occurred: ' + error + '</div>');
+                
+                    console.log(error.error);
+                    // $("#div_huawei_cloud_links").html(error);
                 }
             });
         }
