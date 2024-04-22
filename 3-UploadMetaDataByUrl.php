@@ -37,7 +37,7 @@ $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
 $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
 
 $videoType = "MP4";
-$videoTitle = "TestVideo";
+$videoTitle = "NewAimalNow";
 // $videoUrl = "https://customer-0rjknk9n0a2sedbn.cloudflarestream.com/352efaaf3f1b2add74821cd0287bfedd/downloads/default.mp4?filename=352efaaf3f1b2add74821cd0287bfedd.mp4";
 $videoUrl = "https://example.com";
 // $videoUrl = "['https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4', 'https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4'";
@@ -77,10 +77,21 @@ try {
   $msg = $e->getMessage();
   // echo "\n". $msg ."\n";
   echo json_encode($msg);
+// } catch (ServiceResponseException $e) {
+//   echo "\n";
+//   echo $e->getHttpStatusCode(). "\n"; 
+//   echo $e->getRequestId(). "\n"; 
+//   echo $e->getErrorCode() . "\n"; 
+//   echo $e->getErrorMsg() . "\n"; 
+// } 
+// Because the error we are getting is not in JSON but sucessful response is in JSON already. This is why it was hard to handle it on frontend. 
+
 } catch (ServiceResponseException $e) {
-  echo "\n";
-  echo $e->getHttpStatusCode(). "\n"; 
-  echo $e->getRequestId(). "\n"; 
-  echo $e->getErrorCode() . "\n"; 
-  echo $e->getErrorMsg() . "\n"; 
+  $errorDetails = [
+    "httpStatusCode" => $e->getHttpStatusCode(),
+    "requestId" => $e->getRequestId(),
+    "errorCode" => $e->getErrorCode(),
+    "errorMessage" => $e->getErrorMsg()
+  ];
+  echo json_encode($errorDetails);
 }
