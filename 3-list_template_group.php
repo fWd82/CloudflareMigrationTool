@@ -20,16 +20,16 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 // }
 
 // Uncomment these values. 
-// $ak = $_GET["ak"];
-// $sk = $_GET["sk"];
-// $endpoint = $_GET["endpoint"];
-// $projectId = $_GET["projectId"];
+$ak = $_POST["ak"];
+$sk = $_POST["sk"];
+$endpoint = $_POST["endpoint"];
+$projectId = $_POST["projectId"];
 
 // Comment below hard coded values
-$ak = "9NW1ATJF9UAHZY5XXESS";
-$sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
-$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
-$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+// $ak = "9NW1ATJF9UAHZY5XXESS";
+// $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
+// $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+// $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
 
 $credentials = new BasicCredentials($ak,$sk,$projectId);
 $config = HttpConfig::getDefaultConfig();

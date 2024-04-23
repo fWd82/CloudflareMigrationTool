@@ -19,30 +19,30 @@ use HuaweiCloud\SDK\Vod\V1\VodClient;
 // }
 
 // Comment below hard coded values
-// $ak = $_GET["ak"];
-// $sk = $_GET["sk"];
-// $endpoint = $_GET["endpoint"];
-// $projectId = $_GET["projectId"];
+$ak = $_GET["ak"];
+$sk = $_GET["sk"];
+$endpoint = $_GET["endpoint"];
+$projectId = $_GET["projectId"];
 
-// $videoType = $_GET["videoType"];
-// $videoTitle = $_GET["videoTitle"];
-// $videoUrl = $_GET["videoUrl"];
-// $videoTemplateGroupName = $_GET["videoTemplateGroupName"];
+$videoType = $_GET["videoType"];
+$videoTitle = $_GET["videoTitle"];
+$videoUrl = $_GET["videoUrl"];
+$videoTemplateGroupName = $_GET["videoTemplateGroupName"];
 
 ///////////////////
 
 // Comment below hard coded values
-$ak = "9NW1ATJF9UAHZY5XXESS";
-$sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
-$endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
-$projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
-$videoType = "MP4";
-$videoTitle = "NewAimalNow";
+// $ak = "9NW1ATJF9UAHZY5XXESS";
+// $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
+// $endpoint = "https://vod.ap-southeast-3.myhuaweicloud.com";
+// $projectId = "31e2da1575cc47048f26be2a2b5c6ec9";
+// $videoType = "MP4";
+// $videoTitle = "NewAimalNow";
 // $videoUrl = "https://customer-0rjknk9n0a2sedbn.cloudflarestream.com/352efaaf3f1b2add74821cd0287bfedd/downloads/default.mp4?filename=352efaaf3f1b2add74821cd0287bfedd.mp4";
 // $videoUrl = "https://example.com";
-$videoUrl = "";
+// $videoUrl = "";
 // $videoUrl = "['https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4', 'https://customer-0rjknk9n0a2sedbnABC.cloudflarestream.com/cab130695b6d4c2b131a69fdec02af6e/downloads/default.mp4?filename=cab130695b6d4c2b131a69fdec02af6e.mp4'";
-$videoTemplateGroupName = "";
+// $videoTemplateGroupName = "";
 
 
 $credentials = new BasicCredentials($ak,$sk,$projectId);
@@ -55,7 +55,7 @@ $client = VodClient::newBuilder(new VodClient)
   ->withHttpConfig($config)
   ->withEndpoint($endpoint)
   ->withCredentials($credentials)
-  ->withHeader('X-Language', 'en-us')
+  // ->withHeader('X-Language', 'en-us')
   ->build();
 $request = new UploadMetaDataByUrlRequest();
 

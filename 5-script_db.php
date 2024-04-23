@@ -35,11 +35,11 @@ try {
 }
 
 // Load the Excel file
-$reader = new Xlsx();
-$spreadsheet = $reader->load("cleaned_data-2024-04-01-09-52-02.xlsx");
+// $reader = new Xlsx();
+// $spreadsheet = $reader->load("cleaned_data-2024-04-01-09-52-02.xlsx");
 
-$worksheet = $spreadsheet->getActiveSheet();
-$rows = $worksheet->toArray();
+// $worksheet = $spreadsheet->getActiveSheet();
+// $rows = $worksheet->toArray();
 $response = [];
 
 
@@ -47,9 +47,9 @@ $response = [];
 // print_r($sql);
 // exit();
 
-foreach ($rows as $row) {
-    $videoId = $row[0];
-    $newVideoLink = $row[1];
+foreach ($rows as $assetid_and_url) {
+    $videoId = $assetid_and_url[0];
+    $newVideoLink = $assetid_and_url[1];
 
     // $sql = "UPDATE videos SET video_links = :newVideoLink WHERE video_links LIKE :videoId";
     $sql = "UPDATE {$db_table_name} SET {$db_table_column} = :newVideoLink WHERE {$db_table_column} LIKE :videoId";
