@@ -130,7 +130,7 @@ function updateLinksInMySQL(assetid_and_url) {
             if (response.records && Array.isArray(response.records)) {
                 response.records.forEach(function (item) {
                     let alertClass = item.status === 'success' ? 'alert-success' : 'alert-warning';
-                    let message = `<div class="alert ${alertClass}">${item.recordNumber}: Video ID: ${item.videoId} - ${item.message}</div>`;
+                    let message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video ID: ${item.videoId} - ${item.message}</div>`;
                     $("#mysql_response_5_updates").append(message);
                 });
             }
