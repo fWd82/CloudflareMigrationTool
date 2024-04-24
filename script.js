@@ -74,7 +74,7 @@ function listTemplateGroup() {
         },
         error: function (xhr, status, error) {
             console.log('Error: ', error);
-            $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            $("#mysql_response_5_updates").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             $('#spinner-step-31').addClass('d-none');
         }
     });
@@ -87,12 +87,15 @@ function listTemplateGroup() {
         name = cloudf
     }
 ] */
+// Related to Step - 5
 // Function to update video links in MySQL Database
 function updateLinksInMySQL(assetid_and_url) {
-    console.log('update sha');
+    console.log('update sha - I need it here');
     console.log(assetid_and_url);
+    // console.log(assetid_and_url[0].huaweiCloudVideoId);
+    // console.log(assetid_and_url[0].huaweiCloudVideoUrl);
 
-    return; // remove this to make changes to db and execute rest of function.
+    // return; // remove this to make changes to db and execute rest of function.
 
     let db_host = $("#db_host").val();
     let db_username = $("#db_username").val();
@@ -114,21 +117,42 @@ function updateLinksInMySQL(assetid_and_url) {
             db_name,
             db_table_column,
             db_table_name,
-            // assetid_and_url // Sending this array to PHP file
+            assetid_and_url // Sending this array to PHP file
         },
         success: function (response) {
-            response.forEach(function (item) {
-                let message = `<div class="alert ${item.status === 'success' ? 'alert-success' : 'alert-danger'}">` +
-                    `Video ID: ${item.videoId} - ${item.message}</div>`;
-                console.log(item);
-                $("#mysql_response2").append(message);
-            });
+            console.log(response);
+        
+            // Clear previous messages
+            $("#mysql_response_5_count").empty();
+            $("#mysql_response_5_updates").empty();
+        
+            // Process each individual record
+            if (response.records && Array.isArray(response.records)) {
+                response.records.forEach(function (item) {
+                    let alertClass = item.status === 'success' ? 'alert-success' : 'alert-warning';
+                    let message = `<div class="alert ${alertClass}">${item.recordNumber}: Video ID: ${item.videoId} - ${item.message}</div>`;
+                    $("#mysql_response_5_updates").append(message);
+                });
+            }
+        
+            // Display total records information
+            if (response.totalRecords !== undefined) {
+                // $("#mysql_response_5_count").append(`<div class="alert alert-info">Total records processed <span class="badge badge-dark badge-pill">: ${response.totalRecords}</span></div>`);
+                // $("#mysql_response_5_count").append(`<div class="alert alert-success">Total updates made:<span class="badge badge-success badge-pill"> ${response.totalUpdates}</span></div>`);
+                // $("#mysql_response_5_count").append(`<div class="alert alert-warning">Total no change needed:<span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span></div>`);
+                // $("#mysql_response_5_count").append(`<hr />`);
 
+                $("#mysql_response_5_count").append(`<h3>Stats</h3>`);
+                $("#mysql_response_5_count").append(`<div class="alert alert-secondary">Total records processed: <span class="badge badge-dark badge-pill"> ${response.totalRecords}</span> | Total updates made: <span class="badge badge-success badge-pill"> ${response.totalUpdates}</span> | Total no change needed: <span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span> | Total records in MySQL Database: <span class="badge badge-dark badge-pill"> 0</span></div>`);
+                $("#mysql_response_5_count").append(`<hr />`);
+                $("#mysql_response_5_count").append(`<h3>Logs</h3>`);
+            }
+        
             console.log('Success: ', response);
         },
         error: function (xhr, status, error) {
             console.log('Error: ', error);
-            $("#mysql_response2").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            $("#mysql_response_5_updates").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
         }
     });
 }
@@ -546,9 +570,9 @@ $(document).ready(function () {
                         assetsAllInfo = assetsAllInfo.concat(response.assets.map(({ asset_id, title }) => ({
                             huaweiCloudVideoId: asset_id,
                             huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`,
-                            cloudflareVideoId: title,
-                            cloudflareVideoMP4Url: `https://${customer_subdomain}/${title}/downloads/default.mp4?filename=${title}.mp4`,
-                            cloudflareVideoM3U8Url: `https://${customer_subdomain}/${title}/manifest/video.m3u8`
+                            // cloudflareVideoId: title,
+                            // cloudflareVideoMP4Url: `https://${customer_subdomain}/${title}/downloads/default.mp4?filename=${title}.mp4`,
+                            // cloudflareVideoM3U8Url: `https://${customer_subdomain}/${title}/manifest/video.m3u8`
                         })));
 
                         const processedRecords = listAssetSize * (pageNo + 1);
@@ -597,7 +621,7 @@ $(document).ready(function () {
     $("#updateMySqlDbLinks").click(function () {
 
         // Restting div view
-        $("#mysql_response2").html("");
+        $("#mysql_response_5_updates").html("");
         // $("#failedLinks").html("");
 
         // Collecting inputs
@@ -608,27 +632,27 @@ $(document).ready(function () {
         let db_table_column = $("#db_table_column").val().trim();
 
         if (!db_host) {
-            $("#mysql_response2").html("<span class='text-danger'>DB Host is empty</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>DB Host is empty</span>");
             return;
         }
 
         if (!db_username) {
-            $("#mysql_response2").html("<span class='text-danger'>DB Username is empty</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>DB Username is empty</span>");
             return;
         }
 
         if (!db_table_name) {
-            $("#mysql_response2").html("<span class='text-danger'>Database - Name is empty</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>Database - Name is empty</span>");
             return;
         }
 
         if (!db_host) {
-            $("#mysql_response2").html("<span class='text-danger'>Database - Host is empty</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>Database - Host is empty</span>");
             return;
         }
 
         if (!db_table_column) {
-            $("#mysql_response2").html("<span class='text-danger'>Database - Column Name is empty</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>Database - Column Name is empty</span>");
             return;
         }
 
@@ -638,7 +662,7 @@ $(document).ready(function () {
         const inputTextUrls0 = $("#textareaHuaweiVideosLinks").val().trim();
         // Check if the textarea is empty or not
         if (inputTextUrls0 === "") {
-            $("#mysql_response2").html("<span class='text-danger'>Please enter at least one URL</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>Please enter at least one URL</span>");
             $('#spinner-step-5').addClass('d-none');
             return;  // Stop further execution if the textarea is empty
         }
@@ -664,6 +688,10 @@ $(document).ready(function () {
 
 
         // Calling a function here to add 'huaweiCloudVideoId' & 'videoUrl' to addd to one excel sheet.
+        console.log('#updateMySqlDbLinks is clicked');
+        console.log('updateLinksInMySQL() - function called');
+        console.log('Printing: - assetsAllInfo');
+        console.log(assetsAllInfo);
         updateLinksInMySQL(assetsAllInfo);
         $('#spinner-step-5').addClass('d-none');
     });
