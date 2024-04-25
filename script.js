@@ -23,7 +23,7 @@ function showLineNumberOnBadge(textAreaId, badgeId) {
     const nonEmptyLineCount = text.split("\n").filter(line => line.trim() !== "").length;
 
     // Update the line count display
-    $(badgeId).html('Number of lines: <span class="badge badge-primary badge-pill">' + nonEmptyLineCount + '</span>');
+    $(badgeId).html('Number of Records: <span class="badge badge-primary badge-pill">' + nonEmptyLineCount + '</span>');
 }
 
 // Function to get template groups from Huawei Cloud
@@ -38,7 +38,7 @@ function listTemplateGroup() {
     let projectId = $("#projectId").val();
 
     $.ajax({
-        url: `./3-list_template_group.php`,
+        url: `3-list_template_group.php`,
         method: "POST",
         timeout: 0,
         contentType: "application/x-www-form-urlencoded",
@@ -74,7 +74,7 @@ function listTemplateGroup() {
         },
         error: function (xhr, status, error) {
             console.log('Error: ', error);
-            $("#mysql_response_5_updates").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
             $('#spinner-step-31').addClass('d-none');
         }
     });
@@ -178,6 +178,9 @@ $(document).ready(function () {
     });
     $('#cloudflareLinks').on('input', function () {
         showLineNumberOnBadge(this, '#enableMp4DownloadLinksCount');
+    });
+    $('#textareaHuaweiVideosLinks').on('input', function () {
+        showLineNumberOnBadge(this, '#textareaHuaweiVideosLinksCount');
     });
 
     // Template group is fetched and shown either on taping reload/refresh button or when clicked on select. 

@@ -25,6 +25,9 @@ $sk = $_POST["sk"];
 $endpoint = $_POST["endpoint"];
 $projectId = $_POST["projectId"];
 
+// print_r($ak . " : " . $sk  . " : " . $endpoint  . " : " . $projectId );
+// exit();
+
 // Comment below hard coded values
 // $ak = "9NW1ATJF9UAHZY5XXESS";
 // $sk = "JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0";
@@ -52,10 +55,19 @@ try {
 } catch (RequestTimeoutException $e) {
   $msg = $e->getMessage();
   echo "\n". $msg ."\n";
+// } catch (ServiceResponseException $e) {
+//   echo "\n";
+//   echo $e->getHttpStatusCode(). "\n";
+//   echo $e->getRequestId(). "\n";
+//   echo $e->getErrorCode() . "\n";
+//   echo $e->getErrorMsg() . "\n";
+// }
 } catch (ServiceResponseException $e) {
-  echo "\n";
-  echo $e->getHttpStatusCode(). "\n";
-  echo $e->getRequestId(). "\n";
-  echo $e->getErrorCode() . "\n";
-  echo $e->getErrorMsg() . "\n";
+  $errorDetails = [
+    "httpStatusCode" => $e->getHttpStatusCode(),
+    "requestId" => $e->getRequestId(),
+    "errorCode" => $e->getErrorCode(),
+    "errorMessage" => $e->getErrorMsg()
+  ];
+  echo json_encode($errorDetails);
 }

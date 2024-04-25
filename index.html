@@ -24,8 +24,11 @@
         <div class="container">
             <div class="text-center mb-4">
                 <h3 class="mt-5 font-weight-light" style="color: #cf0a2c">
-                    MIGRATION PROCESS
+                    CLOUDFLARE MIGRATION TOOL
                 </h3>
+                <p class="font-weight-light">
+                    Seamless tool to migrate videos from Cloudflare Cloudstream to Huawei Cloud VOD (Video on Demand). <br /> Cloudflare to Huawei VOD: Migrate with ease. Your Videos Deserve a First-Class Move
+                </p>
             </div>
 
             <div class="class">
@@ -59,10 +62,9 @@
                                     value="fwd82@live.com"
                                 />
                                 <small
-                                    id="emailHelp"
+                                    id="small-x-auth-email"
                                     class="form-text text-muted"
-                                    >We'll never share your X Auth Email with
-                                    anyone else.</small
+                                    >Please paste your <strong>X Auth Email</strong> from Cloudflare, normally the email on which Cloudflare account is created on.</small
                                 >
                             </div>
                             <div class="form-group">
@@ -71,15 +73,14 @@
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="X-Auth-Key"
-                                    placeholder="1eab14593a06d3722782f30526a779378a5ee"
+                                    placeholder="Please enter X-Auth Key from Cloudflare"
                                     name="X-Auth-Key"
                                     value="1eab14593a06d3722782f30526a779378a58e"
                                 />
                                 <small
-                                    id="emailHelp"
+                                    id="small-x-auth-key"
                                     class="form-text text-muted"
-                                    >We'll never share your Auth Key with anyone
-                                    else.</small
+                                    >Please paste your <strong>X Auth Key</strong> from Cloudflare. You can get it from: My Profile > API Tokens > API Keys > Global API Key</small
                                 >
                             </div>
                             <div class="form-group">
@@ -88,16 +89,13 @@
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="account_id"
-                                    placeholder="2590b14a48271988be21c06479697cee"
+                                    placeholder="Please enter Account ID from Cloudflare"
                                     name="account_id"
                                     value="2590b14a48271988be21c06479697c88"
                                 />
                                 <small
-                                    id="account_id"
-                                    class="form-text text-muted"
-                                    >We'll never share your Account ID with
-                                    anyone else.</small
-                                >
+                                    id="small-account-id"
+                                    class="form-text text-muted">Please paste your <strong>Account ID</strong> from Cloudflare, which will be visible on dashboard</small>
                             </div>
                             <div class="form-group">
                                 <label for="customer_subdomain"
@@ -107,15 +105,14 @@
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="customer_subdomain"
-                                    placeholder="customer-0rjknk9n0a2sedbn.cloudflarestream.com"
+                                    placeholder="Please enter Customer subdomain from Cloudflare"
                                     name="customer_subdomain"
                                     value="customer-0rjknk9n0a2sedbn.cloudflarestream.com"
                                 />
                                 <small
-                                    id="account_id"
+                                    id="small-customer-subdomain"
                                     class="form-text text-muted"
-                                    >We'll never share your Customer subdomain
-                                    with anyone else.</small
+                                    >Please paste your <strong>Customer Subdomain</strong> from Cloudflare, which will be visible on dashboard</small
                                 >
                             </div>
                             <!-- <button type="submit" class="btn btn-primary">Submit Credentials</button> -->
@@ -191,7 +188,7 @@
                             class="btn btn-primary btn-sm"
                             id="enableMp4DownloadLinks"
                         >
-                            Enable MP4 Download Links
+                            Prepare Videos for Migration
                         </button>
                         <div
                             class="spinner-border text-primary"
@@ -234,14 +231,11 @@
                                     class="form-control form-control-sm"
                                     id="ak"
                                     aria-describedby="emailHelp"
-                                    placeholder="9NW1ATJF9UAHZY5XXESS"
+                                    placeholder="Please enter AK (Access Key) from Huawei Cloud"
                                     name="ak"
                                     value="9NW1ATJF9UAHZY5XXESS"
                                 />
-                                <small id="akHelp" class="form-text text-muted"
-                                    >We'll never share your AK with anyone
-                                    else.</small
-                                >
+                                <small id="akHelp" class="form-text text-muted">Get your AK & SK from: Huawei Cloud > My Credentials > Access Keys</small>
                             </div>
                             <div class="form-group">
                                 <label for="sk">SK</label>
@@ -249,14 +243,11 @@
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="sk"
-                                    placeholder="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0"
+                                    placeholder="Please enter SK (Secret Key) from Huawei Cloud"
                                     name="sk"
                                     value="JNN9sdlnzGosaHjuccAUNAR9nzWspMGj2v30czW0"
                                 />
-                                <small id="skHelp" class="form-text text-muted"
-                                    >We'll never share your SK with anyone
-                                    else.</small
-                                >
+                                <small id="skHelp" class="form-text text-muted">Get your AK & SK from: Huawei Cloud > My Credentials > Access Keys</small>
                             </div>
                             <div class="form-group">
                                 <label for="endpoint">Endpoint</label>
@@ -268,6 +259,9 @@
                                     name="endpoint"
                                     value="https://vod.ap-southeast-3.myhuaweicloud.com"
                                 />
+                                <small
+                                    id="small-enpoint"
+                                    class="form-text text-muted">Please enter Endpoint from Huawei Cloud, most probably it will be: 'https://vod.ap-southeast-3.myhuaweicloud.com'</small>
                             </div>
                             <div class="form-group">
                                 <label for="projectId">Project ID</label>
@@ -275,16 +269,13 @@
                                     type="text"
                                     class="form-control form-control-sm"
                                     id="projectId"
-                                    placeholder="31e2da1575cc47048f26be2a2b5c6ec9"
+                                    placeholder="Please enter Project ID from Huawei Cloud"
                                     name="projectId"
                                     value="31e2da1575cc47048f26be2a2b5c6ec9"
                                 />
                                 <small
-                                    id="projectId"
-                                    class="form-text text-muted"
-                                    >We'll never share your Project ID with
-                                    anyone else.</small
-                                >
+                                    id="small-projectId"
+                                    class="form-text text-muted">Please enter Project ID from Huawei Cloud, Huawei Cloud > My Credentials > API Credentials > Project ID of ap-southeast-3.</small>
                             </div>
                         </form>
                     </div>
@@ -343,10 +334,9 @@
                                     <option value="WMV">WMV</option>
                                 </select>
                                 <small
-                                    id="projectId"
+                                    id="small-videoType"
                                     class="form-text text-muted"
-                                    >We'll never share your Project ID with
-                                    anyone else.</small
+                                    >Please select format of videos. It is recommended to upload one format of video in one batch</small
                                 >
                             </div>
                             <div class="form-group">
@@ -396,10 +386,9 @@
                                 </select>
 
                                 <small
-                                    id="projectId"
+                                    id="small-videoTemplate"
                                     class="form-text text-muted"
-                                    >We'll never share your Project ID with
-                                    anyone else.</small
+                                    >Select the Transcoding Template you want to apply as soon as video is uploaded. Otherwise select Don't apply any Template </small
                                 >
                             </div>
                         </form>
@@ -422,6 +411,7 @@
                         </div>                        
                         <!-- A div where responses are saved to indicate the user with request status -->
                         <div class="mt-2" id="importedFromCloudflareToHuaweiLinks"></div>
+                        <div class="mt-2" id="div_listTemplateGroup"></div> 
                     </div>
                 </div>
                 <!-- eof Third Step -->
@@ -438,7 +428,7 @@
                             Getting new links from Huawei Cloud VOD
                         </h6>
                         <p class="card-text">
-                            Dummy Text - I will update this later
+                            Now that videos task is submitted. Please go <a href="https://console-intl.huaweicloud.com/vod/?agencyId=d0637be66122489b83317f41fb0dad2e&region=ap-southeast-3&locale=en-us#/vod/audioVideoUrlPull">Here</a> to check the status. Once everything is uploaded, and the status changes to <strong>Finished</strong> then we can go to this step to list all the videos from Huawei Cloud to get their links, so we can go for updating links in database.
                         </p>
                         <p class="card-text">Open Huawei Cloud VOD
                             <a href="https://console-intl.huaweicloud.com/vod/?region=ap-southeast-3#/vod/videoManage">HERE</a>
@@ -503,7 +493,7 @@
                                     value="localhost"
                                 />
                                 <small
-                                    id="emailHelp"
+                                    id="small-db-host"
                                     class="form-text text-muted"
                                     >We'll never share your X Auth Email with
                                     anyone else.</small
@@ -521,7 +511,7 @@
                                     value="root"
                                 />
                                 <small
-                                    id="account_id"
+                                    id="small-db-username"
                                     class="form-text text-muted"
                                     >We'll never share your Account ID with
                                     anyone else.</small
@@ -538,7 +528,7 @@
                                     value=""
                                 />
                                 <small
-                                    id="account_id"
+                                    id="small-db-password"
                                     class="form-text text-muted"
                                     >We'll never share your Customer subdomain
                                     with anyone else.</small
@@ -644,7 +634,9 @@
                             Until this stage, our videos are successfully
                             migrated to <code>Huawei Cloud VOD</code> from
                             <code>Cloudflare Cloudstream</code>.
-                        </p>
+                        </p> 
+                        <!-- enableMp4DownloadLinksCount -->
+                        <div id="textareaHuaweiVideosLinksCount">Number of Records: <span class='badge badge-primary badge-pill'>0</span></div>
                         <textarea
                             name="textareaHuaweiVideosLinks"
                             id="textareaHuaweiVideosLinks"
