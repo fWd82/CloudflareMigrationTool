@@ -29,6 +29,7 @@ function showLineNumberOnBadge(textAreaId, badgeId) {
 // Function to get template groups from Huawei Cloud
 function listTemplateGroup() {
     $('#spinner-step-31').removeClass('d-none'); // show spinner
+    $("#div_listTemplateGroup").html("");
     console.log("list_template_group Method is called");
     console.log("Aw kana 1");
 
@@ -72,11 +73,24 @@ function listTemplateGroup() {
             options.replaceWith(optionsValues);
             $('#spinner-step-31').addClass('d-none');
         },
-        error: function (xhr, status, error) {
-            console.log('Error: ', error);
-            $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+        // error: function (xhr, status, error) {
+        //     console.log('Error: ', error);
+        //     $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+        //     $('#spinner-step-31').addClass('d-none');
+        // }
+        error: function(xhr, status, error) {
+            console.log('XHR error:', xhr);
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                $("#div_listTemplateGroup").html('<div class="alert alert-danger">Server Error: ' + xhr.responseJSON.error + '</div>');
+            }
+            else if (xhr.responseText.startsWith('<')) {
+                $("#div_listTemplateGroup").html('<div class="alert alert-danger">Unexpected response format.</div>');
+            } else {
+                $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred2: ' + error + '</div>');
+            }
             $('#spinner-step-31').addClass('d-none');
         }
+        
     });
 };
 // eof listTemplateGroup();
