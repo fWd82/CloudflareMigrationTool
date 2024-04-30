@@ -277,6 +277,20 @@
                                     id="small-projectId"
                                     class="form-text text-muted">Please enter Project ID from Huawei Cloud, Huawei Cloud > My Credentials > API Credentials > Project ID of ap-southeast-3.</small>
                             </div>
+                            <div class="form-group">
+                                <label for="projectId">Domain for VOD</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-sm"
+                                    id="domainName"
+                                    placeholder="Please enter Domain Name including https://"
+                                    name="domainName"
+                                    value="https://vod.fawadiqbal.com"
+                                />
+                                <small
+                                    id="small-projectId"
+                                    class="form-text text-muted">Please enter your domain for VOD that you have already put in Huawei Cloud > Domain Name Management, something like vod.example.com</small>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -453,6 +467,13 @@
                         <br />
                         <!-- A div where responses are saved to indicate the user with request status -->
                         <div class="mt-2" id="div_huawei_cloud_links"></div>
+                        <br />
+                        <!-- <p class="card-text">
+                            You can download <code>CSV Document</code>, search for  <code>CloudflareVideoID</code> in your MySQL database and replace it with <code>HuaweiCloudVideoUrl</code>.
+                        </p> -->
+                        <div class="mt-2" id="div_huawei_cloud_links_csv2">0</div>
+                        <div class="mt-2" id="div_huawei_cloud_links_csv"></div>
+                        
                     </div>
                 </div>
                 <!-- eof Fourth Step -->
@@ -530,8 +551,7 @@
                                 <small
                                     id="small-db-password"
                                     class="form-text text-muted"
-                                    >We'll never share your Customer subdomain
-                                    with anyone else.</small
+                                    >Please paste your DB Password</small
                                 >
                             </div>
 

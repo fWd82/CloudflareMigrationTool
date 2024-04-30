@@ -48,16 +48,19 @@ try {
     // Process each video ID and URL from POST data
     foreach ($assetid_and_url as $item) {
         $recordCounter++; // Increment the record counter for each iteration
-        $videoId = $item['huaweiCloudVideoId'];
-        $newVideoLink = $item['huaweiCloudVideoUrl'];
+        // $videoId =          $item['huaweiCloudVideoId'];
+        $videoTitle =       $item['huaweiCloudVideoTitle']; // even though the name is title, but this is the ID of Cloudflare that we need to search and replace
+        $newVideoLink =     $item['huaweiCloudVideoUrl'];
 
         // Modify the WHERE clause to match any part of the URL that includes the video ID
         $sql = "UPDATE {$db_table_name} SET {$db_table_column} = :newVideoLink WHERE {$db_table_column} LIKE CONCAT('%', :videoId, '%')";
         $stmt = $pdo->prepare($sql);
 
         // Bind the parameters to the statement
+        // $stmt->bindParam(':videoId', $videoId);
+        // $stmt->bindParam(':videoTitle', $videoTitle);
+        $stmt->bindParam(':videoId', $videoTitle);
         $stmt->bindParam(':newVideoLink', $newVideoLink);
-        $stmt->bindParam(':videoId', $videoId);
 
         // Execute the statement and check for rows affected
         $stmt->execute();
@@ -67,7 +70,8 @@ try {
             $updateCounter++; // Increment the update counter
             $response[] = [
                 'recordNumber' => $recordCounter,
-                'videoId' => $videoId,
+                // 'videoId' => $videoId,
+                'videoTitle' => $videoTitle,
                 'videoLink' => $newVideoLink,
                 'status' => 'success',
                 'message' => 'Record updated'
@@ -76,7 +80,8 @@ try {
             $noChangeCounter++; // Increment the no change counter
             $response[] = [
                 'recordNumber' => $recordCounter,
-                'videoId' => $videoId,
+                // 'videoId' => $videoId,
+                'videoTitle' => $videoTitle,
                 'videoLink' => $newVideoLink,
                 'status' => 'no change needed',
                 'message' => 'No update required, no matching records found or already up-to-date'

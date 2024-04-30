@@ -14,6 +14,7 @@
 // Update Asset Meta
 // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=UpdateAssetMeta
 
+
 // Show a count of entered non empty lines in a badge
 function showLineNumberOnBadge(textAreaId, badgeId) {
     // Get the current text from textarea
@@ -26,157 +27,13 @@ function showLineNumberOnBadge(textAreaId, badgeId) {
     $(badgeId).html('Number of Records: <span class="badge badge-primary badge-pill">' + nonEmptyLineCount + '</span>');
 }
 
-// Function to get template groups from Huawei Cloud
-function listTemplateGroup() {
-    $('#spinner-step-31').removeClass('d-none'); // show spinner
-    $("#div_listTemplateGroup").html("");
-    console.log("list_template_group Method is called");
-    console.log("Aw kana 1");
-
-    let ak = $("#ak").val();
-    let sk = $("#sk").val();
-    let endpoint = $("#endpoint").val();
-    let projectId = $("#projectId").val();
-
-    $.ajax({
-        url: `3-list_template_group.php`,
-        method: "POST",
-        timeout: 0,
-        contentType: "application/x-www-form-urlencoded",
-        dataType: 'json', // Expect JSON response
-        data: {
-            ak,
-            sk,
-            endpoint,
-            projectId,
-        },
-        success: function (response) {
-            let optionsValues = '<select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">';
-            // Add an empty option at the start
-            optionsValues += '<option value="">Don\'t apply any Template</option>';
-            jQuery.each(response.template_group_list, function (index, item) {
-
-                optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
-
-                /* non_transcoding_template_group
-                system_template_group
-                original_template_group
-                adaptive_template_group
-                HLS_H265_4K
-                MP4_H265
-                MP4_H264
-                HLS_H265
-                HLS_H264 */
-            });
-            optionsValues += '</select>';
-            let options = $('#videoTemplateGroupName');
-            options.replaceWith(optionsValues);
-            $('#spinner-step-31').addClass('d-none');
-        },
-        // error: function (xhr, status, error) {
-        //     console.log('Error: ', error);
-        //     $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
-        //     $('#spinner-step-31').addClass('d-none');
-        // }
-        error: function(xhr, status, error) {
-            console.log('XHR error:', xhr);
-            if (xhr.responseJSON && xhr.responseJSON.error) {
-                $("#div_listTemplateGroup").html('<div class="alert alert-danger">Server Error: ' + xhr.responseJSON.error + '</div>');
-            }
-            else if (xhr.responseText.startsWith('<')) {
-                $("#div_listTemplateGroup").html('<div class="alert alert-danger">Unexpected response format.</div>');
-            } else {
-                $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred2: ' + error + '</div>');
-            }
-            $('#spinner-step-31').addClass('d-none');
-        }
-        
-    });
-};
-// eof listTemplateGroup();
-
-/* todo [
-    {
-        urlNew
-        name = cloudf
-    }
-] */
-// Related to Step - 5
-// Function to update video links in MySQL Database
-function updateLinksInMySQL(assetid_and_url) {
-    console.log('update sha - I need it here');
-    console.log(assetid_and_url);
-    // console.log(assetid_and_url[0].huaweiCloudVideoId);
-    // console.log(assetid_and_url[0].huaweiCloudVideoUrl);
-
-    // return; // remove this to make changes to db and execute rest of function.
-
-    let db_host = $("#db_host").val();
-    let db_username = $("#db_username").val();
-    let db_password = $("#db_password").val();
-    let db_name = $("#db_name").val();
-    let db_table_name = $("#db_table_name").val();
-    let db_table_column = $("#db_table_column").val();
-
-    $.ajax({
-        url: `5-script_db.php`,
-        method: "POST",
-        timeout: 0,
-        contentType: "application/x-www-form-urlencoded",
-        dataType: 'json', // Expect JSON response
-        data: {
-            db_host,
-            db_username,
-            db_password,
-            db_name,
-            db_table_column,
-            db_table_name,
-            assetid_and_url // Sending this array to PHP file
-        },
-        success: function (response) {
-            console.log(response);
-        
-            // Clear previous messages
-            $("#mysql_response_5_count").empty();
-            $("#mysql_response_5_updates").empty();
-        
-            // Process each individual record
-            if (response.records && Array.isArray(response.records)) {
-                response.records.forEach(function (item) {
-                    let alertClass = item.status === 'success' ? 'alert-success' : 'alert-warning';
-                    let message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video ID: ${item.videoId} - ${item.message}</div>`;
-                    $("#mysql_response_5_updates").append(message);
-                });
-            }
-        
-            // Display total records information
-            if (response.totalRecords !== undefined) {
-                // $("#mysql_response_5_count").append(`<div class="alert alert-info">Total records processed <span class="badge badge-dark badge-pill">: ${response.totalRecords}</span></div>`);
-                // $("#mysql_response_5_count").append(`<div class="alert alert-success">Total updates made:<span class="badge badge-success badge-pill"> ${response.totalUpdates}</span></div>`);
-                // $("#mysql_response_5_count").append(`<div class="alert alert-warning">Total no change needed:<span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span></div>`);
-                // $("#mysql_response_5_count").append(`<hr />`);
-
-                $("#mysql_response_5_count").append(`<h3>Stats</h3>`);
-                $("#mysql_response_5_count").append(`<div class="alert alert-secondary">Total records processed: <span class="badge badge-dark badge-pill"> ${response.totalRecords}</span> | Total updates made: <span class="badge badge-success badge-pill"> ${response.totalUpdates}</span> | Total no change needed: <span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span> | Total records in MySQL Database: <span class="badge badge-dark badge-pill"> 0</span></div>`);
-                $("#mysql_response_5_count").append(`<hr />`);
-                $("#mysql_response_5_count").append(`<h3>Logs</h3>`);
-            }
-        
-            console.log('Success: ', response);
-        },
-        error: function (xhr, status, error) {
-            console.log('Error: ', error);
-            $("#mysql_response_5_updates").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
-        }
-    });
-}
-// eo updateLinksInMySQL
-
+// Update progress bar - Related with Third Step
 function updateProgressBar(selector, processedRecords, totalRecords) {
     const progressPercentage = Math.min((processedRecords / totalRecords) * 100, 100);
     $(selector).css('width', progressPercentage + '%').attr('aria-valuenow', processedRecords).text(progressPercentage.toFixed(0) + '%');
 }
 
+// When finally page loads up
 $(document).ready(function () {
     $('#spinner-step-1').addClass('d-none'); // hide the loader 
     $('#spinner-step-2').addClass('d-none'); // hide the loader
@@ -201,6 +58,8 @@ $(document).ready(function () {
     $("#listTemplateGroup").click(listTemplateGroup);
     $("#videoTemplateGroupName").click(listTemplateGroup);
     // listTemplateGroup(); Later I will uncomment
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     // First Step (Optional): Fetching Cloudflare Videos Links
     // a function to fetch video links from cloudflare.
@@ -273,6 +132,8 @@ $(document).ready(function () {
             }
         });
     });
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     // Second Step - Preparing Cloudflare files to Migrate
     // a function to enable download mp4 links in cloudflare
@@ -435,7 +296,6 @@ $(document).ready(function () {
             $("#importedFromCloudflareToHuaweiLinks1").html('Batch Size of (100): <span class="badge badge-primary badge-pill">' + batchNumber + '</span>');
         }
 
-
         function sendBatch(batchUrls) {
             batchUrls.forEach(mp4Url => {
                 $.ajax({
@@ -483,7 +343,7 @@ $(document).ready(function () {
                 if (Object.keys(data.upload_assets[0]).length !== 0) {  // Checking if the response is an empty object
                     $("#importedFromCloudflareToHuaweiLinks")
                         .addClass('scrollableContainer')
-                        .append('<div class="alert alert-success"><strong>' + urlCounter + '</strong>. Successfully imported video: ' + mp4Url + '<br><strong>New Id:</strong> ' + data.upload_assets[0].asset_id + '</div>');
+                        .append('<div class="alert alert-success"><strong>' + urlCounter + '</strong>. Successfully imported video: ' + mp4Url + '<br><strong>New ID: </strong>' + data.upload_assets[0].asset_id + '</div>');
                 } else {
                     const dataAsString = JSON.stringify(data, null, 2);
                     $("#importedFromCloudflareToHuaweiLinks")
@@ -498,6 +358,78 @@ $(document).ready(function () {
         }
     });
     // eof #importFromCloudflareToHuawei()
+
+    // Related to Third Step
+    // Function to get template groups from Huawei Cloud
+    function listTemplateGroup() {
+        $('#spinner-step-31').removeClass('d-none'); // show spinner
+        $("#div_listTemplateGroup").html("");
+        console.log("list_template_group Method is called");
+        console.log("Aw kana 1");
+
+        let ak = $("#ak").val();
+        let sk = $("#sk").val();
+        let endpoint = $("#endpoint").val();
+        let projectId = $("#projectId").val();
+
+        $.ajax({
+            url: `3-list_template_group.php`,
+            method: "POST",
+            timeout: 0,
+            contentType: "application/x-www-form-urlencoded",
+            dataType: 'json', // Expect JSON response
+            data: {
+                ak,
+                sk,
+                endpoint,
+                projectId,
+            },
+            success: function (response) {
+                let optionsValues = '<select class="form-control form-control-sm" id="videoTemplateGroupName" name="videoTemplateGroupName">';
+                // Add an empty option at the start
+                optionsValues += '<option value="">Don\'t apply any Template</option>';
+                jQuery.each(response.template_group_list, function (index, item) {
+
+                    optionsValues += '<option value="' + item.name + '">' + item.name + '</option>';
+
+                    /* non_transcoding_template_group
+                    system_template_group
+                    original_template_group
+                    adaptive_template_group
+                    HLS_H265_4K
+                    MP4_H265
+                    MP4_H264
+                    HLS_H265
+                    HLS_H264 */
+                });
+                optionsValues += '</select>';
+                let options = $('#videoTemplateGroupName');
+                options.replaceWith(optionsValues);
+                $('#spinner-step-31').addClass('d-none');
+            },
+            // error: function (xhr, status, error) {
+            //     console.log('Error: ', error);
+            //     $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            //     $('#spinner-step-31').addClass('d-none');
+            // }
+            error: function(xhr, status, error) {
+                console.log('XHR error:', xhr);
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    $("#div_listTemplateGroup").html('<div class="alert alert-danger">Server Error: ' + xhr.responseJSON.error + '</div>');
+                }
+                else if (xhr.responseText.startsWith('<')) {
+                    $("#div_listTemplateGroup").html('<div class="alert alert-danger">Unexpected response format.</div>');
+                } else {
+                    $("#div_listTemplateGroup").html('<div class="alert alert-danger">An error occurred2: ' + error + '</div>');
+                }
+                $('#spinner-step-31').addClass('d-none');
+            }
+            
+        });
+    };
+    // eof listTemplateGroup();
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     // Fourth Step - Getting new links from Huawei Cloud VOD
     // function to get ids, and links of videos from huawei VOD
@@ -516,6 +448,7 @@ $(document).ready(function () {
         let sk = $("#sk").val().trim();
         let endpoint = $("#endpoint").val().trim();
         let projectId = $("#projectId").val().trim();
+        let domainName = $("#domainName").val().trim();
         let customer_subdomain = $("#customer_subdomain").val().trim();
 
         if (!ak) {
@@ -543,6 +476,11 @@ $(document).ready(function () {
             return;
         }
 
+        if (!domainName) {
+            $("#videoLinks").html("<span class='text-danger'>Domain Name is empty</span>");
+            return;
+        }
+
         let listAssetPageNo = 0;
         const listAssetSize = 100;
 
@@ -567,7 +505,8 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     // The problem here is, even if internet is not connected etc, it will still come to success phase. So we have to look for array which is 'error' and then we will print it accordingly.
-                    // console.log(response);
+                    console.log("Success 4 is called")
+                    console.log(response);
 
                     // Check for "error" in response.error and handle it
                     // if (response.error && response.error.toLowerCase().includes("error")) {
@@ -585,9 +524,11 @@ $(document).ready(function () {
                         }
 
                         assetsAllInfo = assetsAllInfo.concat(response.assets.map(({ asset_id, title }) => ({
+                            huaweiCloudVideoTitle: title, 
                             huaweiCloudVideoId: asset_id,
-                            huaweiCloudVideoUrl: `https://vod.fawadiqbal.me/asset/${asset_id}/play_video/index.m3u8`,
-                            // cloudflareVideoId: title,
+                            huaweiCloudVideoUrl: `${domainName}/asset/${asset_id}/play_video/index.m3u8`,
+                            // TODO: Put domian name here
+
                             // cloudflareVideoMP4Url: `https://${customer_subdomain}/${title}/downloads/default.mp4?filename=${title}.mp4`,
                             // cloudflareVideoM3U8Url: `https://${customer_subdomain}/${title}/manifest/video.m3u8`
                         })));
@@ -617,21 +558,46 @@ $(document).ready(function () {
         fetchAssets(listAssetPageNo); // Start fetching from the first page
     });
 
+ 
+    // Related to Fourth Step
+    // Function to update UI after Huawei Cloud Links are fethced
     function updateUI(assets) {
         let contentHtml = '<div class="scrollableContainer alert alert-success text-sm" style="font-size: smaller; margin: 1rem;">';
+        let contentHtmlCSV = '<div class="scrollableContainer2  text-sm" style="font-size: smaller; margin: 1rem;"><table class="table table-bordered"><tr><th>Sr.No </th><th>CloudflareVideoID</th><th>HuaweiCloudVideoUrl</th></tr>';
+        let csvContent = "Sr.no,huaweiCloudVideoTitle,huaweiCloudVideoUrl\n";
+        let textAreaContent = '';
         let count = 0;
-        assets.forEach(({ huaweiCloudVideoId, huaweiCloudVideoUrl }) => {
-            contentHtml += '<p><strong>' + (count + 1) + '</strong>: Title | Name: ' + huaweiCloudVideoId + '</p>';
-            contentHtml += '<p>URL: <a href="' + huaweiCloudVideoUrl + '">' + huaweiCloudVideoUrl + '</a></p> <hr />';
-            $('#textareaHuaweiVideosLinks').append(huaweiCloudVideoUrl + "\n");
+    
+        assets.forEach(({ huaweiCloudVideoTitle, huaweiCloudVideoUrl }) => {
             count++;
+            contentHtml += '<p><strong>' + count + '</strong>: Title | Name: ' + huaweiCloudVideoTitle + '</p>';
+            contentHtml += '<p>URL: <a href="' + huaweiCloudVideoUrl + '">' + huaweiCloudVideoUrl + '</a></p> <hr />';
+            
+            contentHtmlCSV += '<tr><td>' + count + '</td><td>' + huaweiCloudVideoTitle + '</td><td>' + huaweiCloudVideoUrl + '</td></tr>';
+            csvContent += count + ',"' + huaweiCloudVideoTitle.replace(/"/g, '""') + '","' + huaweiCloudVideoUrl.replace(/"/g, '""') + '"\n';
+            textAreaContent += huaweiCloudVideoUrl + "\n";
         });
+    
         contentHtml += '</div>';
+        contentHtmlCSV += '</table></div>';
+    
         $("#div_huawei_cloud_links").html(contentHtml);
+        $("#div_huawei_cloud_links_csv").html(contentHtmlCSV); // Set the HTML content of the CSV links div
+        $('#textareaHuaweiVideosLinks').val(textAreaContent); // Set textarea content
         $('#spinner-step-4').addClass('d-none'); // Hide spinner
         $("#div_huawei_cloud_links_count").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + count + '</span>');
+    
+        // Create a Blob from the CSV string
+        let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        let url = URL.createObjectURL(blob);
+        
+        // Create a link to download it
+        let downloadLink = $('<a href="' + url + '" download="huaweiCloudVideos.csv">Download CSV</a>');
+        $("#div_huawei_cloud_links_csv").append(downloadLink); // Add the download link to the div div_huawei_cloud_links_csv2
+        $("#div_huawei_cloud_links_csv2").html("<p class='card-text'>You can download <code>CSV Document</code>, search for  <code>CloudflareVideoID</code> in your MySQL database and replace it with <code>HuaweiCloudVideoUrl</code></p><p class='card-text'>Your SQL Query might look like this: <br/> <code>$sql = 'UPDATE {$db_table_name} SET {$db_table_column} = :HuaweiCloudVideoUrl WHERE {$db_table_column} LIKE CONCAT('%', :CloudflareVideoID, '%')'; </code></p>");
     }
-    // eof getHuaweiVODLinks();
+ 
+    ////////////////////////////////////////////////////////////////////////////////////
 
     // Fifth Step - Updating database from Cloudstream links to Huawei Cloud VOD links
     // Function to extract video links and ids of huawei from textarea
@@ -647,6 +613,8 @@ $(document).ready(function () {
         let db_name = $("#db_name").val().trim();
         let db_table_name = $("#db_table_name").val().trim();
         let db_table_column = $("#db_table_column").val().trim();
+        
+
 
         if (!db_host) {
             $("#mysql_response_5_updates").html("<span class='text-danger'>DB Host is empty</span>");
@@ -686,23 +654,6 @@ $(document).ready(function () {
 
 
         //! I have added this approach in which i am accessing the data from step 4 in step 5 but here we cannot use the text area any more. the data if from third party pasted here cannot be used for now.
-        /* 
-        const inputTextUrls = $("#textareaHuaweiVideosLinks").val();
-        const huaweiCloudVideoUrls = inputTextUrls.split('\n').map(link => link.trim()).filter(link => link !== "");
-
-        const urlAndIds = huaweiCloudVideoUrls.map(videoUrl => {
-            const huaweiCloudVideoId = videoUrl.split('/')[4];
-            return {
-                huaweiCloudVideoId: huaweiCloudVideoId,
-                cloudflareVideoId: null, // placeholder until we have a method to determine this
-                huaweiCloudVideoUrl: videoUrl
-            };
-        }); 
-        */
-
-        // $db_table_name = "videos";
-        // $db_table_column = "video_links";
-
 
         // Calling a function here to add 'huaweiCloudVideoId' & 'videoUrl' to addd to one excel sheet.
         console.log('#updateMySqlDbLinks is clicked');
@@ -712,4 +663,97 @@ $(document).ready(function () {
         updateLinksInMySQL(assetsAllInfo);
         $('#spinner-step-5').addClass('d-none');
     });
-});
+
+    // Related to Step - 5
+    // Function to update video links in MySQL Database
+    function updateLinksInMySQL(assetid_and_url) {
+        console.log('update sha - I need it here2');
+        console.log(assetid_and_url);
+        // console.log(assetid_and_url[0].huaweiCloudVideoId);
+        // console.log(assetid_and_url[0].huaweiCloudVideoUrl);
+
+        // return; // remove this to make changes to db and execute rest of function.
+
+        let db_host = $("#db_host").val();
+        let db_username = $("#db_username").val();
+        let db_password = $("#db_password").val();
+        let db_name = $("#db_name").val();
+        let db_table_name = $("#db_table_name").val();
+        let db_table_column = $("#db_table_column").val();
+
+        let customer_subdomain = $("#customer_subdomain").val().trim();
+
+        $.ajax({
+            url: `5-script_db.php`,
+            method: "POST",
+            timeout: 0,
+            contentType: "application/x-www-form-urlencoded",
+            dataType: 'json', // Expect JSON response
+            data: {
+                db_host,
+                db_username,
+                db_password,
+                db_name,
+                db_table_column,
+                db_table_name,
+                assetid_and_url // Sending this array to PHP file
+            },
+            success: function (response) {
+                console.log(response);
+            
+                // Clear previous messages
+                $("#mysql_response_5_count").empty();
+                $("#mysql_response_5_updates").empty();
+            
+                // Process each individual record
+                if (response.records && Array.isArray(response.records)) {
+                    response.records.forEach(function (item) {
+                        let alertClass;
+                        let message;
+                        if (item.status === 'success') {
+                            alertClass = 'alert-success';
+                            message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video Title/Cloudflare ID: <strong> ${item.videoTitle}</strong> - ${item.message} <br /><a href="https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8">https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8</a> <br />Replaced with: <br /><a href="${item.videoLink}">${item.videoLink}</a></div>`;
+                        } else {
+                            alertClass = 'alert-warning';
+                            message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video Title/Cloudflare ID: <strong> ${item.videoTitle}</strong> - ${item.message} <br /><a href="https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8">https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8</a> <br /></div>`;
+                        }
+                        $("#mysql_response_5_updates").append(message);
+                    });
+                    
+                    
+
+
+                    // response.records.forEach(function (item) {
+                    //     let alertClass = item.status === 'success' ? 'alert-success' : 'alert-warning';
+                    //     let message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video Title/Cloudflare ID: <strong> ${item.videoTitle}</strong> - ${item.message} <br /> https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8 <br />Replace with: <br />  ${item.videoLink}</div>`;
+                    //     $("#mysql_response_5_updates").append(message);
+                    // });
+
+
+                }
+            
+                // Display total records information
+                if (response.totalRecords !== undefined) {
+                    // $("#mysql_response_5_count").append(`<div class="alert alert-info">Total records processed <span class="badge badge-dark badge-pill">: ${response.totalRecords}</span></div>`);
+                    // $("#mysql_response_5_count").append(`<div class="alert alert-success">Total updates made:<span class="badge badge-success badge-pill"> ${response.totalUpdates}</span></div>`);
+                    // $("#mysql_response_5_count").append(`<div class="alert alert-warning">Total no change needed:<span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span></div>`);
+                    // $("#mysql_response_5_count").append(`<hr />`);
+
+                    $("#mysql_response_5_count").append(`<h3>Stats</h3>`);
+                    $("#mysql_response_5_count").append(`<div class="alert alert-secondary">Total records processed: <span class="badge badge-dark badge-pill"> ${response.totalRecords}</span> | Total updates made: <span class="badge badge-success badge-pill"> ${response.totalUpdates}</span> | Total no change needed: <span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span> | Total records in MySQL Database: <span class="badge badge-dark badge-pill"> 0</span></div>`);
+                    $("#mysql_response_5_count").append(`<hr />`);
+                    $("#mysql_response_5_count").append(`<h3>Logs</h3>`);
+                }
+            
+                console.log('Success: ', response);
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ', error);
+                $("#mysql_response_5_updates").html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+            }
+        });
+    }
+    // eo updateLinksInMySQL
+
+}); 
+// eof $(document).ready(function();
