@@ -45,20 +45,22 @@ try {
     $pdo = new PDO("mysql:host={$db_host};dbname={$db_name}", $db_username, $db_password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Query to count the total records
+    $countSql = "SELECT COUNT(id) AS totalMysqlRecords FROM videos";
+    $countStmt = $pdo->query($countSql);
+    $result = $countStmt->fetch(PDO::FETCH_ASSOC);
+    $totalMysqlRecords = $result['totalMysqlRecords']; // Use this value to display on the frontend
+
     // Process each video ID and URL from POST data
     foreach ($assetid_and_url as $item) {
         $recordCounter++; // Increment the record counter for each iteration
-        // $videoId =          $item['huaweiCloudVideoId'];
-        $videoTitle =       $item['huaweiCloudVideoTitle']; // even though the name is title, but this is the ID of Cloudflare that we need to search and replace
-        $newVideoLink =     $item['huaweiCloudVideoUrl'];
+        $videoTitle = $item['huaweiCloudVideoTitle']; // even though the name is title, but this is the ID of Cloudflare that we need to search and replace
+        $newVideoLink = $item['huaweiCloudVideoUrl'];
 
         // Modify the WHERE clause to match any part of the URL that includes the video ID
         $sql = "UPDATE {$db_table_name} SET {$db_table_column} = :newVideoLink WHERE {$db_table_column} LIKE CONCAT('%', :videoId, '%')";
         $stmt = $pdo->prepare($sql);
 
-        // Bind the parameters to the statement
-        // $stmt->bindParam(':videoId', $videoId);
-        // $stmt->bindParam(':videoTitle', $videoTitle);
         $stmt->bindParam(':videoId', $videoTitle);
         $stmt->bindParam(':newVideoLink', $newVideoLink);
 
@@ -70,7 +72,6 @@ try {
             $updateCounter++; // Increment the update counter
             $response[] = [
                 'recordNumber' => $recordCounter,
-                // 'videoId' => $videoId,
                 'videoTitle' => $videoTitle,
                 'videoLink' => $newVideoLink,
                 'status' => 'success',
@@ -80,7 +81,6 @@ try {
             $noChangeCounter++; // Increment the no change counter
             $response[] = [
                 'recordNumber' => $recordCounter,
-                // 'videoId' => $videoId,
                 'videoTitle' => $videoTitle,
                 'videoLink' => $newVideoLink,
                 'status' => 'no change needed',
@@ -88,6 +88,7 @@ try {
             ];
         }
     }
+    // Optionally: Return $totalRecords or handle it as needed for frontend display
 } catch (PDOException $e) {
     // Handle PDO exception if connection fails
     $response[] = [
@@ -107,7 +108,8 @@ $response['records'] = $response; // This will nest the individual records under
 $response['totalRecords'] = $recordCounter;
 $response['totalUpdates'] = $updateCounter;
 $response['totalNoChange'] = $noChangeCounter;
-
+$response['totalMysqlRecords'] = $totalMysqlRecords;
+ 
 // Output or return the response
 echo json_encode($response);
 ?>

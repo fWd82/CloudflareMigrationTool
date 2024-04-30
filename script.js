@@ -740,7 +740,7 @@ $(document).ready(function () {
                     // $("#mysql_response_5_count").append(`<hr />`);
 
                     $("#mysql_response_5_count").append(`<h3>Stats</h3>`);
-                    $("#mysql_response_5_count").append(`<div class="alert alert-secondary">Total records processed: <span class="badge badge-dark badge-pill"> ${response.totalRecords}</span> | Total updates made: <span class="badge badge-success badge-pill"> ${response.totalUpdates}</span> | Total no change needed: <span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span> | Total records in MySQL Database: <span class="badge badge-dark badge-pill"> 0</span></div>`);
+                    $("#mysql_response_5_count").append(`<div class="alert alert-secondary">Total records processed: <span class="badge badge-dark badge-pill"> ${response.totalRecords}</span> | Total updates made: <span class="badge badge-success badge-pill"> ${response.totalUpdates}</span> | Total no change needed: <span class="badge badge-warning badge-pill"> ${response.totalNoChange}</span> | Total records in MySQL Database: <span class="badge badge-dark badge-pill"> ${response.totalMysqlRecords} </span></div>`);
                     $("#mysql_response_5_count").append(`<hr />`);
                     $("#mysql_response_5_count").append(`<h3>Logs</h3>`);
                 }
