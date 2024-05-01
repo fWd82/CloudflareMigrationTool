@@ -6,14 +6,11 @@
 // Upload Meta Data By Url
 // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=UploadMetaDataByUrl
 
-
-
 // List Asset 
 // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=ListAssetList
 
 // Update Asset Meta
 // https://console-intl.huaweicloud.com/apiexplorer/#/openapi/VOD/doc?api=UpdateAssetMeta
-
 
 // Show a count of entered non empty lines in a badge
 function showLineNumberOnBadge(textAreaId, badgeId) {
@@ -438,6 +435,8 @@ $(document).ready(function () {
 
         $("#progressBar-4").attr("aria-valuemax", 0); // bringing ProgressBar to normal.
         $("#div_huawei_cloud_links").html("");
+        $("#div_huawei_cloud_links_total_records").html("");
+        $("#div_huawei_cloud_links_count").html("");
 
         console.log("#getHuaweiVODLinks Step 4 called");
         $('#spinner-step-4').removeClass('d-none'); // Display the spinner
@@ -539,7 +538,7 @@ $(document).ready(function () {
                         if (processedRecords < response.total) {
                             fetchAssets(pageNo + 1); // Fetch the next page
                         } else {
-                            $("#div_huawei_cloud_links_total_records").html('Total Records Fetched: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
+                            $("#div_huawei_cloud_links_total_records").html('Total Records Found: <span class="badge badge-primary badge-pill">' + response.total + '</span>');
                             updateUI(assetsAllInfo); // Update UI once all data is fetched
                         }
                     }
@@ -670,7 +669,6 @@ $(document).ready(function () {
         console.log('update sha - I need it here2');
         console.log(assetid_and_url);
         // console.log(assetid_and_url[0].huaweiCloudVideoId);
-        // console.log(assetid_and_url[0].huaweiCloudVideoUrl);
 
         // return; // remove this to make changes to db and execute rest of function.
 
@@ -719,17 +717,11 @@ $(document).ready(function () {
                         }
                         $("#mysql_response_5_updates").append(message);
                     });
-                    
-                    
-
-
                     // response.records.forEach(function (item) {
                     //     let alertClass = item.status === 'success' ? 'alert-success' : 'alert-warning';
                     //     let message = `<div class="alert ${alertClass}"><strong>${item.recordNumber}</strong>: Video Title/Cloudflare ID: <strong> ${item.videoTitle}</strong> - ${item.message} <br /> https://${customer_subdomain}/${item.videoTitle}/manifest/video.m3u8 <br />Replace with: <br />  ${item.videoLink}</div>`;
                     //     $("#mysql_response_5_updates").append(message);
                     // });
-
-
                 }
             
                 // Display total records information
