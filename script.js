@@ -646,7 +646,7 @@ $(document).ready(function () {
         const inputTextUrls0 = $("#textareaHuaweiVideosLinks").val().trim();
         // Check if the textarea is empty or not
         if (inputTextUrls0 === "") {
-            $("#mysql_response_5_updates").html("<span class='text-danger'>Please enter at least one URL</span>");
+            $("#mysql_response_5_updates").html("<span class='text-danger'>Please enter at least one URL - You can only press this button if you have successfully fetched Huawei Cloud VOD in Step 4</span>");
             $('#spinner-step-5').addClass('d-none');
             return;  // Stop further execution if the textarea is empty
         }

@@ -1,4 +1,5 @@
 
+onmouseover="this.style.cursor='hand'" onclick="return StartIM('l00655445', 'Li Sanqi 00655445')" onload="if(typeof(OneSpaceStatsCtrl)!='undefined'&&$.isFunction(OneSpaceStatsCtrl)) OneSpaceStatsCtrl('l00655445','李三奇','Li Sanqi 00655445',this)"
 
 //////////////
 
